@@ -37,7 +37,7 @@ public class URL_Constants_TAMIS extends URL_Constants_WpsProxy {
 
 	public static final String SLASH_OUTPUTS = "/outputs";
 
-	public static final String SLASH_JOBS = "/jobs/";
+	public static final String SLASH_JOBS = "/jobs";
 
 	public static final String SLASH_PROCESSES = "/processes";
 
