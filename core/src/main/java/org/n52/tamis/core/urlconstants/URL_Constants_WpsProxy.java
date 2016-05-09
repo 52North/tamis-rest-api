@@ -66,7 +66,8 @@ public class URL_Constants_WpsProxy {
 	 * constant URLs for each request of the WPS
 	 */
 
-	public static final String CAPABILITIES = API_V1_BASE_PREFIX;
+//	public static final String CAPABILITIES = API_V1_BASE_PREFIX;
+	public static final String CAPABILITIES = "";
 
 	public static final String PROCESSES = CAPABILITIES + SLASH_PROCESSES;
 
