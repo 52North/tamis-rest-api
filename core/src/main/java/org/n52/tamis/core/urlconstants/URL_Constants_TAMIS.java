@@ -77,7 +77,8 @@ public class URL_Constants_TAMIS extends URL_Constants_WpsProxy {
 	 * constant URLs for each request of the WPS
 	 */
 
-	public static final String CAPABILITIES = API_V1_BASE_PREFIX + "/" + TAMIS_PREFIX + "/" + SERVICE_ID_VARIABLE_NAME_WITH_BRACES;
+	public static final String CAPABILITIES = API_V1_BASE_PREFIX + "/" + TAMIS_PREFIX + "/"
+			+ SERVICE_ID_VARIABLE_NAME_WITH_BRACES;
 
 	public static final String PROCESSES = CAPABILITIES + SLASH_PROCESSES;
 
@@ -87,11 +88,12 @@ public class URL_Constants_TAMIS extends URL_Constants_WpsProxy {
 
 	public static final String EXECUTE_SYNCHRONOUS = PROCESS_DESCRIPTION_SINGLE + SYNC_EXECUTE_TRUE;
 
-	public static final String STATUS = PROCESS_DESCRIPTION_SINGLE + SLASH_JOBS + JOB_ID_VARIABLE_NAME_WITH_BRACES;
+	public static final String STATUS = PROCESS_DESCRIPTION_SINGLE + SLASH_JOBS + "/"
+			+ JOB_ID_VARIABLE_NAME_WITH_BRACES;
 
 	public static final String OUTPUTS = STATUS + SLASH_OUTPUTS;
 
-	public static final String OUTPUT = OUTPUTS + OUTPUT_ID_VARIABLE_NAME_WITH_BRACES;
+	public static final String OUTPUT = OUTPUTS + "/" + OUTPUT_ID_VARIABLE_NAME_WITH_BRACES;
 
 	public static final String DELETE = STATUS;
 
