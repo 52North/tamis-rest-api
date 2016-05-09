@@ -21,14 +21,22 @@
     <!-- Controllers -->
     <bean class="org.n52.tamis.rest.controller.capabilities.CapabilitiesController" />
     <bean class="org.n52.tamis.rest.controller.processes.ProcessesController" />
+    <bean class="org.n52.tamis.rest.controller.processes.SingleProcessDescriptionController" />
+    <bean class="org.n52.tamis.rest.controller.jobs.ResultController" />
+    <bean class="org.n52.tamis.rest.controller.jobs.StatusRequestController" />
+    
     
     <!-- Deserializers -->
-    <bean class="org.n52.tamis.core.json.deserialize.CapabilitiesDeserializer" name="capDeserializer" />
-    <bean class="org.n52.tamis.core.json.deserialize.ProcessesDeserializer" name="processDeserializer" />
+    <bean class="org.n52.tamis.core.json.deserialize.capabilities.CapabilitiesDeserializer" name="capDeserializer" />
+    <bean class="org.n52.tamis.core.json.deserialize.processes.ProcessesDeserializer" name="processDeserializer" />
+    <bean class="org.n52.tamis.core.json.deserialize.processes.SingleProcessDescriptionDeserializer" />
     
     <!-- Request forwarders -->
-	<bean class="org.n52.tamis.rest.forward.CapabilitiesRequestForwarder" name="capForwarder" />
-	<bean class="org.n52.tamis.rest.forward.ProcessesRequestForwarder" name="processesForwarder" />
+	<bean class="org.n52.tamis.rest.forward.capabilities.CapabilitiesRequestForwarder" name="capForwarder" />
+	<bean class="org.n52.tamis.rest.forward.processes.ProcessesRequestForwarder" name="processesForwarder" />
+	<bean class="org.n52.tamis.rest.forward.processes.SingleProcessDescriptionRequestForwarder"/>
+	<bean class="org.n52.tamis.rest.forward.jobs.StatusRequestForwarder"/>
+	<bean class="org.n52.tamis.rest.forward.jobs.ResultRequestForwarder"/>
 	
     <bean id="contentNegotiationManager"
           class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">

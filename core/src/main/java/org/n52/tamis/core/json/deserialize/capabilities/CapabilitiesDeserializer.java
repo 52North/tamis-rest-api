@@ -110,10 +110,23 @@ public class CapabilitiesDeserializer extends JsonDeserializer<Object> {
 		/*
 		 * e-mail contact
 		 */
-		String mailAdress = capabilitiesNode.get("ServiceProvider").get("ServiceContact").get("ContactInfo")
-				.get("Address").get("ElectronicMailAddress").asText();
+		JsonNode serviceContact = capabilitiesNode.get("ServiceProvider").get("ServiceContact");
+		JsonNode contactInfo = serviceContact.get("ContactInfo");
 
-		capabilities_short.setContact(mailAdress);
+		if (contactInfo.has("Adress")) {
+			JsonNode address = contactInfo.get("Adress");
+
+			if (address.has("ElectronicMailAddress")) {
+				String mailAdress = address.get("ElectronicMailAddress").asText();
+				capabilities_short.setContact(mailAdress);
+			}
+		}
+
+		else if (serviceContact.has("IndividualName"))
+			capabilities_short.setContact(serviceContact.get("IndividualName").asText());
+
+		else
+			capabilities_short.setContact("N/A");
 
 		logger.info("Deserialization ended! The following capabilities instance was created: {}", capabilities_short);
 
