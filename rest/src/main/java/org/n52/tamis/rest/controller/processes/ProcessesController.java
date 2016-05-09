@@ -38,9 +38,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@RequestMapping(value = URL_Constants_TAMIS.PROCESSES, produces = { "application/json" })
+@RequestMapping(value = URL_Constants_TAMIS.PROCESSES, method = RequestMethod.GET, produces = { "application/json" })
 public class ProcessesController extends AbstractRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProcessesController.class);
@@ -48,6 +49,16 @@ public class ProcessesController extends AbstractRestController {
 	@Autowired
 	ProcessesRequestForwarder processesRequestForwarder;
 
+	/**
+	 * 
+	 * Returns the shortened processes overview document.
+	 * 
+	 * @param serviceID
+	 *            inside the URL the variable
+	 *            {@link URL_Constants_TAMIS#SERVICE_ID_VARIABLE_NAME} specifies
+	 *            the id of the service. * @param request
+	 * @return shortened processes overview document
+	 */
 	@RequestMapping("")
 	@ResponseBody
 	public Processes_Tamis getProcessesOverview(

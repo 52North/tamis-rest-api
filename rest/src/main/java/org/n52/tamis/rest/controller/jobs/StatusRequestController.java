@@ -29,6 +29,24 @@ public class StatusRequestController extends AbstractRestController {
 	@Autowired
 	StatusRequestForwarder statusRequestForwarder;
 
+	/**
+	 * Returns the status description.
+	 * 
+	 * @param serviceId
+	 *            inside the URL the variable
+	 *            {@link URL_Constants_TAMIS#SERVICE_ID_VARIABLE_NAME} specifies
+	 *            the id of the service.
+	 * @param processId
+	 *            inside the URL the variable
+	 *            {@link URL_Constants_TAMIS#PROCESS_ID_VARIABLE_NAME} specifies
+	 *            the id of the process.
+	 * @param jobId
+	 *            inside the URL the variable
+	 *            {@link URL_Constants_TAMIS#JOB_ID_VARIABLE_NAME} specifies the
+	 *            id of the job.
+	 * @param request
+	 * @return the status description
+	 */
 	@RequestMapping("")
 	@ResponseBody
 	public StatusDescription getStatusDescription(
@@ -39,8 +57,8 @@ public class StatusRequestController extends AbstractRestController {
 		logger.info("Received status description request for service id \"{}\", process id \"{}\" and job id \"{}\"!",
 				serviceId, processId, jobId);
 
-		StatusDescription singleProcessDescription = statusRequestForwarder
-				.forwardRequestToWpsProxy(request, serviceId, processId, jobId);
+		StatusDescription singleProcessDescription = statusRequestForwarder.forwardRequestToWpsProxy(request, serviceId,
+				processId, jobId);
 
 		return singleProcessDescription;
 	}

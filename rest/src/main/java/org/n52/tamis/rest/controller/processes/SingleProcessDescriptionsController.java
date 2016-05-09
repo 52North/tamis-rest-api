@@ -57,6 +57,20 @@ public class SingleProcessDescriptionsController extends AbstractRestController 
 	@Autowired
 	SingleProcessDescriptionRequestForwarder sProcessDescrRequestForwarder;
 
+	/**
+	 * Returns the shortened single process description.
+	 * 
+	 * @param serviceID
+	 *            inside the URL the variable
+	 *            {@link URL_Constants_TAMIS#SERVICE_ID_VARIABLE_NAME} specifies
+	 *            the id of the service. * @param request
+	 * @param processId
+	 *            inside the URL the variable
+	 *            {@link URL_Constants_TAMIS#PROCESS_ID_VARIABLE_NAME} specifies
+	 *            the id of the process.
+	 * @param request
+	 * @return the shortened single process description
+	 */
 	@RequestMapping("")
 	@ResponseBody
 	public ProcessDescription_singleProcess getSingleProcessDescription(
