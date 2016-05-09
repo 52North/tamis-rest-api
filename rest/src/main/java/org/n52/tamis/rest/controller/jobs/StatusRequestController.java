@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * REST COntroller for status requests. (Only handles GET requests to that URL).
+ * REST Controller for status requests. (Only handles GET requests to that URL).
  * 
  * @author Christian Danowski (contact: c.danowski@52north.org)
  *
