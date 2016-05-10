@@ -61,7 +61,19 @@ public class URL_Constants_TAMIS extends URL_Constants_WpsProxy {
 	public static final String SERVICE_ID_VARIABLE_NAME_WITH_BRACES = "{" + SERVICE_ID_VARIABLE_NAME + "}";
 
 	public static final String PROCESS_ID_VARIABLE_NAME = "process_id";
-	public static final String PROCESS_ID_VARIABLE_NAME_WITH_BRACES = "{" + PROCESS_ID_VARIABLE_NAME + "}";
+	/*
+	 * NOTE ":.+" at the end of the process id --> this is necessary in case
+	 * that the process id contains "."(dots) in the identifier. Normally,
+	 * Spring will truncate it and consider the part of the URL after the last
+	 * dot as file ending, which will be separated automatically (e.g identifier
+	 * "org.n52.process.testprocess" "testprocess" would be considered as file
+	 * ending).
+	 * 
+	 * In order to allow any dots inside the URL identifier, the regex
+	 * expression ":.+" must be added!
+	 * 
+	 */
+	public static final String PROCESS_ID_VARIABLE_NAME_WITH_BRACES = "{" + PROCESS_ID_VARIABLE_NAME + ":.+}";
 
 	public static final String JOB_ID_VARIABLE_NAME = "job_id";
 	public static final String JOB_ID_VARIABLE_NAME_WITH_BRACES = "{" + JOB_ID_VARIABLE_NAME + "}";
