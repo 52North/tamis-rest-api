@@ -62,7 +62,8 @@ public class ProcessesRequestForwarder extends AbstractRequestForwarder {
 	 *            identify the WPS instance
 	 * @return an instance of {@link Processes_Tamis}
 	 */
-	public final Processes_Tamis forwardRequestToWpsProxy(HttpServletRequest request, ParameterValueStore parameterValueStore) {
+	public final Processes_Tamis forwardRequestToWpsProxy(HttpServletRequest request, Object requestBody,
+			ParameterValueStore parameterValueStore) {
 		// assure that the URL variable "serviceId" is existent
 		initializeRequestSpecificParameters(parameterValueStore);
 

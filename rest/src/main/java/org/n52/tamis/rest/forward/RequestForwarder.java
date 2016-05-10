@@ -43,14 +43,20 @@ public interface RequestForwarder {
 	 * Forwards the request to the WPS proxy, retrieves an extended JSON-encoded
 	 * document and transforms the content to the appropriate "shortened"
 	 * document.
+	 * @param <T>
 	 * 
 	 * @param request
 	 *            the original request
+	 * @param requestBody
+	 *            an optional Java representation of the request body (sent via
+	 *            POST and parsed as Java representation of the JSON code). May
+	 *            be null if not needed.
 	 * @param parameterValueStore
 	 *            stores request specific parameter-value-pairs in a map.
 	 * @return an instance of the appropriate Java representation of return
 	 *         document.
 	 */
-	public Object forwardRequestToWpsProxy(HttpServletRequest request, ParameterValueStore parameterValueStore);
+	public <T> Object forwardRequestToWpsProxy(HttpServletRequest request, T requestBody,
+			ParameterValueStore parameterValueStore);
 
 }

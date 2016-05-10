@@ -83,7 +83,7 @@ public class CapabilitiesController extends AbstractRestController {
 		this.parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME, serviceId);
 
 		Capabilities_Tamis capabilitiesDoc = capRequestForwarder.forwardRequestToWpsProxy(request,
-				this.parameterValueStore);
+				null, this.parameterValueStore);
 
 		// return to client; will be converted to JSON implicitly
 		return capabilitiesDoc;

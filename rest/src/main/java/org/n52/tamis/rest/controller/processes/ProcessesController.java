@@ -73,7 +73,7 @@ public class ProcessesController extends AbstractRestController {
 		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME, serviceId);
 
 		Processes_Tamis processesOverview = processesRequestForwarder.forwardRequestToWpsProxy(request,
-				parameterValueStore);
+				null, parameterValueStore);
 
 		return processesOverview;
 	}

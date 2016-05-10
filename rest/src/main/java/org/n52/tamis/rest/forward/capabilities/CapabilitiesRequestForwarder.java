@@ -61,7 +61,7 @@ public class CapabilitiesRequestForwarder extends AbstractRequestForwarder {
 	 *            identify the WPS instance
 	 * @return an instance of {@link Capabilities_Tamis}
 	 */
-	public final Capabilities_Tamis forwardRequestToWpsProxy(HttpServletRequest request,
+	public final Capabilities_Tamis forwardRequestToWpsProxy(HttpServletRequest request, Object requestBody,
 			ParameterValueStore parameterValueStore) {
 		// assure that the URL variable "serviceId" is existent
 		initializeRequestSpecificParameters(parameterValueStore);
@@ -74,7 +74,7 @@ public class CapabilitiesRequestForwarder extends AbstractRequestForwarder {
 		// shortened capabilitiesDoc
 		Capabilities_Tamis capabilitiesDoc = capabilitiesTemplate.getForObject(capabilities_url_wpsProxy,
 				Capabilities_Tamis.class);
-		
+
 		return capabilitiesDoc;
 	}
 

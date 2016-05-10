@@ -66,7 +66,7 @@ public class StatusRequestController extends AbstractRestController {
 		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME, jobId);
 
 		StatusDescription singleProcessDescription = statusRequestForwarder.forwardRequestToWpsProxy(request,
-				parameterValueStore);
+				null, parameterValueStore);
 
 		return singleProcessDescription;
 	}

@@ -88,7 +88,7 @@ public class SingleProcessDescriptionController extends AbstractRestController {
 		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME, processId);
 
 		ProcessDescription_singleProcess singleProcessDescription = sProcessDescrRequestForwarder
-				.forwardRequestToWpsProxy(request, parameterValueStore);
+				.forwardRequestToWpsProxy(request, null, parameterValueStore);
 
 		return singleProcessDescription;
 	}

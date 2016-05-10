@@ -38,7 +38,7 @@ public class StatusRequestForwarder extends AbstractRequestForwarder {
 	 * @return an instance of {@link StatusDescription}
 	 */
 	@Override
-	public StatusDescription forwardRequestToWpsProxy(HttpServletRequest request,
+	public StatusDescription forwardRequestToWpsProxy(HttpServletRequest request, Object requestBody,
 			ParameterValueStore parameterValueStore) {
 		initializeRequestSpecificParameters(parameterValueStore);
 
