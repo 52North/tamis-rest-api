@@ -30,11 +30,12 @@ package org.n52.tamis.core.javarepresentations.processes;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.n52.tamis.core.json.deserialize.capabilities.CapabilitiesDeserializer;
 import org.n52.tamis.core.json.deserialize.processes.ProcessesDeserializer;
+import org.n52.tamis.core.json.serialize.processes.ProcessesSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Java representation of the JSON process list (shortened overview of available
@@ -44,6 +45,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  *
  */
 @JsonDeserialize(using = ProcessesDeserializer.class)
+@JsonSerialize(using = ProcessesSerializer.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Processes_Tamis {
 
