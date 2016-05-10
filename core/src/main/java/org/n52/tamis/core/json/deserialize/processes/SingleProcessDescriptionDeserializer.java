@@ -183,11 +183,16 @@ public class SingleProcessDescriptionDeserializer extends JsonDeserializer<Proce
 			/*
 			 * required
 			 * 
-			 * TAMIS WPS inputs always have the cardinality 1! So the are always
-			 * required. In future, an optional parameter "maxOccurs" might be
-			 * used to indicate multiple inputs.
+			 * inspect the value of the "_minOccurs" field. If this is != "0"
+			 * (>0) then set required to true, else (if _minOccurs == 0) set it
+			 * to false
 			 */
-			input_short.setRequired("true");
+			input_short.setRequired(false);
+			if (input_extended.has("_minOccurs")) {
+				int minOccurs = input_extended.get("_minOccurs").asInt();
+				if (minOccurs > 0)
+					input_short.setRequired(true);
+			}
 
 			/*
 			 * either "Format" or "type" is present per input! TODO how to

@@ -50,7 +50,7 @@ public class ProcessDescriptionInput extends AbstractInput {
 
 	private String type;
 
-	private String required;
+	private boolean required;
 
 	public ProcessDescriptionInput() {
 	}
@@ -79,11 +79,11 @@ public class ProcessDescriptionInput extends AbstractInput {
 		this.type = type;
 	}
 
-	public String getRequired() {
+	public boolean getRequired() {
 		return required;
 	}
 
-	public void setRequired(String required) {
+	public void setRequired(boolean required) {
 		this.required = required;
 	}
 
