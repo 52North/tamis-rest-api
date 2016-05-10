@@ -29,6 +29,10 @@ package org.n52.tamis.core.javarepresentations.processes;
 
 import org.n52.tamis.core.javarepresentations.AbstractInput;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Adds additional attributes specific to encode a WPS single process
  * description.
@@ -36,11 +40,13 @@ import org.n52.tamis.core.javarepresentations.AbstractInput;
  * @author Christian Danowski (contact: c.danowski@52north.org)
  *
  */
+@JsonInclude(Include.NON_NULL)
 public class ProcessDescriptionInput extends AbstractInput {
 
 	private String label;
 
-	private String Format;
+	@JsonProperty("Format")
+	private String format;
 
 	private String type;
 
@@ -58,11 +64,11 @@ public class ProcessDescriptionInput extends AbstractInput {
 	}
 
 	public String getFormat() {
-		return Format;
+		return format;
 	}
 
 	public void setFormat(String format) {
-		Format = format;
+		this.format = format;
 	}
 
 	public String getType() {
@@ -83,7 +89,7 @@ public class ProcessDescriptionInput extends AbstractInput {
 
 	@Override
 	public String toString() {
-		return "ProcessDescriptionInput [id=" + this.getId() + ", label=" + label + ", Format=" + Format + ", type="
+		return "ProcessDescriptionInput [id=" + this.getId() + ", label=" + label + ", Format=" + format + ", type="
 				+ type + ", required=" + required + "]";
 	}
 

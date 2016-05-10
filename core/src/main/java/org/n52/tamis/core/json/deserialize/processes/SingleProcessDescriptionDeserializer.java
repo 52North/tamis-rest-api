@@ -81,6 +81,16 @@ public class SingleProcessDescriptionDeserializer extends JsonDeserializer<Proce
 		 */
 		singleProcessDescription_short.setId(process.get("Identifier").asText());
 
+		/*
+		 * description
+		 */
+		if (process.has("Abstract"))
+			singleProcessDescription_short.setDescription(process.get("Abstract").asText());
+		else {
+			// just set the title/label as description
+			singleProcessDescription_short.setDescription(singleProcessDescription_short.getLabel());
+		}
+
 		// array of Input elements
 		JsonNode inputs = process.get("Input");
 
@@ -196,7 +206,7 @@ public class SingleProcessDescriptionDeserializer extends JsonDeserializer<Proce
 				 * TODO format might be an array! Thus, we have to distinguish.
 				 * In case of NO array, simply one "_mimeType" attribute is
 				 * present. In case of AN ARRAY, we iterate over each
-				 * format-entry and concat each mimeType sperated by " | "
+				 * format-entry and concat each mimeType seperated by " | "
 				 */
 				JsonNode format_complexData = complexData.get(FORMAT_IDENTIFIER);
 				extractAndAddInputFormat(input_short, format_complexData);
