@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.n52.tamis.core.javarepresentations.jobs.StatusDescription;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.core.urlconstants.URL_Constants_WpsProxy;
+import org.n52.tamis.rest.controller.ParameterValueStore;
 import org.n52.tamis.rest.forward.AbstractRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ public class StatusRequestForwarder extends AbstractRequestForwarder {
 	 * Delegates an incoming status description request to the WPS proxyand
 	 * creates an instance of {@link StatusDescription}
 	 * 
-	 * @param arguments
+	 * @param parameterValueStore
 	 *            must contain the URL variable
 	 *            {@link URL_Constants_TAMIS#SERVICE_ID_VARIABLE_NAME} to
 	 *            identify the WPS instance and
@@ -37,8 +38,9 @@ public class StatusRequestForwarder extends AbstractRequestForwarder {
 	 * @return an instance of {@link StatusDescription}
 	 */
 	@Override
-	public StatusDescription forwardRequestToWpsProxy(HttpServletRequest request, String... arguments) {
-		initializeRequestSpecificParameters(arguments);
+	public StatusDescription forwardRequestToWpsProxy(HttpServletRequest request,
+			ParameterValueStore parameterValueStore) {
+		initializeRequestSpecificParameters(parameterValueStore);
 
 		String statusDescription_url_wpsProxy = createTargetURL_WpsProxy(request);
 
@@ -51,7 +53,7 @@ public class StatusRequestForwarder extends AbstractRequestForwarder {
 				StatusDescription.class);
 
 		String outputs = statusDescriptionDoc.getOutputs();
-		
+
 		if (outputs != null) {
 			String outputURL_wpsProxy = outputs;
 			/*
@@ -102,24 +104,8 @@ public class StatusRequestForwarder extends AbstractRequestForwarder {
 	}
 
 	@Override
-	protected void initializeRequestSpecificParameters(String... arguments) {
-		logger.debug(
-				"The number of additional request arguments must be equal to 3 (path variable \"service_id\" and \"process_id\" and \"job_id\"). It is {}.",
-				arguments.length);
-
-		for (String argument : arguments) {
-			if (argument.equalsIgnoreCase(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME))
-				this.setServiceId(argument);
-			else if (argument.equalsIgnoreCase(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME))
-				this.setProcessId(argument);
-			else if (argument.equalsIgnoreCase(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME))
-				this.setJobId(argument);
-		}
-
-		if (this.getServiceId().equalsIgnoreCase(""))
-			logger.error(
-					"No URL variable named \"service_id\" was found in argument-array {}! Will use default service_id \"1\"",
-					arguments);
+	protected void initializeRequestSpecificParameters(ParameterValueStore parameterValueStore) {
+		super.initializeRequestSpecificParameters(parameterValueStore);
 	}
 
 }

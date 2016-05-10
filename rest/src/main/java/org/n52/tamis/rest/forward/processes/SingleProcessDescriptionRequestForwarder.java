@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.n52.tamis.core.javarepresentations.processes.ProcessDescription_singleProcess;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.core.urlconstants.URL_Constants_WpsProxy;
+import org.n52.tamis.rest.controller.ParameterValueStore;
 import org.n52.tamis.rest.forward.AbstractRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class SingleProcessDescriptionRequestForwarder extends AbstractRequestFor
 	 * proxy, receives the extended single process description document and
 	 * creates an instance of {@link ProcessDescription_singleProcess}
 	 * 
-	 * @param arguments
+	 * @param parameterValueStore
 	 *            must contain the URL variable
 	 *            {@link URL_Constants_TAMIS#SERVICE_ID_VARIABLE_NAME} to
 	 *            identify the WPS instance and
@@ -63,8 +64,8 @@ public class SingleProcessDescriptionRequestForwarder extends AbstractRequestFor
 	 * @return an instance of {@link ProcessDescription_singleProcess}
 	 */
 	@Override
-	public ProcessDescription_singleProcess forwardRequestToWpsProxy(HttpServletRequest request, String... arguments) {
-		initializeRequestSpecificParameters(arguments);
+	public ProcessDescription_singleProcess forwardRequestToWpsProxy(HttpServletRequest request, ParameterValueStore parameterValueStore) {
+		initializeRequestSpecificParameters(parameterValueStore);
 
 		String singleProcessDescription_url_wpsProxy = createTargetURL_WpsProxy(request);
 
@@ -73,7 +74,6 @@ public class SingleProcessDescriptionRequestForwarder extends AbstractRequestFor
 		// fetch extended singlePocessDescriptionDoc from WPS proxy and
 		// deserialize it into
 		// shortened singlePocessDescriptionDoc
-		// TODO does that really work this way?
 		ProcessDescription_singleProcess singeleProcessDescriptionDoc = singleProcessDescriptionTemplate
 				.getForObject(singleProcessDescription_url_wpsProxy, ProcessDescription_singleProcess.class);
 
@@ -105,22 +105,8 @@ public class SingleProcessDescriptionRequestForwarder extends AbstractRequestFor
 	}
 
 	@Override
-	protected void initializeRequestSpecificParameters(String... arguments) {
-		logger.debug(
-				"The number of additional request arguments must be equal to 2 (path variable \"service_id\" and \"process_id\"). It is {}.",
-				arguments.length);
-
-		for (String argument : arguments) {
-			if (argument.equalsIgnoreCase(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME))
-				this.setServiceId(argument);
-			else if (argument.equalsIgnoreCase(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME))
-				this.setProcessId(argument);
-		}
-
-		if (this.getServiceId().equalsIgnoreCase(""))
-			logger.error(
-					"No URL variable named \"service_id\" was found in argument-array {}! Will use default service_id \"1\"",
-					arguments);
+	protected void initializeRequestSpecificParameters(ParameterValueStore parameterValueStore) {
+		super.initializeRequestSpecificParameters(parameterValueStore);
 	}
 
 }

@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.n52.tamis.core.javarepresentations.capabilities.Capabilities_Tamis;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.rest.controller.AbstractRestController;
+import org.n52.tamis.rest.controller.ParameterValueStore;
 import org.n52.tamis.rest.forward.capabilities.CapabilitiesRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,9 @@ public class CapabilitiesController extends AbstractRestController {
 	@Autowired
 	CapabilitiesRequestForwarder capRequestForwarder;
 
+	@Autowired
+	ParameterValueStore parameterValueStore;
+
 	/**
 	 * 
 	 * Returns the shortened WPS capabilities document.
@@ -76,7 +80,10 @@ public class CapabilitiesController extends AbstractRestController {
 		 */
 		logger.info("Received capabilities request for service id \"{}\"!", serviceId);
 
-		Capabilities_Tamis capabilitiesDoc = capRequestForwarder.forwardRequestToWpsProxy(request, serviceId);
+		this.parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME, serviceId);
+
+		Capabilities_Tamis capabilitiesDoc = capRequestForwarder.forwardRequestToWpsProxy(request,
+				this.parameterValueStore);
 
 		// return to client; will be converted to JSON implicitly
 		return capabilitiesDoc;

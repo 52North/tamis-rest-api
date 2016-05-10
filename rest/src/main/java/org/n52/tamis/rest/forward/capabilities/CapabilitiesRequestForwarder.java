@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.n52.tamis.core.javarepresentations.capabilities.Capabilities_Tamis;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.core.urlconstants.URL_Constants_WpsProxy;
+import org.n52.tamis.rest.controller.ParameterValueStore;
 import org.n52.tamis.rest.forward.AbstractRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,15 +55,16 @@ public class CapabilitiesRequestForwarder extends AbstractRequestForwarder {
 	 * the extended capabilities document and creates an instance of
 	 * {@link Capabilities_Tamis}
 	 * 
-	 * @param arguments
+	 * @param parameterValueStore
 	 *            must contain the URL variable
 	 *            {@link URL_Constants_TAMIS#SERVICE_ID_VARIABLE_NAME} to
 	 *            identify the WPS instance
 	 * @return an instance of {@link Capabilities_Tamis}
 	 */
-	public final Capabilities_Tamis forwardRequestToWpsProxy(HttpServletRequest request, String... arguments) {
+	public final Capabilities_Tamis forwardRequestToWpsProxy(HttpServletRequest request,
+			ParameterValueStore parameterValueStore) {
 		// assure that the URL variable "serviceId" is existent
-		initializeRequestSpecificParameters(arguments);
+		initializeRequestSpecificParameters(parameterValueStore);
 
 		String capabilities_url_wpsProxy = createTargetURL_WpsProxy(request);
 
@@ -70,52 +72,21 @@ public class CapabilitiesRequestForwarder extends AbstractRequestForwarder {
 
 		// fetch extended capabilitiesDoc from WPS proxy and deserialize it into
 		// shortened capabilitiesDoc
-		// TODO does that really work this way?
 		Capabilities_Tamis capabilitiesDoc = capabilitiesTemplate.getForObject(capabilities_url_wpsProxy,
 				Capabilities_Tamis.class);
-
-		/*
-		 * 
-		 * working alternative:
-		 * 
-		 * String capabilitiesDoc =
-		 * capabilitiesTemplate.getForObject(capabilities_url_wpsProxy,
-		 * String.class);
-		 * 
-		 * ObjectMapper mapper = new ObjectMapper();
-		 * 
-		 * JsonFactory factory = mapper.getFactory();
-		 * 
-		 * JsonParser parser = factory.createParser(capDoc_string);
-		 * 
-		 * CapabilitiesDeserializer des = new CapabilitiesDeserializer();
-		 * 
-		 * Capabilities_Tamis test = des.deserialize(parser, null);
-		 */
+		
 		return capabilitiesDoc;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @param arguments
+	 * @param parameterValueStore
 	 *            must consist of exactly one parameter named "serviceId"
 	 */
 	@Override
-	protected void initializeRequestSpecificParameters(String... arguments) {
-		logger.debug(
-				"The number of additional request arguments must be equal to 1 (path variable \"service_id\"). It is {}.",
-				arguments.length);
-
-		for (String argument : arguments) {
-			if (argument.equalsIgnoreCase(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME))
-				this.setServiceId(argument);
-		}
-
-		if (this.getServiceId().equalsIgnoreCase(""))
-			logger.error(
-					"No URL variable named \"service_id\" was found in argument-array {}! Will use default service_id \"1\"",
-					arguments);
+	protected void initializeRequestSpecificParameters(ParameterValueStore parameterValueStore) {
+		super.initializeRequestSpecificParameters(parameterValueStore);
 	}
 
 	@Override

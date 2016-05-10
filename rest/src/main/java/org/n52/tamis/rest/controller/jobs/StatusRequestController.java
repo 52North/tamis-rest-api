@@ -5,7 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.n52.tamis.core.javarepresentations.jobs.StatusDescription;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.rest.controller.AbstractRestController;
-import org.n52.tamis.rest.controller.processes.SingleProcessDescriptionsController;
+import org.n52.tamis.rest.controller.ParameterValueStore;
+import org.n52.tamis.rest.controller.processes.SingleProcessDescriptionController;
 import org.n52.tamis.rest.forward.jobs.StatusRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +25,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = URL_Constants_TAMIS.STATUS, method = RequestMethod.GET, produces = { "application/json" })
 public class StatusRequestController extends AbstractRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(SingleProcessDescriptionsController.class);
+	private static final Logger logger = LoggerFactory.getLogger(SingleProcessDescriptionController.class);
 
 	@Autowired
 	StatusRequestForwarder statusRequestForwarder;
+
+	@Autowired
+	ParameterValueStore parameterValueStore;
 
 	/**
 	 * Returns the status description.
@@ -57,8 +61,12 @@ public class StatusRequestController extends AbstractRestController {
 		logger.info("Received status description request for service id \"{}\", process id \"{}\" and job id \"{}\"!",
 				serviceId, processId, jobId);
 
-		StatusDescription singleProcessDescription = statusRequestForwarder.forwardRequestToWpsProxy(request, serviceId,
-				processId, jobId);
+		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME, serviceId);
+		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME, processId);
+		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME, jobId);
+
+		StatusDescription singleProcessDescription = statusRequestForwarder.forwardRequestToWpsProxy(request,
+				parameterValueStore);
 
 		return singleProcessDescription;
 	}

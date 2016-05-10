@@ -29,6 +29,8 @@ package org.n52.tamis.rest.forward;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.n52.tamis.rest.controller.ParameterValueStore;
+
 /**
  * Generic interface to forward an incoming request to a WPS proxy.
  * 
@@ -44,11 +46,11 @@ public interface RequestForwarder {
 	 * 
 	 * @param request
 	 *            the original request
-	 * @param arguments
-	 *            class specific method arguments
+	 * @param parameterValueStore
+	 *            stores request specific parameter-value-pairs in a map.
 	 * @return an instance of the appropriate Java representation of return
 	 *         document.
 	 */
-	public Object forwardRequestToWpsProxy(HttpServletRequest request, String... arguments);
+	public Object forwardRequestToWpsProxy(HttpServletRequest request, ParameterValueStore parameterValueStore);
 
 }

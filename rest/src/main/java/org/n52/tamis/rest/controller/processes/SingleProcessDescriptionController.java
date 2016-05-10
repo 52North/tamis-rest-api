@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.n52.tamis.core.javarepresentations.processes.ProcessDescription_singleProcess;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.rest.controller.AbstractRestController;
+import org.n52.tamis.rest.controller.ParameterValueStore;
 import org.n52.tamis.rest.forward.processes.SingleProcessDescriptionRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,12 +51,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @RequestMapping(value = URL_Constants_TAMIS.PROCESS_DESCRIPTION_SINGLE, method = RequestMethod.GET, produces = {
 		"application/json" })
-public class SingleProcessDescriptionsController extends AbstractRestController {
+public class SingleProcessDescriptionController extends AbstractRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(SingleProcessDescriptionsController.class);
+	private static final Logger logger = LoggerFactory.getLogger(SingleProcessDescriptionController.class);
 
 	@Autowired
 	SingleProcessDescriptionRequestForwarder sProcessDescrRequestForwarder;
+
+	@Autowired
+	ParameterValueStore parameterValueStore;
 
 	/**
 	 * Returns the shortened single process description.
@@ -80,8 +84,11 @@ public class SingleProcessDescriptionsController extends AbstractRestController 
 		logger.info("Received single process description request for service id \"{}\" and process id \"{}\"!",
 				serviceId, processId);
 
+		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME, serviceId);
+		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME, processId);
+
 		ProcessDescription_singleProcess singleProcessDescription = sProcessDescrRequestForwarder
-				.forwardRequestToWpsProxy(request, serviceId, processId);
+				.forwardRequestToWpsProxy(request, parameterValueStore);
 
 		return singleProcessDescription;
 	}

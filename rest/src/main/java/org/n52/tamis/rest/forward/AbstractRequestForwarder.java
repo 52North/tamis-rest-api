@@ -29,10 +29,13 @@ package org.n52.tamis.rest.forward;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
+import org.n52.tamis.rest.controller.ParameterValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +57,7 @@ public abstract class AbstractRequestForwarder implements RequestForwarder {
 	private String serviceId = DEFAULT_SERVICE_ID;
 	private String processId;
 	private String jobId;
+	private String outputId;
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractRequestForwarder.class);
 
@@ -156,10 +160,58 @@ public abstract class AbstractRequestForwarder implements RequestForwarder {
 	 * Extracts request specific parameters from the arguments-array for
 	 * class-attribute instantiation
 	 * 
-	 * @param arguments
-	 *            contains request specific URL variables/parameters
+	 * @param parameterValueStore
+	 *            contains request specific URL variables/parameters in a map
 	 */
-	protected abstract void initializeRequestSpecificParameters(String... arguments);
+	protected void initializeRequestSpecificParameters(ParameterValueStore parameterValueStore) {
+
+		Map<String, String> parameterValuePairs = parameterValueStore.getParameterValuePairs();
+
+		logger.info("Parse request specific parameters/variables! The number of parameters/variables is {}",
+				parameterValuePairs.size());
+
+		/*
+		 * service id
+		 */
+		if (parameterValuePairs.containsKey(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME))
+			this.setServiceId(parameterValuePairs.get(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME));
+
+		/*
+		 * service id
+		 */
+		if (parameterValuePairs.containsKey(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME))
+			this.setServiceId(parameterValuePairs.get(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME));
+
+		if (this.getServiceId().equalsIgnoreCase("")) {
+			logger.error(
+					"No URL variable named \"service_id\" was found in argument-array {}! Will use default service_id \"1\"",
+					parameterValueStore);
+			this.setServiceId("1");
+		}
+
+		/*
+		 * process id
+		 */
+		if (parameterValuePairs.containsKey(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME))
+			this.setProcessId(parameterValuePairs.get(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME));
+
+		/*
+		 * job id
+		 */
+		if (parameterValuePairs.containsKey(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME))
+			this.setJobId(parameterValuePairs.get(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME));
+
+		/*
+		 * output id
+		 */
+		if (parameterValuePairs.containsKey(URL_Constants_TAMIS.OUTPUT_ID_VARIABLE_NAME))
+			this.setOutputId(parameterValuePairs.get(URL_Constants_TAMIS.OUTPUT_ID_VARIABLE_NAME));
+
+		logger.info(
+				"Following request specific parameters/variables have been initialized: \"service_id\" = {}, \"process_id\" = {}, \"job_id\" = {}, \"output_id\" = {}!",
+				this.serviceId, this.processId, this.jobId, this.outputId);
+
+	};
 
 	public String getServiceId() {
 		return serviceId;
@@ -183,6 +235,14 @@ public abstract class AbstractRequestForwarder implements RequestForwarder {
 
 	public void setJobId(String jobId) {
 		this.jobId = jobId;
+	}
+
+	public String getOutputId() {
+		return outputId;
+	}
+
+	public void setOutputId(String outputId) {
+		this.outputId = outputId;
 	}
 
 	public String getBaseURL_WpsProxy() {
