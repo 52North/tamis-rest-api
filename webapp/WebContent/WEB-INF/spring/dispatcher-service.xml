@@ -38,7 +38,9 @@
 	<bean class="org.n52.tamis.rest.forward.jobs.StatusRequestForwarder"/>
 	<bean class="org.n52.tamis.rest.forward.jobs.ResultRequestForwarder"/>
 	
+	<!-- other -->
 	<bean class="org.n52.tamis.rest.controller.ParameterValueStore" scope="prototype"/>
+	<bean class="org.n52.tamis.rest.forward.processes.execute.SosRequestConstructor"/>
 	
     <bean id="contentNegotiationManager"
           class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">

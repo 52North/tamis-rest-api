@@ -33,43 +33,19 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
-	<!--	<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-
-	 	<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-resources-plugin</artifactId>
-					<configuration>
-						<outputDirectory>${project.basedir}/target/classes/</outputDirectory>
-						<resources>
-							<resource>
-								<directory>src/main/webapp</directory>
-								<includes>
-									<include>**</include>
-								</includes>
-								<filtering>true</filtering>
-							</resource>
-						</resources>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	 -->	
+		<!-- <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-resources-plugin</artifactId> 
+			<executions> <execution> <phase>validate</phase> <goals> <goal>copy-resources</goal> 
+			</goals> </execution> </executions> </plugin> </plugins> <pluginManagement> 
+			<plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-resources-plugin</artifactId> 
+			<configuration> <outputDirectory>${project.basedir}/target/classes/</outputDirectory> 
+			<resources> <resource> <directory>src/main/webapp</directory> <includes> 
+			<include>**</include> </includes> <filtering>true</filtering> </resource> 
+			</resources> </configuration> </plugin> </plugins> </pluginManagement> -->
 	</build>
 </project>
