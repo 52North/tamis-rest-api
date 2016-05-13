@@ -16,15 +16,27 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize(using = SosTimeseriesInformationDeserializer.class)
 public class SosTimeseriesInformation {
 
-	private static final String FEATURE_OF_INTEREST_PARAMATER_NAME = "featureOfInterest";
+	public static final String SERVICE_PARAMATER_NAME = "service";
+	public static final String SERVICE_PARAMATER_VALUE = "SOS";
+	
+	public static final String VERSION_PARAMATER_NAME = "version";
+	public static final String VERSION_PARAMATER_VALUE = "2.0.0";
+	
+	public static final String REQUEST_PARAMATER_NAME = "request";
+	public static final String REQUEST_PARAMATER_VALUE = "GetObservation";
+	
+	public static final String RESPONSE_FORMAT_PARAMATER_NAME = "responseFormat";
+	public static final String RESPONSE_FORMAT_PARAMATER_VALUE = "http://www.opengis.net/om/2.0";
+	
+	public static final String FEATURE_OF_INTEREST_PARAMATER_NAME = "featureOfInterest";
 
-	private static final String OFFERING_ID_PARAMATER_NAME = "offering";
+	public static final String OFFERING_ID_PARAMATER_NAME = "offering";
 
-	private static final String PROCEDURE_PARAMATER_NAME = "procedure";
+	public static final String PROCEDURE_PARAMATER_NAME = "procedure";
 
-	private static final String TEMPORAL_FILTER_PARAMATER_NAME = "temporalFilter";
+	public static final String TEMPORAL_FILTER_PARAMATER_NAME = "temporalFilter";
 
-	private static final String OBSERVED_PROPERTY_PARAMATER_NAME = "observedProperty";
+	public static final String OBSERVED_PROPERTY_PARAMATER_NAME = "observedProperty";
 
 	private String featureOfInterest;
 
