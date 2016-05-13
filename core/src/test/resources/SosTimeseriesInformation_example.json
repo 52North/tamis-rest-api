@@ -1,0 +1,67 @@
+{
+  "id": "ts_c8ed5ddbb89c19b2e385de23eecbde98",
+  "label": "Wasserstand@List_Auf_Sylt_9570070",
+  "uom": "cm",
+  "station": {
+    "properties": {
+      "id": "sta_a4bff7499d440d9bb67ad73e048c5a47",
+      "label": "List_Auf_Sylt_9570070"
+    },
+    "geometry": {
+      "coordinates": [
+        8.440430928792344,
+        55.016536566762
+      ],
+      "type": "Point"
+    },
+    "type": "Feature"
+  },
+  "lastValue": {
+    "timestamp": 1379635200000,
+    "value": 532.7
+  },
+  "parameters": {
+    "service": {
+      "id": "srv_1a5bde0a6d702f193f7be463402ec12f",
+      "serviceUrl": "http://pegelonline.wsv.de/webservices/gis/gdi-sos"
+    },
+    "offering": {
+      "id": "off_c599e9b089385d08aa00b7c9c4c6f3ef",
+      "label": "WASSERSTAND_ROHDATEN"
+    },
+    "feature": {
+      "id": "foi_25e09ee3155ab0fbf3e4684ad2edffbf",
+      "label": "List_Auf_Sylt_9570070"
+    },
+    "procedure": {
+      "id": "pro_e878d48e49ebc2a156e2810470bae9a2",
+      "label": "Wasserstand-List_Auf_Sylt_9570070"
+    },
+    "phenomenon": {
+      "id": "phe_f60bcfb1f6ac3d37210b5d757a1bf48e",
+      "label": "Wasserstand"
+    },
+    "category": {
+      "id": "cat_f60bcfb1f6ac3d37210b5d757a1bf48e",
+      "label": "Wasserstand"
+    }
+  },
+  "refValues": [
+    {
+      "referenceValueId": "ref_2adf9285e96f72c441a6344e151eb630",
+      "label": "Pegelnullpunkt über NN",
+      "lastValue": {
+        "timestamp": 1379667208477,
+        "value": -5
+      }
+    },
+    {
+      "referenceValueId": "ref_c99577da99e17df8b93731886e35578a",
+      "label": "Niedrigstes Tideniedrigwasser",
+      "lastValue": {
+        "timestamp": 1379667208477,
+        "value": 242
+      }
+    }
+  ]
+}
