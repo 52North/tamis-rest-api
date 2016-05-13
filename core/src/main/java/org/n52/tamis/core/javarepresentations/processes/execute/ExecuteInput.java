@@ -25,39 +25,35 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.tamis.core.javarepresentations.execute;
+package org.n52.tamis.core.javarepresentations.processes.execute;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.n52.tamis.core.javarepresentations.AbstractInput;
 
 /**
- * This class is a Java representation of the HTTP POST input for a WPS execute
- * request.
+ * Specialization for HTTP POST input of WPS execute request received from the
+ * client.
  * 
  * @author Christian Danowski (contact: c.danowski@52north.org)
  *
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Execute_HttpPostInput {
+public class ExecuteInput extends AbstractInput {
 
-	private List<ExecuteInput> inputs;
+	private String value;
 
-	public Execute_HttpPostInput() {
+	public ExecuteInput() {
 	}
 
-	public List<ExecuteInput> getInputs() {
-		return inputs;
+	public String getValue() {
+		return this.value;
 	}
 
-	public void setInputs(List<ExecuteInput> inputs) {
-		this.inputs = inputs;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	@Override
 	public String toString() {
-		return "Execute_HttpPostInput [inputs=" + inputs + "]";
+		return "ExecuteInput [id=" + this.getId() + ", value=" + value + "]";
 	}
 
 }
