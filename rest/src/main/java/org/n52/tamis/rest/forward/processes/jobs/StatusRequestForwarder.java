@@ -3,7 +3,6 @@ package org.n52.tamis.rest.forward.processes.jobs;
 import javax.servlet.http.HttpServletRequest;
 
 import org.n52.tamis.core.javarepresentations.processes.jobs.StatusDescription;
-import org.n52.tamis.core.javarepresentations.processes.jobs.StatusDescription;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.core.urlconstants.URL_Constants_WpsProxy;
 import org.n52.tamis.rest.controller.ParameterValueStore;
@@ -49,38 +48,41 @@ public class StatusRequestForwarder extends AbstractRequestForwarder {
 
 		// fetch the status description from WPS proxy and
 		// deserialize it into TAMIS status decsription
-		// TODO does that really work this way?
 		StatusDescription statusDescriptionDoc = statusDescriptionTemplate.getForObject(statusDescription_url_wpsProxy,
 				StatusDescription.class);
 
 		String outputs = statusDescriptionDoc.getStatusInfo().getOutput();
 
 		if (outputs != null) {
-			String outputURL_wpsProxy = outputs;
 			/*
-			 * we want to insert tamis prefix and service id into the URL!
+			 * we want to replace the baseURL of the outputUrl field of the
+			 * statusDescription. From the WPS proxy, the returned outputUrl
+			 * field will point to a URL specific for the proxy. We need to
+			 * replace it with the right URL of this application (the base URL
+			 * will change).
 			 * 
 			 * outputURL_wpsProxy =
-			 * <baseURL>/processes/<process_id>/jobs/<job_id> outputURL_tamis =
-			 * <baseURL>tamis_prefix/<service_id>/processes/<process_id>/jobs/<
-			 * job_id>
-			 * 
-			 * Hereby, it is supposed that both instances of the WPS (this and
-			 * the proxy) have the same <baseUrl>
+			 * <baseURL_WpsProxy>/processes/<process_id>/jobs/<job_id>
+			 * outputURL_tamis =
+			 * <baseURL_Tamis>tamis_prefix/<service_id>/processes/<process_id>/
+			 * jobs/< job_id>
 			 */
-			String baseURL_wpsProxy = outputURL_wpsProxy.split(URL_Constants_WpsProxy.SLASH_PROCESSES)[0];
-			String target_baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-					+ request.getContextPath();
+			String tamis_baseUrl = constructTamisBaseUrl(request);
 
-			// TODO FIXME replace baseUrl of proxy instance with the baseUrl of
-			// this application!
-			String outputURL_tamis = target_baseUrl + "/" + URL_Constants_TAMIS.API_V1_BASE_PREFIX + "/"
+			String outputURL_tamis = tamis_baseUrl + "/" + URL_Constants_TAMIS.API_V1_BASE_PREFIX + "/"
 					+ URL_Constants_TAMIS.TAMIS_PREFIX + "/" + this.getServiceId() + URL_Constants_TAMIS.SLASH_PROCESSES
-					+ "/" + this.getProcessId() + URL_Constants_TAMIS.SLASH_JOBS + "/" + this.getJobId() + URL_Constants_TAMIS.SLASH_OUTPUTS;
+					+ "/" + this.getProcessId() + URL_Constants_TAMIS.SLASH_JOBS + "/" + this.getJobId()
+					+ URL_Constants_TAMIS.SLASH_OUTPUTS;
 			statusDescriptionDoc.getStatusInfo().setOutput(outputURL_tamis);
 		}
 
 		return statusDescriptionDoc;
+	}
+
+	private String constructTamisBaseUrl(HttpServletRequest request) {
+		String target_baseUrl = request.getScheme() + "://" + request.getServerName() + ":"
+				+ request.getServerPort() + request.getContextPath();
+		return target_baseUrl;
 	}
 
 	@Override
