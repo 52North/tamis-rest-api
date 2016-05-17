@@ -14,10 +14,6 @@ import org.n52.tamis.rest.forward.AbstractRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -90,7 +86,7 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 		 * depending on the request parameter "sync-execute" the call should be
 		 * realized asynchronously or synchronously.
 		 */
-		URI createdJobUrl = null;
+		URI createdJobUrl_wpsProxy = null;
 
 		if (syncExecute_parameter) {
 			// synchronous
@@ -103,7 +99,7 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 			 * resource (= the location header)
 			 * 
 			 */
-			createdJobUrl = synchronousExecuteTemplate.postForLocation(execute_url_wpsProxy, executeBody);
+			createdJobUrl_wpsProxy = synchronousExecuteTemplate.postForLocation(execute_url_wpsProxy, executeBody);
 		} else {
 
 			/*
@@ -114,25 +110,29 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 			 * distinguish it in my own implementation?
 			 */
 
-//			AsyncRestTemplate asyncExecuteTemplate = new AsyncRestTemplate();
-//
-//			/*
-//			 * execute the POST request asynchronously
-//			 * 
-//			 * the return value will be the location of the newly created
-//			 * resource (= the location header)
-//			 * 
-//			 */
-//			HttpHeaders headers = new HttpHeaders();
-//			HttpEntity<Execute_HttpPostBody> executeBodyEntity = new HttpEntity<Execute_HttpPostBody>(executeBody);
-//			ListenableFuture<URI> test = asyncExecuteTemplate.postForLocation(execute_url_wpsProxy, executeBodyEntity);
+			// AsyncRestTemplate asyncExecuteTemplate = new AsyncRestTemplate();
+			//
+			// /*
+			// * execute the POST request asynchronously
+			// *
+			// * the return value will be the location of the newly created
+			// * resource (= the location header)
+			// *
+			// */
+			// HttpHeaders headers = new HttpHeaders();
+			// HttpEntity<Execute_HttpPostBody> executeBodyEntity = new
+			// HttpEntity<Execute_HttpPostBody>(executeBody);
+			// ListenableFuture<URI> test =
+			// asyncExecuteTemplate.postForLocation(execute_url_wpsProxy,
+			// executeBodyEntity);
 
 			/*
-			 * TODO check if that implementation is correct or if AsyncRestTemplate must be used?
+			 * TODO check if that implementation is correct or if
+			 * AsyncRestTemplate must be used?
 			 */
 			RestTemplate executeTemplate = new RestTemplate();
-			
-			createdJobUrl = executeTemplate.postForLocation(execute_url_wpsProxy, executeBody);
+
+			createdJobUrl_wpsProxy = executeTemplate.postForLocation(execute_url_wpsProxy, executeBody);
 		}
 
 		// executeTemplate.exchange(execute_url_wpsProxy, HttpMethod.POST,
@@ -143,9 +143,24 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 		/*
 		 * from the result of the execution request against the WPS proxy,
 		 * extract the location header and return it.
+		 * 
+		 * TODO the location header points to an URL specific for the WPS proxy!
+		 * 
+		 * What we need is the URL pointing to THIS applications resource.
+		 * Hence, we must adapt the URL! --> Basically we have to extract the
+		 * job ID and append it to the standard URL path of THIS application.
+		 * 
+		 * createdJobUrl_wpsProxy looks like "<baseUrl-wpsProxy>/processes/{processId}/jobs/{jobId}"
 		 */
+		String jobId = createdJobUrl_wpsProxy.getPath().split(URL_Constants_WpsProxy.SLASH_JOBS + "/")[1];
+		
+		/*
+		 * executeRequestUri should look like: "<base-url-tamis>/services/{serviceId}/processes/{processId}"
+		 */
+		String executeRequestURI = request.getRequestURI();
+		executeRequestURI = executeRequestURI + jobId;
 
-		return createdJobUrl.getPath();
+		return executeRequestURI;
 	}
 
 	private String append_syncExecute_parameter(boolean sync_execute, String execute_url_wpsProxy) {

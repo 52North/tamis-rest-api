@@ -13,6 +13,8 @@ import org.n52.tamis.rest.forward.processes.execute.ExecuteRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author Christian Danowski (contact: c.danowski@52north.org)
  *
  */
-@RequestMapping(value = URL_Constants_TAMIS.PROCESSES, method = RequestMethod.POST, produces = { "application/json" })
+@RequestMapping(value = URL_Constants_TAMIS.EXECUTE, method = RequestMethod.POST, produces = { "application/json" })
 public class ExecuteProcessController extends AbstractRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SingleProcessDescriptionController.class);
@@ -46,8 +48,6 @@ public class ExecuteProcessController extends AbstractRestController {
 	@Autowired
 	ParameterValueStore parameterValueStore;
 
-	@Autowired
-	// ExecuteProcessRequestForwarder executeProcessRequestForwarder;
 
 	/**
 	 * Returns the shortened single process description.
@@ -64,7 +64,7 @@ public class ExecuteProcessController extends AbstractRestController {
 	 * @return the shortened single process description
 	 */
 	@RequestMapping("")
-	public HttpServletResponse executeProcess(@RequestBody Execute_HttpPostBody requestBody,
+	public ResponseEntity executeProcess(@RequestBody Execute_HttpPostBody requestBody,
 			@RequestParam(SYNC_EXECUTE_PARAMETER_NAME) boolean sync_execute,
 			@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId,
 			@PathVariable(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME) String processId, HttpServletRequest request,
@@ -98,10 +98,9 @@ public class ExecuteProcessController extends AbstractRestController {
 
 		String jobUrl = executeRequestForwarder.forwardRequestToWpsProxy(request, requestBody, parameterValueStore);
 
-		response.setStatus(HttpServletResponse.SC_CREATED);
 		response.setHeader("Location", jobUrl);
 
-		return response;
+		return new ResponseEntity(HttpStatus.CREATED);
 
 	}
 
