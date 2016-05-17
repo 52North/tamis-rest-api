@@ -1,13 +1,13 @@
-package org.n52.tamis.rest.controller.jobs;
+package org.n52.tamis.rest.controller.processes.jobs;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.n52.tamis.core.javarepresentations.jobs.StatusDescription;
+import org.n52.tamis.core.javarepresentations.processes.jobs.StatusDescription;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.rest.controller.AbstractRestController;
 import org.n52.tamis.rest.controller.ParameterValueStore;
 import org.n52.tamis.rest.controller.processes.SingleProcessDescriptionController;
-import org.n52.tamis.rest.forward.jobs.StatusRequestForwarder;
+import org.n52.tamis.rest.forward.processes.jobs.StatusRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,10 +65,10 @@ public class StatusRequestController extends AbstractRestController {
 		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME, processId);
 		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME, jobId);
 
-		StatusDescription singleProcessDescription = statusRequestForwarder.forwardRequestToWpsProxy(request,
+		StatusDescription singleStatusDescription = statusRequestForwarder.forwardRequestToWpsProxy(request,
 				null, parameterValueStore);
 
-		return singleProcessDescription;
+		return singleStatusDescription;
 	}
 
 }

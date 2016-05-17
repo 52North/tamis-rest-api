@@ -1,8 +1,9 @@
-package org.n52.tamis.rest.forward.jobs;
+package org.n52.tamis.rest.forward.processes.jobs;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.n52.tamis.core.javarepresentations.jobs.StatusDescription;
+import org.n52.tamis.core.javarepresentations.processes.jobs.StatusDescription;
+import org.n52.tamis.core.javarepresentations.processes.jobs.StatusDescription;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.core.urlconstants.URL_Constants_WpsProxy;
 import org.n52.tamis.rest.controller.ParameterValueStore;
@@ -52,7 +53,7 @@ public class StatusRequestForwarder extends AbstractRequestForwarder {
 		StatusDescription statusDescriptionDoc = statusDescriptionTemplate.getForObject(statusDescription_url_wpsProxy,
 				StatusDescription.class);
 
-		String outputs = statusDescriptionDoc.getOutputs();
+		String outputs = statusDescriptionDoc.getStatusInfo().getOutput();
 
 		if (outputs != null) {
 			String outputURL_wpsProxy = outputs;
@@ -67,11 +68,16 @@ public class StatusRequestForwarder extends AbstractRequestForwarder {
 			 * Hereby, it is supposed that both instances of the WPS (this and
 			 * the proxy) have the same <baseUrl>
 			 */
-			String baseURL = outputURL_wpsProxy.split(URL_Constants_WpsProxy.SLASH_PROCESSES)[0];
-			String outputURL_tamis = baseURL + URL_Constants_TAMIS.API_V1_BASE_PREFIX + "/"
+			String baseURL_wpsProxy = outputURL_wpsProxy.split(URL_Constants_WpsProxy.SLASH_PROCESSES)[0];
+			String target_baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+					+ request.getContextPath();
+
+			// TODO FIXME replace baseUrl of proxy instance with the baseUrl of
+			// this application!
+			String outputURL_tamis = target_baseUrl + "/" + URL_Constants_TAMIS.API_V1_BASE_PREFIX + "/"
 					+ URL_Constants_TAMIS.TAMIS_PREFIX + "/" + this.getServiceId() + URL_Constants_TAMIS.SLASH_PROCESSES
-					+ "/" + this.getProcessId() + URL_Constants_TAMIS.SLASH_JOBS + "/" + this.getJobId();
-			statusDescriptionDoc.setOutputs(outputURL_tamis);
+					+ "/" + this.getProcessId() + URL_Constants_TAMIS.SLASH_JOBS + "/" + this.getJobId() + URL_Constants_TAMIS.SLASH_OUTPUTS;
+			statusDescriptionDoc.getStatusInfo().setOutput(outputURL_tamis);
 		}
 
 		return statusDescriptionDoc;

@@ -1,0 +1,7 @@
+{
+  "StatusInfo": {
+    "JobID": "3c07a1be-1038-474c-a14b-1a693e20640c",
+    "Status": "Successful",
+    "Output": "http://geoprocessing.demo.52north.org:8080/RestfulWPSProxy/processes/org.n52.wps.server.algorithm.test.EchoProcess/jobs/3c07a1be-1038-474c-a14b-1a693e20640c/outputs"
+  }
+}
