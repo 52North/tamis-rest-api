@@ -27,6 +27,8 @@
  */
 package org.n52.tamis.rest.forward;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.n52.tamis.rest.controller.ParameterValueStore;
@@ -55,8 +57,9 @@ public interface RequestForwarder {
 	 *            stores request specific parameter-value-pairs in a map.
 	 * @return an instance of the appropriate Java representation of return
 	 *         document.
+	 * @throws IOException 
 	 */
 	public <T> Object forwardRequestToWpsProxy(HttpServletRequest request, T requestBody,
-			ParameterValueStore parameterValueStore);
+			ParameterValueStore parameterValueStore) throws IOException;
 
 }
