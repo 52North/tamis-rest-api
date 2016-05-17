@@ -24,7 +24,7 @@ public class StatusDescription_Test {
 //	private StatusDescriptionDeserializer statusDescrDeser = new StatusDescriptionDeserializer();
 
 	@Test
-	public void test() throws JsonParseException, IOException {
+	public void testStatusDescription() throws JsonParseException, IOException {
 		input = this.getClass().getResourceAsStream(STATUS_DESCRIPTION_EXAMPLE_JSON);
 		
 		StatusDescription statusDescription = new ObjectMapper().readValue(input, StatusDescription.class);
