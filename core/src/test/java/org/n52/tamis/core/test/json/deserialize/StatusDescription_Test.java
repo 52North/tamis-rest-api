@@ -17,7 +17,7 @@ public class StatusDescription_Test {
 	 * The constant service id is used, when a single WPS instance exists.
 	 */
 	private static final String SERVICE_ID_CONSTANT = "1";
-	private static final String STATUS_DESCRIPTION_EXAMPLE_JSON = "/statusDescription.json";
+	private static final String STATUS_DESCRIPTION_EXAMPLE_JSON = "/statusDescription_example.json";
 
 	private InputStream input = null;
 	
