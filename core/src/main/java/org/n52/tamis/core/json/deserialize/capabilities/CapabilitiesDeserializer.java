@@ -101,11 +101,10 @@ public class CapabilitiesDeserializer extends JsonDeserializer<Object> {
 		/*
 		 * url
 		 * 
-		 * url is static (with exception of the serviceId; however, for now the
-		 * serviceId is set to a static value of 1)! Thus just set the static
-		 * value TODO if serviceId becomes variable, change the code!
+		 * url is not set here! Insteadt URL will be set by
+		 * CapabilitiesForwarder, since there the baseURL can be extracted from
+		 * the HttpServletRequest object.
 		 */
-		capabilities_short.setUrl(URL_Constants_TAMIS.getCapabilitiesURL(SERVICE_ID_CONSTANT));
 
 		/*
 		 * e-mail contact
