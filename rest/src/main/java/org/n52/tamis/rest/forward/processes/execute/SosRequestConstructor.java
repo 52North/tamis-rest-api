@@ -51,13 +51,14 @@ public class SosRequestConstructor {
 			String inputValue = executeInput.getValue();
 
 			if (inputValue.contains("http")) {
-				logger.info(
-						"Found following input that is expected to be a SOS-request: \"{}\" has a REST-URL as value: \"{}\"",
+				logger.info("Found following input that is expected to be a SOS-request or other Web resource: \"{}\"",
 						inputValue);
 
 				/*
-				 * as possible input SOSrequests are expected. There are two
-				 * possibilities:
+				 * if the link points to a web resource, then it is not changed.
+				 * 
+				 * Only SOS requests must be considered as follows: in case of a
+				 * SOS request, two possibilities must be considered:
 				 * 
 				 * 1. a typical SOAP-SOS request of form
 				 * "<SOS-baseURL>?<KVP-binding>" where <KVP-binding> contains
@@ -74,18 +75,20 @@ public class SosRequestConstructor {
 
 				if (inputValue.contains("timeseries")) {
 					/*
-					 * this is case 2., a RESTful URL that has to be converted
+					 * this is case 2., a RESTful SOS URL that has to be
+					 * converted
 					 */
-					
+
 					replaceRestUrlWithSoapGetObservationRequest(executeInput, inputValue);
 				}
 
 				else {
 					/*
-					 * case 1: input is already a well-defined SOAP-SOS request.
-					 * Thus do nothing
+					 * case 1: input is already a well-defined SOAP-SOS request
+					 * or any other web resource. Thus do nothing
 					 */
-					logger.info("Following input SOS-request as SOAP GetObservation request has been detected: \"{}\"",
+					logger.info(
+							"Following URL to a web resource (which might be a SOS SOAP GetObservation request) has been detected: \"{}\"",
 							inputValue);
 				}
 
@@ -96,20 +99,17 @@ public class SosRequestConstructor {
 
 	private void replaceRestUrlWithSoapGetObservationRequest(ExecuteInput executeInput, String inputValue)
 			throws IOException {
-		logger.info(
-				"Following input SOS-request as RESTful URL has been detected: \"{}\"",
-				inputValue);
+		logger.info("Following input SOS-request as RESTful URL has been detected: \"{}\"", inputValue);
 		logger.debug(
 				"Trying to convert RESTful SOS URL \"{}\" to a valid SOS-SOAP-URL using typical Key-Value-Parameters!",
 				inputValue);
-		
+
 		/*
-		 * Now we have to extract SOS-baseURL and the timeSpan
-		 * parameter value.
+		 * Now we have to extract SOS-baseURL and the timeSpan parameter value.
 		 * 
 		 * An example URL might look like:
-		 * http://fluggs.wupperverband.de/sos2/api/v1/timeseries/
-		 * 461? timespan=PT12H/2013-08-06Z
+		 * http://fluggs.wupperverband.de/sos2/api/v1/timeseries/ 461?
+		 * timespan=PT12H/2013-08-06Z
 		 * 
 		 * with SOS base URL = http://fluggs.wupperverband.de/sos2
 		 * 
@@ -131,8 +131,7 @@ public class SosRequestConstructor {
 
 		sosRequest = appendKvpParameters(sosRequest, kvpForSosRequest);
 
-		logger.debug("Constructed the SOS GetObservationRequest \"{}\" for the input \"{}\"", sosRequest,
-				inputValue);
+		logger.debug("Constructed the SOS GetObservationRequest \"{}\" for the input \"{}\"", sosRequest, inputValue);
 
 		/*
 		 * now replace the REST-ful SOS URL with the KVP URL
