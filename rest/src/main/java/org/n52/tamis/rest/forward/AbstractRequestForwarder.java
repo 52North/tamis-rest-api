@@ -131,7 +131,7 @@ public abstract class AbstractRequestForwarder implements RequestForwarder {
 			targetURL = setUpTargetUrl_WithSameBaseUrl(contextURL);
 		}
 
-		logger.debug("Following url was constructed to request extended WPS document: {}", targetURL);
+		logger.info("Following url was constructed to request extended WPS document: {}", targetURL);
 
 		return targetURL;
 	};
