@@ -111,9 +111,4 @@ public class StatusRequestForwarder extends AbstractRequestForwarder {
 				+ URL_Constants_WpsProxy.SLASH_JOBS + "/" + this.getJobId();
 	}
 
-	@Override
-	protected void initializeRequestSpecificParameters(ParameterValueStore parameterValueStore) {
-		super.initializeRequestSpecificParameters(parameterValueStore);
-	}
-
 }
