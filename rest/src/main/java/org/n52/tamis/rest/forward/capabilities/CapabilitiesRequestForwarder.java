@@ -74,6 +74,15 @@ public class CapabilitiesRequestForwarder extends AbstractRequestForwarder {
 		// shortened capabilitiesDoc
 		Capabilities_Tamis capabilitiesDoc = capabilitiesTemplate.getForObject(capabilities_url_wpsProxy,
 				Capabilities_Tamis.class);
+		
+		/*
+		 * Override the URL of  capabilitiesDoc with the base URL of the tamis WPS proxy.
+		 * 
+		 * Retrieve the base URL from the HtteServletRequest object 
+		 */
+		String requestURL = request.getRequestURL().toString();
+		String wpsBaseUrl_tamisProxy = requestURL.split(URL_Constants_TAMIS.TAMIS_PREFIX)[0];
+		capabilitiesDoc.setUrl(wpsBaseUrl_tamisProxy);
 
 		return capabilitiesDoc;
 	}
