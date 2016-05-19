@@ -108,7 +108,7 @@ public class ProcessesDeserializer extends JsonDeserializer<Object> {
 			 */
 			String label = processSummary.get("title").asText();
 			processDescription.setLabel(label);
-			
+
 			/*
 			 * description: the textual description may be found in the
 			 * "abstract" element of the extended process Description. However,
@@ -123,9 +123,11 @@ public class ProcessesDeserializer extends JsonDeserializer<Object> {
 
 			/*
 			 * url
+			 * 
+			 * url is not set here! Insteadt URL will be set by
+			 * ProcessesForwarder, since there the baseURL can be extracted from
+			 * the HttpServletRequest object.
 			 */
-			String url = processSummary.get("url").asText();
-			processDescription.setUrl(url);
 
 			/*
 			 * add constructed process description

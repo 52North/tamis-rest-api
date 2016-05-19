@@ -27,8 +27,11 @@
  */
 package org.n52.tamis.rest.forward.processes;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.n52.tamis.core.javarepresentations.processes.ProcessDescription_forProcessList;
 import org.n52.tamis.core.javarepresentations.processes.Processes_Tamis;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.core.urlconstants.URL_Constants_WpsProxy;
@@ -75,7 +78,39 @@ public class ProcessesRequestForwarder extends AbstractRequestForwarder {
 		// shortened processesDoc
 		Processes_Tamis processesDoc = processesTemplate.getForObject(processes_url_wpsProxy, Processes_Tamis.class);
 
+		/*
+		 * set the URL.
+		 * 
+		 * construct it via the requestURL from HttpServletRequest object and
+		 * append the process identifier.
+		 */
+		setUrls(processesDoc, request.getRequestURL());
+
 		return processesDoc;
+	}
+
+	/**
+	 * 
+	 * @param processesDoc
+	 * @param requestURL
+	 *            the request URL ends on ".../processes"
+	 */
+	private void setUrls(Processes_Tamis processesDoc, StringBuffer requestURL) {
+
+		/*
+		 * set the URL.
+		 * 
+		 * construct it from the requestURL from HttpServletRequest object and
+		 * the process identifier.
+		 * 
+		 * the request URL ends on ".../processes", hence for each process we
+		 * have to append the process identifier.
+		 */
+
+		List<ProcessDescription_forProcessList> processes = processesDoc.getProcesses();
+		for (ProcessDescription_forProcessList processDescription : processes) {
+			processDescription.setUrl(requestURL + "/" + processDescription.getId());
+		}
 	}
 
 	@Override
