@@ -98,26 +98,6 @@ public class ProcessesDeserializer extends JsonDeserializer<Object> {
 			ProcessDescription_forProcessList processDescription = new ProcessDescription_forProcessList();
 
 			/*
-			 * description: the textual description may be found in the
-			 * "abstract" element of the extended process Description. However,
-			 * it might be missing!
-			 */
-			// empty description, in case "abstract" is missing
-			processDescription.setDescription("");
-
-			logger.debug("Inspect following JSON element \"ProcessSummaries\" for child element \"abstract\": {}",
-					processSummary);
-
-			JsonNode wps_abstract = processSummary.get("abstract");
-			if (wps_abstract != null) {
-				// "abstract" was not empty
-				logger.debug("Following JSON child element \"abstract\" found: {}", wps_abstract);
-
-				String description = wps_abstract.asText();
-				processDescription.setDescription(description);
-			}
-
-			/*
 			 * id
 			 */
 			String id = processSummary.get("identifier").asText();
@@ -128,9 +108,21 @@ public class ProcessesDeserializer extends JsonDeserializer<Object> {
 			 */
 			String label = processSummary.get("title").asText();
 			processDescription.setLabel(label);
+			
+			/*
+			 * description: the textual description may be found in the
+			 * "abstract" element of the extended process Description. However,
+			 * it might be missing!
+			 */
+			if (processSummary.has("abstract"))
+				processDescription.setDescription(processSummary.get("abstract").asText());
+			else {
+				// just set the title/label as description
+				processDescription.setDescription(processDescription.getLabel());
+			}
 
 			/*
-			 * utl
+			 * url
 			 */
 			String url = processSummary.get("url").asText();
 			processDescription.setUrl(url);
