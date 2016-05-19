@@ -22,6 +22,7 @@
     <bean class="org.n52.tamis.rest.controller.capabilities.CapabilitiesController" />
     <bean class="org.n52.tamis.rest.controller.processes.ProcessesController" />
     <bean class="org.n52.tamis.rest.controller.processes.SingleProcessDescriptionController" />
+    <bean class="org.n52.tamis.rest.controller.processes.ExecuteProcessController" />
     <bean class="org.n52.tamis.rest.controller.processes.jobs.ResultController" />
     <bean class="org.n52.tamis.rest.controller.processes.jobs.StatusRequestController" />
     <bean class="org.n52.tamis.rest.controller.processes.jobs.DeleteRequestController" />
@@ -36,6 +37,7 @@
 	<bean class="org.n52.tamis.rest.forward.capabilities.CapabilitiesRequestForwarder" name="capForwarder" />
 	<bean class="org.n52.tamis.rest.forward.processes.ProcessesRequestForwarder" name="processesForwarder" />
 	<bean class="org.n52.tamis.rest.forward.processes.SingleProcessDescriptionRequestForwarder"/>
+	<bean class="org.n52.tamis.rest.forward.processes.execute.ExecuteRequestForwarder" name="executeForwarder" />
 	<bean class="org.n52.tamis.rest.forward.processes.jobs.StatusRequestForwarder"/>
 	<bean class="org.n52.tamis.rest.forward.processes.jobs.ResultRequestForwarder"/>
 	<bean class="org.n52.tamis.rest.forward.processes.jobs.DeleteRequestForwarder"/>

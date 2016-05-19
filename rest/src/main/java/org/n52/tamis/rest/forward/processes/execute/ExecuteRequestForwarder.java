@@ -67,7 +67,7 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 		// body, but is needed
 		executeBody.setProcessId(this.getProcessId());
 
-		sosRequestConstructor.constructSosRequestsForInputs(executeBody);
+		sosRequestConstructor.constructSosGetObservationRequestsForInputs(executeBody);
 
 		String execute_url_wpsProxy = createTargetURL_WpsProxy(request);
 
@@ -155,12 +155,12 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 		String jobId = createdJobUrl_wpsProxy.getPath().split(URL_Constants_WpsProxy.SLASH_JOBS + "/")[1];
 		
 		/*
-		 * executeRequestUri should look like: "<base-url-tamis>/services/{serviceId}/processes/{processId}"
+		 * executeRequestUri should look like: "<base-url-tamis>/services/{serviceId}/processes/{processId}/jobs/{jobId}"
 		 */
-		String executeRequestURI = request.getRequestURI();
-		executeRequestURI = executeRequestURI + jobId;
+		String executeRequestURl = request.getRequestURL().toString();
+		executeRequestURl = executeRequestURl + URL_Constants_TAMIS.SLASH_JOBS + "/" + jobId;
 
-		return executeRequestURI;
+		return executeRequestURl;
 	}
 
 	private String append_syncExecute_parameter(boolean sync_execute, String execute_url_wpsProxy) {

@@ -65,7 +65,7 @@ public class ExecuteProcessController extends AbstractRestController {
 	 */
 	@RequestMapping("")
 	public ResponseEntity executeProcess(@RequestBody Execute_HttpPostBody requestBody,
-			@RequestParam(SYNC_EXECUTE_PARAMETER_NAME) boolean sync_execute,
+			@RequestParam(value = SYNC_EXECUTE_PARAMETER_NAME, required = false, defaultValue = "false") boolean sync_execute,
 			@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId,
 			@PathVariable(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME) String processId, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {

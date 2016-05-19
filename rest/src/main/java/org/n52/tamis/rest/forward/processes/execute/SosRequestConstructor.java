@@ -40,7 +40,7 @@ public class SosRequestConstructor {
 	 * @param executeBody
 	 * @throws IOException
 	 */
-	public void constructSosRequestsForInputs(Execute_HttpPostBody executeBody) throws IOException {
+	public void constructSosGetObservationRequestsForInputs(Execute_HttpPostBody executeBody) throws IOException {
 
 		logger.info(
 				"Inspecting the instance of Execute_HttpPostBody for any inputs whose value is a REST-URL that must be changed into a SOS KVP Get-Request.");
@@ -51,48 +51,93 @@ public class SosRequestConstructor {
 			String inputValue = executeInput.getValue();
 
 			if (inputValue.contains("http")) {
-				logger.debug("Found following input that has a REST-URL as value: \"{}\"", inputValue);
-
-				/*
-				 * Now we have to extract SOS-baseURL and the timeSpan parameter
-				 * value.
-				 * 
-				 * An example URL might look like:
-				 * http://fluggs.wupperverband.de/sos2/api/v1/timeseries/461?
-				 * timespan=PT12H/2013-08-06Z
-				 * 
-				 * with SOS base URL = http://fluggs.wupperverband.de/sos2
-				 * 
-				 * and timeSpan parameter = PT12H/2013-08-06Z
-				 */
-				String timespanParameterValue = extractTimespanParameter(inputValue);
-
-				String targetUrl_timeseriesApi = constructTimeSeriesTargetUrl(inputValue);
-
-				SosTimeseriesInformation sosInformation = fetchSosTimeseriesInformation(timespanParameterValue,
-						targetUrl_timeseriesApi);
-
-				/*
-				 * TODO
-				 * 
-				 * build SOS request and return it
-				 */
-
-				Map<String, String> kvpForSosRequest = createUrlParametersMap(sosInformation);
-				String sosRequest = sosInformation.getSosUrl() + "?";
-
-				sosRequest = appendKvpParameters(sosRequest, kvpForSosRequest);
-
-				logger.debug("Constructed the SOS GetObservationRequest \"{}\" for the input \"{}\"", sosRequest,
+				logger.info(
+						"Found following input that is expected to be a SOS-request: \"{}\" has a REST-URL as value: \"{}\"",
 						inputValue);
 
 				/*
-				 * now replace the REST-ful SOS URL with the KVP URL
+				 * as possible input SOSrequests are expected. There are two
+				 * possibilities:
+				 * 
+				 * 1. a typical SOAP-SOS request of form
+				 * "<SOS-baseURL>?<KVP-binding>" where <KVP-binding> contains
+				 * all necessary URL parameters like {service, observedProperty,
+				 * offering, etc.}. In this case this must not be changed at all
+				 * and can be used as valid input!
+				 * 
+				 * 2. a RESTful URL that points to a timeseries and contains a
+				 * temporalFilter. This one needs to be converted into a
+				 * SOAP-SOS-Request as defined by 1.
+				 * 
+				 * 
 				 */
-				executeInput.setValue(sosRequest);
+
+				if (inputValue.contains("timeseries")) {
+					/*
+					 * this is case 2., a RESTful URL that has to be converted
+					 */
+					
+					replaceRestUrlWithSoapGetObservationRequest(executeInput, inputValue);
+				}
+
+				else {
+					/*
+					 * case 1: input is already a well-defined SOAP-SOS request.
+					 * Thus do nothing
+					 */
+					logger.info("Following input SOS-request as SOAP GetObservation request has been detected: \"{}\"",
+							inputValue);
+				}
+
 			}
 		}
 
+	}
+
+	private void replaceRestUrlWithSoapGetObservationRequest(ExecuteInput executeInput, String inputValue)
+			throws IOException {
+		logger.info(
+				"Following input SOS-request as RESTful URL has been detected: \"{}\"",
+				inputValue);
+		logger.debug(
+				"Trying to convert RESTful SOS URL \"{}\" to a valid SOS-SOAP-URL using typical Key-Value-Parameters!",
+				inputValue);
+		
+		/*
+		 * Now we have to extract SOS-baseURL and the timeSpan
+		 * parameter value.
+		 * 
+		 * An example URL might look like:
+		 * http://fluggs.wupperverband.de/sos2/api/v1/timeseries/
+		 * 461? timespan=PT12H/2013-08-06Z
+		 * 
+		 * with SOS base URL = http://fluggs.wupperverband.de/sos2
+		 * 
+		 * and timeSpan parameter = PT12H/2013-08-06Z
+		 */
+		String timespanParameterValue = extractTimespanParameter(inputValue);
+
+		String targetUrl_timeseriesApi = constructTimeSeriesTargetUrl(inputValue);
+
+		SosTimeseriesInformation sosInformation = fetchSosTimeseriesInformation(timespanParameterValue,
+				targetUrl_timeseriesApi);
+
+		/*
+		 * build SOS request
+		 */
+
+		Map<String, String> kvpForSosRequest = createUrlParametersMap(sosInformation);
+		String sosRequest = sosInformation.getSosUrl() + "?";
+
+		sosRequest = appendKvpParameters(sosRequest, kvpForSosRequest);
+
+		logger.debug("Constructed the SOS GetObservationRequest \"{}\" for the input \"{}\"", sosRequest,
+				inputValue);
+
+		/*
+		 * now replace the REST-ful SOS URL with the KVP URL
+		 */
+		executeInput.setValue(sosRequest);
 	}
 
 	private String appendKvpParameters(String sosRequest, Map<String, String> kvpForSosRequest) {
