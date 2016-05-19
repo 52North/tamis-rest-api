@@ -137,6 +137,8 @@ public class ExtendedExecuteHttpPostBodySerializer extends JsonSerializer<Execut
 		jsonGenerator.writeEndObject();
 
 		jsonGenerator.writeEndObject();
+		
+		logger.info("Serialization of execute HTTP POST input body ended.");
 	}
 
 }
