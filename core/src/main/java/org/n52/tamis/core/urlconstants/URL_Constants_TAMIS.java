@@ -58,7 +58,7 @@ public class URL_Constants_TAMIS extends URL_Constants_WpsProxy {
 	 */
 
 	public static final String SERVICE_ID_VARIABLE_NAME = "service_id";
-	public static final String SERVICE_ID_VARIABLE_NAME_WITH_BRACES = "{" + SERVICE_ID_VARIABLE_NAME + "}";
+	public static final String SERVICE_ID_VARIABLE_NAME_WITH_BRACES = "{" + SERVICE_ID_VARIABLE_NAME + ":.+}";
 
 	public static final String PROCESS_ID_VARIABLE_NAME = "process_id";
 	/*
@@ -76,10 +76,10 @@ public class URL_Constants_TAMIS extends URL_Constants_WpsProxy {
 	public static final String PROCESS_ID_VARIABLE_NAME_WITH_BRACES = "{" + PROCESS_ID_VARIABLE_NAME + ":.+}";
 
 	public static final String JOB_ID_VARIABLE_NAME = "job_id";
-	public static final String JOB_ID_VARIABLE_NAME_WITH_BRACES = "{" + JOB_ID_VARIABLE_NAME + "}";
+	public static final String JOB_ID_VARIABLE_NAME_WITH_BRACES = "{" + JOB_ID_VARIABLE_NAME + ":.+}";
 
 	public static final String OUTPUT_ID_VARIABLE_NAME = "output_id";
-	public static final String OUTPUT_ID_VARIABLE_NAME_WITH_BRACES = "{" + OUTPUT_ID_VARIABLE_NAME + "}";
+	public static final String OUTPUT_ID_VARIABLE_NAME_WITH_BRACES = "{" + OUTPUT_ID_VARIABLE_NAME + ":.+}";
 
 	public static final String SYNC_EXECUTE_TRUE = "?sync-execute=true";
 
