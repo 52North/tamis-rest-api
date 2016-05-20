@@ -99,10 +99,7 @@ public class ExtendedExecuteHttpPostBodySerializer extends JsonSerializer<Execut
         "_service": "WPS",
         "_version": "2.0.0"}
 }
-
 		 */
-
-//		ObjectMapper mapper = new ObjectMapper();
 		
 		jsonGenerator.writeStartObject();
 

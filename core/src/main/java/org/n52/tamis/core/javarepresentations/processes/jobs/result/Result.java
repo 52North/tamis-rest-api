@@ -16,8 +16,8 @@ public class Result {
 	private String jobId;
 	
 	@JsonProperty("Output")
-	private List<ResultOutput> outputs; //TODO vllt als Array? Output wird vllt nicht richtig übermittelt!!!
-
+	private List<ResultOutput> outputs; 
+	
 	public String getJobId() {
 		return jobId;
 	}

@@ -18,13 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Class to delegate an execute request to the WPS proxy instance.
@@ -44,6 +39,9 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 	 * <br/>
 	 * Delegates an incoming execute request to the WPS proxy.
 	 * 
+	 * Has two possible return values depending on the type of execution
+	 * (synchronous or asynchronous)! See return description.
+	 * 
 	 * @param parameterValueStore
 	 *            must contain the URL variable
 	 *            {@link URL_Constants_TAMIS#SERVICE_ID_VARIABLE_NAME} to
@@ -53,11 +51,14 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 	 * 
 	 * @param requestBody
 	 *            must be an instance of {@link Execute_HttpPostBody}
-	 * @return a String value representing the URL ob the created job instance.
+	 * @return either a String value representing the location header to the
+	 *         created job instance (in case of asynchronous execution)
+	 *         <b>OR</b> an instance of {@link ResultDocument} (in case of
+	 *         synchronous execution).
 	 * @throws IOException
 	 */
 	@Override
-	public String forwardRequestToWpsProxy(HttpServletRequest request, Object requestBody,
+	public Object forwardRequestToWpsProxy(HttpServletRequest request, Object requestBody,
 			ParameterValueStore parameterValueStore) throws IOException {
 		initializeRequestSpecificParameters(parameterValueStore);
 
@@ -104,9 +105,6 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 		HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        
-        String bodyString = new ObjectMapper().writeValueAsString(executeBody);
-		System.out.println(bodyString);
 
 		if (syncExecute_parameter) {
 			// synchronous
@@ -115,99 +113,63 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 			/*
 			 * execute the POST request synchronously
 			 * 
-			 * the return value will be the location of the newly created
-			 * resource (= the location header)
+			 * the return value will be a result document of the newly created
+			 * resource. Thus, we have to extract the jobId from it to manually
+			 * build the location header)
 			 * 
-			 */
-//			createdJobUri_wpsProxy = synchronousExecuteTemplate.postForLocation(execute_url_wpsProxy, executeBody);			
+			 */		
 			
 	        HttpEntity requestEntity = new HttpEntity(executeBody, headers);
 	        
 			ResultDocument resultDocument = synchronousExecuteTemplate.postForObject(execute_url_wpsProxy, requestEntity, ResultDocument.class);
-			String jobId = resultDocument.getResult().getJobId();
+
+			/*
+			 * the WPS is not conceptualized to offer a StatusRequest against a
+			 * job that has been executed synchronously. Hence, any jobID-URL
+			 * pointing to a synchronous job will fail (and result in a Bad
+			 * Request error or syntax error)
+			 * 
+			 * Hence, we will simply return the ResultDocument!
+			 */
 			
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
-			builder.path(URL_Constants_TAMIS.SLASH_JOBS + "/" + jobId);
-			
-			String locationHeader = builder.build().encode().toUriString();
-			
-//			String locationHeader = request.getRequestURL().toString() + URL_Constants_TAMIS.SLASH_JOBS + "/" + jobId;
-			return locationHeader;
+			return resultDocument;
 		} else {
 
 			/*
-			 * TODO FIXME how to deal with asynchronous request?
-			 * 
 			 * Proceed similar to synchronous, since I just call the WPS proxy
-			 * with different sync-execute parameter; or do I have to
-			 * distinguish it in my own implementation?
+			 * with different sync-execute parameter;
+			 * 
+			 * In opposite to synchronous call, will receive and return the
+			 * location header of the newly created job instance
 			 */
 
-			// AsyncRestTemplate asyncExecuteTemplate = new AsyncRestTemplate();
-			//
-			// /*
-			// * execute the POST request asynchronously
-			// *
-			// * the return value will be the location of the newly created
-			// * resource (= the location header)
-			// *
-			// */
-			// HttpHeaders headers = new HttpHeaders();
-			// HttpEntity<Execute_HttpPostBody> executeBodyEntity = new
-			// HttpEntity<Execute_HttpPostBody>(executeBody);
-			// ListenableFuture<URI> test =
-			// asyncExecuteTemplate.postForLocation(execute_url_wpsProxy,
-			// executeBodyEntity);
-
-			/*
-			 * TODO check if that implementation is correct or if
-			 * AsyncRestTemplate must be used?
-			 */
 			RestTemplate asynchronousExecuteTemplate = new RestTemplate();
-//
-//			HttpEntity requestEntity = new HttpEntity(executeBody, headers);
-//			
-//			String bodyAsString = new ObjectMapper().writeValueAsString(executeBody);
-//	        System.out.println(bodyAsString);
-//			
-////			ResponseEntity<URI> response = asynchronousExecuteTemplate.postForObject(execute_url_wpsProxy, requestEntity, ResponseEntity.class);
-//			
-//			ResponseEntity response = asynchronousExecuteTemplate.exchange(execute_url_wpsProxy, HttpMethod.POST, requestEntity, ResponseEntity.class);
-//			
-//			createdJobUri_wpsProxy = (URI) response.getHeaders().getLocation();
-//			
-//			System.out.println();
+
 			createdJobUri_wpsProxy = asynchronousExecuteTemplate.postForLocation(execute_url_wpsProxy, executeBody);
 
+			/*
+			 * from the result of the execution request against the WPS proxy,
+			 * extract the location header and return it.
+			 * 
+			 * the location header points to an URL specific for the WPS proxy!
+			 * 
+			 * What we need is the URL pointing to THIS applications resource.
+			 * Hence, we must adapt the URL! --> Basically we have to extract the
+			 * job ID and append it to the standard URL path of THIS application.
+			 * 
+			 * createdJobUrl_wpsProxy looks like "<baseUrl-wpsProxy>/processes/{processId}/jobs/{jobId}"
+			 */
+			String jobId = createdJobUri_wpsProxy.getPath().split(URL_Constants_WpsProxy.SLASH_JOBS + "/")[1];
+			
+			/*
+			 * target job URL should look like: "<base-url-tamis>/services/{serviceId}/processes/{processId}/jobs/{jobId}"
+			 */
+			
+			String createdJobUrl = request.getRequestURL().toString();
+			createdJobUrl = createdJobUrl + URL_Constants_TAMIS.SLASH_JOBS + "/" + jobId;
+
+			return createdJobUrl;
 		}
-
-		// executeTemplate.exchange(execute_url_wpsProxy, HttpMethod.POST,
-		// executeBody, null, null);
-		// executeTemplate.execute(execute_url_wpsProxy, HttpMethod.POST, null,
-		// null);
-
-		/*
-		 * from the result of the execution request against the WPS proxy,
-		 * extract the location header and return it.
-		 * 
-		 * TODO the location header points to an URL specific for the WPS proxy!
-		 * 
-		 * What we need is the URL pointing to THIS applications resource.
-		 * Hence, we must adapt the URL! --> Basically we have to extract the
-		 * job ID and append it to the standard URL path of THIS application.
-		 * 
-		 * createdJobUrl_wpsProxy looks like "<baseUrl-wpsProxy>/processes/{processId}/jobs/{jobId}"
-		 */
-		String jobId = createdJobUri_wpsProxy.getPath().split(URL_Constants_WpsProxy.SLASH_JOBS + "/")[1];
-		
-		/*
-		 * executeRequestUri should look like: "<base-url-tamis>/services/{serviceId}/processes/{processId}/jobs/{jobId}"
-		 */
-		
-		String createdJobUrl = request.getRequestURL().toString();
-		createdJobUrl = createdJobUrl + URL_Constants_TAMIS.SLASH_JOBS + "/" + jobId;
-
-		return createdJobUrl;
 	}
 
 	private String append_syncExecute_parameter(boolean sync_execute, String execute_url_wpsProxy) {

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.tamis.core.javarepresentations.processes.execute.Execute_HttpPostBody;
+import org.n52.tamis.core.javarepresentations.processes.jobs.result.ResultDocument;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.rest.controller.AbstractRestController;
 import org.n52.tamis.rest.controller.ParameterValueStore;
@@ -36,11 +37,6 @@ public class ExecuteProcessController extends AbstractRestController {
 	public static final String SYNC_EXECUTE_PARAMETER_NAME = "sync-execute";
 	// private static final String SYNC_EXECUTE_PARAMETER_TRUE = "true";
 	// private static final String SYNC_EXECUTE_PARAMETER_FALSE = "false";
-
-	/*
-	 * default value is false!
-	 */
-	private boolean syncExecute = false;
 
 	@Autowired
 	ExecuteRequestForwarder executeRequestForwarder;
@@ -84,7 +80,6 @@ public class ExecuteProcessController extends AbstractRestController {
 		 * manually, which is afterwards guaranteed to be present.
 		 */
 		if (sync_execute) {
-			this.syncExecute = sync_execute;
 			request.setAttribute(SYNC_EXECUTE_PARAMETER_NAME, true);
 		} else {
 			request.setAttribute(SYNC_EXECUTE_PARAMETER_NAME, false);
@@ -96,11 +91,42 @@ public class ExecuteProcessController extends AbstractRestController {
 		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME, serviceId);
 		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME, processId);
 
-		String jobUrl = executeRequestForwarder.forwardRequestToWpsProxy(request, requestBody, parameterValueStore);
+		/*
+		 * execute response may either be a String (= the location header of an
+		 * asynchronously executed job) or an instance of ResultDocument (in
+		 * case of synchronous job execution)
+		 * 
+		 * Hence, we have to consider both cases!
+		 */
+		Object executeResponse = executeRequestForwarder.forwardRequestToWpsProxy(request, requestBody, parameterValueStore);
 
-		response.setHeader("Location", jobUrl);
+		if(executeResponse instanceof String){
+			/* 
+			 * response of asynchronous job execution. 
+			 * 
+			 * Thus set location header
+			 */
+			String locationHeaer = (String) executeResponse;
+			response.setHeader("Location", locationHeaer);
 
-		return new ResponseEntity(HttpStatus.CREATED);
+			return new ResponseEntity(HttpStatus.CREATED);
+		}
+		else if (executeResponse instanceof ResultDocument){
+			/*
+			 * response of synchronous job execution.
+			 * 
+			 * simply return the resultDocument.
+			 */
+			ResultDocument resultDoc = (ResultDocument) executeResponse;
+			
+			return ResponseEntity.ok(resultDoc);
+		}
+		else{
+			logger.error("The response of the execute request is of unexpected type. Either String (as location header from synchonous job execution) or ResultDocument (for asynchronous job execution) were expected. Response is of type {}!", executeResponse.getClass());
+			
+			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
 
 	}
 
