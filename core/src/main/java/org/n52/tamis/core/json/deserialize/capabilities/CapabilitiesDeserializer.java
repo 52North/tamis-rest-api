@@ -112,8 +112,8 @@ public class CapabilitiesDeserializer extends JsonDeserializer<Object> {
 		JsonNode serviceContact = capabilitiesNode.get("ServiceProvider").get("ServiceContact");
 		JsonNode contactInfo = serviceContact.get("ContactInfo");
 
-		if (contactInfo.has("Adress")) {
-			JsonNode address = contactInfo.get("Adress");
+		if (contactInfo.has("Address")) {
+			JsonNode address = contactInfo.get("Address");
 
 			if (address.has("ElectronicMailAddress")) {
 				String mailAdress = address.get("ElectronicMailAddress").asText();
