@@ -57,7 +57,7 @@ public class Execute_HttpPostBody {
 	private String processId;
 	
 	@JsonIgnore
-	private String version = "1.0.0" ;
+	private String version = "2.0.0" ;
 
 	public Execute_HttpPostBody() {
 	}

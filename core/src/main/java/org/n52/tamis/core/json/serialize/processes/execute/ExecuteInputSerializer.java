@@ -57,107 +57,110 @@ public class ExecuteInputSerializer extends JsonSerializer<ExecuteInput> {
 			throws IOException, JsonProcessingException {
 
 		logger.info("Start serialization of input \"{}\"", input_simple);
-		
+
 		String inputValue = input_simple.getValue();
-		String inputId = input_simple.getId();
-		
-		if(inputValue.contains("http")){
-			/*
-			 * write the input as WPS "Reference" element
-			 * 
-			 * expected structure looks like:
-			 * 
-			 * "Reference": {
-                            "_href": "http://fluggs.wupperverband.de/sos2/service?service=SOS&request=GetObservation&version=2.0.0&offering=Zeitreihen_2m_Tiefe&observedProperty=Grundwasserstand&responseFormat=http%3A//www.opengis.net/om/2.0",
-                            "_mimeType": "application/om+xml; version=2.0",
-                            "_schema": "http://schemas.opengis.net/om/2.0/observation.xsd"
-                        },
-                        "_id": "gw1"
-                    }
 
-			 */
-			logger.debug("detected \"http\" inside value of the input. Thus will be serialized as WPS \"Reference\".");
-		
-			jsonGenerator.writeStartObject();
-			
-			jsonGenerator.writeObjectFieldStart("Reference");
-			
-//			jsonGenerator.writeStartObject();
-			
-			jsonGenerator.writeStringField("_href", inputValue);
-			
-			/*
-			 * parameters "_mimeType" and "_schema" can be set to standard values, since in TAMIS context any Reference input will point to a SOS O&M document.
-			 */
-			jsonGenerator.writeStringField("_mimeType", "application/om+xml; version=2.0");
-			jsonGenerator.writeStringField("_schema", "http://schemas.opengis.net/om/2.0/observation.xsd");
-			
-			jsonGenerator.writeEndObject();
-			
-			jsonGenerator.writeStringField("_id", inputId);
-			
-			jsonGenerator.writeEndObject();
+		/*
+		 * usually, any Web links should be mapped to a WPS "Reference" element.
+		 * But if the URL is a SOS (possibly even timeseries REST) URL, then the
+		 * WPS expects it as Data!!!
+		 * 
+		 * so: 1. if url contains "timeseries" then map it to Data.
+		 * 
+		 * 2. else write the input as WPS "Reference" element
+		 */
+		if (inputValue.contains("http")) {
+
+			logger.debug("detected \"http\" inside value of the input.");
+
+			if (inputValue.contains("timeseries") || inputValue.contains("SOS") || inputValue.contains("sos")) {
+				/*
+				 * although this is a Web link, we will serialize it as "Data",
+				 * since it is a SOS URL, which is expected as "Data" by the WPS
+				 */
+				logger.info("SOS-URL detected: \"{}\"", inputValue);
+				writeAsData(jsonGenerator, input_simple);
+			} else
+				writeAsReference(jsonGenerator, input_simple);
+		} else {
+			writeAsData(jsonGenerator, input_simple);
 		}
-		else{
-			/*
-			 * write the input as WPS "Data" element
-			 * 
-			 * expected structure looks like:
-			 * 
-			 * {
-                "Data": {
-                    "_mimeType": "text/xml",
-                    "_schema": "http://schemas.opengis.net/gml/3.2.1/base/feature.xsd",
-                    "__text": "<wfs:FeatureCollection xmlns:testbed11="http://opengeospatial.org"
-				xmlns:wfs="http://www.opengis.net/wfs" xmlns:gml="http://www.opengis.net/gml"
-				xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows"
-				xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				xmlns:wml2="http://www.opengis.net/waterml/2.0" xmlns:sf="http://www.opengis.net/sampling/2.0"
-				xmlns:sams="http://www.opengis.net/samplingSpatial/2.0"
-				numberOfFeatures="1" timeStamp="2016-02-15T16:24:55.640Z"
-				xsi:schemaLocation="http://www.opengis.net/wfs http://geoprocessing.demo.52north.org:8080/geoserver/schemas/wfs/1.1.0/wfs.xsd">
-				<gml:featureMembers>
-					<wml2:MonitoringPoint gml:id="xyz.1">
-						<gml:identifier codeSpace="http://www.opengis.net/def/nil/OGC/0/unknown">xyz</gml:identifier>
-						<gml:name codeSpace="http://www.opengis.net/def/nil/OGC/0/unknown">xyz</gml:name>
-						<sf:sampledFeature xlink:href="urn:ogc:def:nil:OGC:unknown" />
-						<sams:shape>
-							<ns:Point xmlns:ns="http://www.opengis.net/gml/3.2"
-								ns:id="point_xyz">
-								<ns:pos srsName="http://www.opengis.net/def/crs/EPSG/0/31466">5668202.8356 2595842.8958</ns:pos>
-							</ns:Point>
-						</sams:shape>
-					</wml2:MonitoringPoint>
-				</gml:featureMembers>
-			</wfs:FeatureCollection>"
-                },
-                "_id": "target-variable-point"
-            }
 
-
-			 */
-			logger.debug("\"http\" NOT detected inside value of the input. Thus will be serialized as WPS \"Data\".");
-		
-			jsonGenerator.writeStartObject();
-			
-			jsonGenerator.writeObjectFieldStart("Data");
-			
-			jsonGenerator.writeStringField("_text", inputValue);
-			
-			/*
-			 * TODO parameters "_mimeType" and "_schema"?
-			 */
-//			jsonGenerator.writeStringField("_mimeType", "application/om+xml; version=2.0");
-//			jsonGenerator.writeStringField("_schema", "http://schemas.opengis.net/om/2.0/observation.xsd");
-			
-			jsonGenerator.writeEndObject();
-			
-			jsonGenerator.writeStringField("_id", inputId);
-			
-			jsonGenerator.writeEndObject();
-		}
-			
 		logger.info("serialization of input ended.");
+	}
+
+	private void writeAsData(JsonGenerator jsonGenerator, ExecuteInput input) throws IOException {
+		/*
+		 * write the input as WPS "Data" element
+		 * 
+		 * expected structure looks like:
+		 * 
+		 * { "Data": { "_mimeType": "text/xml", "_schema":
+		 * "http://schemas.opengis.net/gml/3.2.1/base/feature.xsd",
+		 * "__text": "value" }, 
+		 * "_id": "target-variable-point" 
+		 * }
+		 * 
+		 * 
+		 */
+		logger.info("Input \"{}\" is serialized as WPS \"Data\".", input);
+
+		jsonGenerator.writeStartObject();
+
+		jsonGenerator.writeObjectFieldStart("Data");
+
+		jsonGenerator.writeStringField("_text", input.getValue());
+
+		/*
+		 * TODO parameters "_mimeType" and "_schema"?
+		 */
+		// jsonGenerator.writeStringField("_mimeType", "application/om+xml;
+		// version=2.0");
+		// jsonGenerator.writeStringField("_schema",
+		// "http://schemas.opengis.net/om/2.0/observation.xsd");
+
+		jsonGenerator.writeEndObject();
+
+		jsonGenerator.writeStringField("_id", input.getId());
+
+		jsonGenerator.writeEndObject();
+	}
+
+	private void writeAsReference(JsonGenerator jsonGenerator, ExecuteInput input) throws IOException {
+		/*
+		 *  expected structure looks like:
+		* 
+			 * "Reference": { "_href":
+			 * "http://fluggs.wupperverband.de/sos2/service?service=SOS&request=GetObservation&version=2.0.0&offering=Zeitreihen_2m_Tiefe&observedProperty=Grundwasserstand&responseFormat=http%3A//www.opengis.net/om/2.0",
+			 * "_mimeType": "application/om+xml; version=2.0", "_schema":
+			 * "http://schemas.opengis.net/om/2.0/observation.xsd" }, "_id":
+			 * "gw1" }
+			 * 
+		 */
+		
+		logger.info("Input \"{}\" is serialized as WPS \"Reference\".", input);
+		
+		jsonGenerator.writeStartObject();
+
+		jsonGenerator.writeObjectFieldStart("Reference");
+
+		// jsonGenerator.writeStartObject();
+
+		jsonGenerator.writeStringField("_href", input.getValue());
+
+		/*
+		 * parameters "_mimeType" and "_schema" can be set to SOS values, if
+		 * the link is a SOS request!
+		 * 
+		 * Else we do not know anything about the mimeType. Thus we cannot
+		 * set it.
+		 */
+
+		jsonGenerator.writeEndObject();
+
+		jsonGenerator.writeStringField("_id", input.getId());
+
+		jsonGenerator.writeEndObject();
 	}
 
 }

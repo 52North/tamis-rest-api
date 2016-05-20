@@ -3,6 +3,7 @@ package org.n52.tamis.core.javarepresentations.processes.execute;
 import org.n52.tamis.core.javarepresentations.AbstractOutput;
 import org.n52.tamis.core.json.serialize.processes.execute.ExecuteOutputSerializer;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
@@ -17,12 +18,22 @@ public class ExecuteOutput extends AbstractOutput {
 
 	private String type;
 
+	private String transmission = "reference";
+
 	public String getType() {
 		return type;
 	}
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getTransmission() {
+		return transmission;
+	}
+
+	public void setTransmission(String transmission) {
+		this.transmission = transmission;
 	}
 
 	@Override

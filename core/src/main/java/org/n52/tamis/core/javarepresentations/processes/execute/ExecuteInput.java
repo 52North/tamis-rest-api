@@ -28,6 +28,9 @@
 package org.n52.tamis.core.javarepresentations.processes.execute;
 
 import org.n52.tamis.core.javarepresentations.AbstractInput;
+import org.n52.tamis.core.json.serialize.processes.execute.ExecuteInputSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Specialization for HTTP POST input of WPS execute request received from the
@@ -36,6 +39,7 @@ import org.n52.tamis.core.javarepresentations.AbstractInput;
  * @author Christian Danowski (contact: c.danowski@52north.org)
  *
  */
+@JsonSerialize(using = ExecuteInputSerializer.class)
 public class ExecuteInput extends AbstractInput {
 
 	private String value;

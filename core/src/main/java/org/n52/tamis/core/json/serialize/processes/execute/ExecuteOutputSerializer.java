@@ -62,7 +62,7 @@ public class ExecuteOutputSerializer extends JsonSerializer<ExecuteOutput> {
 			 * 	{
             		"_mimeType": "text/xml",
             		"_id": "complexOutput",
-            		"_transmission": "reference"                <-- transmission is optional, we leave it out
+            		"_transmission": "reference"
         		}
 			 */
 		
@@ -71,6 +71,8 @@ public class ExecuteOutputSerializer extends JsonSerializer<ExecuteOutput> {
 		jsonGenerator.writeStringField("_mimeType", output_simple.getType());
 
 		jsonGenerator.writeStringField("_id", output_simple.getId());
+		
+		jsonGenerator.writeStringField("_transmission", output_simple.getTransmission());
 
 		jsonGenerator.writeEndObject();
 

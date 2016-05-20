@@ -2,7 +2,7 @@ package org.n52.tamis.rest.controller.processes.jobs;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.n52.tamis.core.javarepresentations.processes.jobs.ResultDocument;
+import org.n52.tamis.core.javarepresentations.processes.jobs.result.ResultDocument;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.rest.controller.AbstractRestController;
 import org.n52.tamis.rest.controller.ParameterValueStore;

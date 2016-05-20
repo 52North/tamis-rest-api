@@ -90,7 +90,7 @@ public class ExtendedExecuteHttpPostBodySerializer extends JsonSerializer<Execut
                 "_id": "target-variable-point"
             }
         ],
-        "Output": {
+        "output": {
             "_mimeType": "application/om+xml; version=2.0",
             "_schema": "http://schemas.opengis.net/om/2.0/observation.xsd",
             "_id": "estimated-values",
@@ -120,7 +120,10 @@ public class ExtendedExecuteHttpPostBodySerializer extends JsonSerializer<Execut
 
 		jsonGenerator.writeEndArray();
 
-		jsonGenerator.writeArrayFieldStart("Output");
+		/**
+		 * TODO is it really correct, that "output" starts with a small "o"?
+		 */
+		jsonGenerator.writeArrayFieldStart("output");
 
 		List<ExecuteOutput> outputs = executeBody_short.getOutputs();
 

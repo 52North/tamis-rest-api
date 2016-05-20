@@ -27,9 +27,9 @@ public class ExecuteBodyDeserialization_Test {
 		Execute_HttpPostBody executeBody = new ObjectMapper().readValue(input, Execute_HttpPostBody.class);
 
 		/*
-		 * version (constant value 1.0.0)
+		 * version (constant value 2.0.0)
 		 */
-		Assert.assertEquals("1.0.0", executeBody.getVersion());
+		Assert.assertEquals("2.0.0", executeBody.getVersion());
 
 		/*
 		 * processId (is not transmitted in request body. Thus, cannot be parsed

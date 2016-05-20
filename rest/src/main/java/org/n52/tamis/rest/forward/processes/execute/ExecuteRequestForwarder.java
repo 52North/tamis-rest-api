@@ -2,10 +2,12 @@ package org.n52.tamis.rest.forward.processes.execute;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.n52.tamis.core.javarepresentations.processes.execute.Execute_HttpPostBody;
+import org.n52.tamis.core.javarepresentations.processes.jobs.result.ResultDocument;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.core.urlconstants.URL_Constants_WpsProxy;
 import org.n52.tamis.rest.controller.ParameterValueStore;
@@ -14,7 +16,15 @@ import org.n52.tamis.rest.forward.AbstractRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Class to delegate an execute request to the WPS proxy instance.
@@ -86,7 +96,17 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 		 * depending on the request parameter "sync-execute" the call should be
 		 * realized asynchronously or synchronously.
 		 */
-		URI createdJobUrl_wpsProxy = null;
+		URI createdJobUri_wpsProxy = null;
+		
+		/**
+		 * content headers!
+		 */
+		HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        
+        String bodyString = new ObjectMapper().writeValueAsString(executeBody);
+		System.out.println(bodyString);
 
 		if (syncExecute_parameter) {
 			// synchronous
@@ -99,7 +119,20 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 			 * resource (= the location header)
 			 * 
 			 */
-			createdJobUrl_wpsProxy = synchronousExecuteTemplate.postForLocation(execute_url_wpsProxy, executeBody);
+//			createdJobUri_wpsProxy = synchronousExecuteTemplate.postForLocation(execute_url_wpsProxy, executeBody);			
+			
+	        HttpEntity requestEntity = new HttpEntity(executeBody, headers);
+	        
+			ResultDocument resultDocument = synchronousExecuteTemplate.postForObject(execute_url_wpsProxy, requestEntity, ResultDocument.class);
+			String jobId = resultDocument.getResult().getJobId();
+			
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
+			builder.path(URL_Constants_TAMIS.SLASH_JOBS + "/" + jobId);
+			
+			String locationHeader = builder.build().encode().toUriString();
+			
+//			String locationHeader = request.getRequestURL().toString() + URL_Constants_TAMIS.SLASH_JOBS + "/" + jobId;
+			return locationHeader;
 		} else {
 
 			/*
@@ -130,9 +163,22 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 			 * TODO check if that implementation is correct or if
 			 * AsyncRestTemplate must be used?
 			 */
-			RestTemplate executeTemplate = new RestTemplate();
+			RestTemplate asynchronousExecuteTemplate = new RestTemplate();
+//
+//			HttpEntity requestEntity = new HttpEntity(executeBody, headers);
+//			
+//			String bodyAsString = new ObjectMapper().writeValueAsString(executeBody);
+//	        System.out.println(bodyAsString);
+//			
+////			ResponseEntity<URI> response = asynchronousExecuteTemplate.postForObject(execute_url_wpsProxy, requestEntity, ResponseEntity.class);
+//			
+//			ResponseEntity response = asynchronousExecuteTemplate.exchange(execute_url_wpsProxy, HttpMethod.POST, requestEntity, ResponseEntity.class);
+//			
+//			createdJobUri_wpsProxy = (URI) response.getHeaders().getLocation();
+//			
+//			System.out.println();
+			createdJobUri_wpsProxy = asynchronousExecuteTemplate.postForLocation(execute_url_wpsProxy, executeBody);
 
-			createdJobUrl_wpsProxy = executeTemplate.postForLocation(execute_url_wpsProxy, executeBody);
 		}
 
 		// executeTemplate.exchange(execute_url_wpsProxy, HttpMethod.POST,
@@ -152,15 +198,16 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 		 * 
 		 * createdJobUrl_wpsProxy looks like "<baseUrl-wpsProxy>/processes/{processId}/jobs/{jobId}"
 		 */
-		String jobId = createdJobUrl_wpsProxy.getPath().split(URL_Constants_WpsProxy.SLASH_JOBS + "/")[1];
+		String jobId = createdJobUri_wpsProxy.getPath().split(URL_Constants_WpsProxy.SLASH_JOBS + "/")[1];
 		
 		/*
 		 * executeRequestUri should look like: "<base-url-tamis>/services/{serviceId}/processes/{processId}/jobs/{jobId}"
 		 */
-		String executeRequestURl = request.getRequestURL().toString();
-		executeRequestURl = executeRequestURl + URL_Constants_TAMIS.SLASH_JOBS + "/" + jobId;
+		
+		String createdJobUrl = request.getRequestURL().toString();
+		createdJobUrl = createdJobUrl + URL_Constants_TAMIS.SLASH_JOBS + "/" + jobId;
 
-		return executeRequestURl;
+		return createdJobUrl;
 	}
 
 	private String append_syncExecute_parameter(boolean sync_execute, String execute_url_wpsProxy) {
