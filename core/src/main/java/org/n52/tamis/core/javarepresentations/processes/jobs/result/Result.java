@@ -1,4 +1,4 @@
-package org.n52.tamis.core.javarepresentations.processes.jobs;
+package org.n52.tamis.core.javarepresentations.processes.jobs.result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,8 @@ public class Result {
 	@JsonProperty("JobID")
 	private String jobId;
 	
-	private List<ResultOutput> outputs = new ArrayList<>();
+	@JsonProperty("Output")
+	private List<ResultOutput> outputs; //TODO vllt als Array? Output wird vllt nicht richtig übermittelt!!!
 
 	public String getJobId() {
 		return jobId;
