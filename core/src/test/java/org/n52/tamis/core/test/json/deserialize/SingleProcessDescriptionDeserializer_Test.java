@@ -101,7 +101,7 @@ public class SingleProcessDescriptionDeserializer_Test {
 			Assert.assertEquals("target-grid", firstInput.getId());
 			Assert.assertEquals("Target Grid", firstInput.getLabel());
 			Assert.assertEquals("text/xml | application/x-netcdf", firstInput.getType());
-			Assert.assertEquals("true", firstInput.getRequired());
+			Assert.assertEquals(true, firstInput.getRequired());
 
 			/*
 			 * second Input
@@ -110,7 +110,7 @@ public class SingleProcessDescriptionDeserializer_Test {
 			Assert.assertEquals("interpolation-method", secondInput.getId());
 			Assert.assertEquals("Interpolation Method", secondInput.getLabel());
 			Assert.assertEquals("text/plain | text/xml", secondInput.getType());
-			Assert.assertEquals("true", secondInput.getRequired());
+			Assert.assertEquals(true, secondInput.getRequired());
 
 			/*
 			 * third Input
@@ -119,7 +119,7 @@ public class SingleProcessDescriptionDeserializer_Test {
 			Assert.assertEquals("input-values", thirdInput.getId());
 			Assert.assertEquals("Input Values", thirdInput.getLabel());
 			Assert.assertEquals("application/om+xml; version=2.0", thirdInput.getType());
-			Assert.assertEquals("true", thirdInput.getRequired());
+			Assert.assertEquals(true, thirdInput.getRequired());
 
 			/*
 			 * output(s)

@@ -34,7 +34,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.n52.tamis.core.javarepresentations.capabilities.Capabilities_Tamis;
 import org.n52.tamis.core.json.deserialize.capabilities.CapabilitiesDeserializer;
-import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -86,8 +85,6 @@ public class CapabilitiesDeserializer_Test {
 			Assert.assertEquals("contact@52north.org", capabilities_short.getContact());
 			Assert.assertEquals(String.valueOf(SERVICE_ID_CONSTANT), capabilities_short.getId().toString());
 			Assert.assertEquals("WPS", capabilities_short.getType());
-			Assert.assertEquals(URL_Constants_TAMIS.getCapabilitiesURL(SERVICE_ID_CONSTANT),
-					capabilities_short.getUrl());
 
 		} catch (IOException ex) {
 			ex.printStackTrace();

@@ -1,3 +1,30 @@
+/**
+ * Copyright (C) 2016-2016 52°North Initiative for Geospatial Open Source
+ * Software GmbH
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License version 2 as publishedby the Free
+ * Software Foundation.
+ *
+ * If the program is linked with libraries which are licensed under one of the
+ * following licenses, the combination of the program with the linked library is
+ * not considered a "derivative work" of the program:
+ *
+ *     - Apache License, version 2.0
+ *     - Apache Software License, version 1.0
+ *     - GNU Lesser General Public License, version 3
+ *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
+ *     - Common Development and Distribution License (CDDL), version 1.0
+ *
+ * Therefore the distribution of the program linked with libraries licensed under
+ * the aforementioned licenses, is permitted by the copyright holders if the
+ * distribution is compliant with both the GNU General Public License version 2
+ * and the aforementioned licenses.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ */
 package org.n52.tamis.core.test.serialize;
 
 import java.io.IOException;
@@ -15,7 +42,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class ExecuteInputSerializer_Test {
 
-	ExecuteInput referenceInput;
+	ExecuteInput sosInput;
 	ExecuteInput dataInput;
 	
 	ExecuteInputSerializer input_WpsProxySerializer;
@@ -33,11 +60,11 @@ public class ExecuteInputSerializer_Test {
 	}
 	
 	@Before
-	public void setupReferenceInput() {
-		referenceInput = new ExecuteInput();
+	public void setupSosInput() {
+		sosInput = new ExecuteInput();
 
-		referenceInput.setId("referenceInputID");
-		referenceInput.setValue(
+		sosInput.setId("sosInputID");
+		sosInput.setValue(
 				"http://fluggs.wupperverband.de/sos2/service?service=SOS&request=GetObservation&version=2.0.0&offering=Zeitreihen_2m_Tiefe&observedProperty=Grundwasserstand&responseFormat=http%3A//www.opengis.net/om/2.0");
 	}
 
@@ -54,39 +81,31 @@ public class ExecuteInputSerializer_Test {
 	public void testReferenceInputSerialization() {
 
 		try {
-			String referenceJsonOutput = mapper.writeValueAsString(referenceInput);
-			System.out.println(referenceJsonOutput);
+			String sosJsonOutput = mapper.writeValueAsString(sosInput);
 
-			JsonNode parsedJsonReference = mapper.readTree(referenceJsonOutput);
-			JsonNode referenceNode = parsedJsonReference.get("Reference");
+			JsonNode parsedJsonReference = mapper.readTree(sosJsonOutput);
+			JsonNode sosNode = parsedJsonReference.get("Data");
 
 			/*
 			 * the expected structure of the parsed JSON node looks like:
 			 * 
 			 *  {
-                        "Reference": {
-                            "_href": "http://fluggs.wupperverband.de/sos2/service?service=SOS&request=GetObservation&version=2.0.0&offering=Zeitreihen_2m_Tiefe&observedProperty=Grundwasserstand&responseFormat=http%3A//www.opengis.net/om/2.0",
-                            "_mimeType": "application/om+xml; version=2.0",
-                            "_schema": "http://schemas.opengis.net/om/2.0/observation.xsd"
+                        "Data": {
+                            "_text": "http://fluggs.wupperverband.de/sos2/service?service=SOS&request=GetObservation&version=2.0.0&offering=Zeitreihen_2m_Tiefe&observedProperty=Grundwasserstand&responseFormat=http%3A//www.opengis.net/om/2.0"
                         },
                         "_id": "gw1"
                     }
 
 			 */
 			
-			Assert.assertTrue(referenceNode.has("_href"));
+			Assert.assertTrue(sosNode.has("_text"));
 			Assert.assertTrue(parsedJsonReference.has("_id"));
-			Assert.assertTrue(referenceNode.has("_schema"));
-			Assert.assertTrue(referenceNode.has("_mimeType"));
 
 			
 			Assert.assertEquals(
 					"http://fluggs.wupperverband.de/sos2/service?service=SOS&request=GetObservation&version=2.0.0&offering=Zeitreihen_2m_Tiefe&observedProperty=Grundwasserstand&responseFormat=http%3A//www.opengis.net/om/2.0",
-					referenceNode.get("_href").asText());
-			Assert.assertEquals("referenceInputID", parsedJsonReference.get("_id").asText());
-			Assert.assertEquals("http://schemas.opengis.net/om/2.0/observation.xsd",
-					referenceNode.get("_schema").asText());
-			Assert.assertEquals("application/om+xml; version=2.0", referenceNode.get("_mimeType").asText());
+					sosNode.get("_text").asText());
+			Assert.assertEquals("sosInputID", parsedJsonReference.get("_id").asText());
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -101,29 +120,12 @@ public class ExecuteInputSerializer_Test {
 
 		try {
 			String dataJsonOutput = mapper.writeValueAsString(dataInput);
-			System.out.println(dataJsonOutput);
 
 			JsonNode parsedJsonData = mapper.readTree(dataJsonOutput);
 			JsonNode dataNode = parsedJsonData.get("Data");
-
-			/*
-			 * the expected structure of the parsed JSON node looks like:
-			 * 
-			 *  {
-                        "Reference": {
-                            "_href": "http://fluggs.wupperverband.de/sos2/service?service=SOS&request=GetObservation&version=2.0.0&offering=Zeitreihen_2m_Tiefe&observedProperty=Grundwasserstand&responseFormat=http%3A//www.opengis.net/om/2.0",
-                            "_mimeType": "application/om+xml; version=2.0",
-                            "_schema": "http://schemas.opengis.net/om/2.0/observation.xsd"
-                        },
-                        "_id": "gw1"
-                    }
-
-			 */
 			
 			Assert.assertTrue(dataNode.has("_text"));
 			Assert.assertTrue(parsedJsonData.has("_id"));
-//			Assert.assertTrue(dataNode.has("_schema"));
-//			Assert.assertTrue(dataNode.has("_mimeType"));
 
 			Assert.assertEquals(
 					"[0.03550405161598, -0.01860639146241, -0.01860639146241, -0.03550405161598, 385795.23669382796000, 5667086.67852447180000]",

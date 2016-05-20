@@ -90,21 +90,17 @@ public class ProcessesDeserializer_Test {
 			 * assertions for first process description
 			 */
 			// in the example document there was no "abstract" element, thus,
-			// description should be empty
-			Assert.assertEquals("", firstProcessDescription.getDescription());
+			// description should be equal to label
+			Assert.assertEquals(firstProcessDescription.getLabel(), firstProcessDescription.getDescription());
 			Assert.assertEquals("org.n52.tamis.algorithm.interpolation", firstProcessDescription.getId());
 			Assert.assertEquals("TAMIS Interpolation Process", firstProcessDescription.getLabel());
-			Assert.assertEquals("<baseURL>/processes/org.n52.tamis.algorithm.interpolation",
-					firstProcessDescription.getUrl());
 
 			/*
 			 * assertions for second process description
 			 */
-			Assert.assertEquals("", secondProcessDescription.getDescription());
+			Assert.assertEquals(secondProcessDescription.getLabel(), secondProcessDescription.getDescription());
 			Assert.assertEquals("org.n52.tamis.algorithm.soakageregressionmodel", secondProcessDescription.getId());
 			Assert.assertEquals("TAMIS Soakage Regression Model", secondProcessDescription.getLabel());
-			Assert.assertEquals("<baseURL>/processes/org.n52.tamis.algorithm.soakageregressionmodel",
-					secondProcessDescription.getUrl());
 
 		} catch (IOException ex) {
 			ex.printStackTrace();
