@@ -1,20 +1,24 @@
 package org.n52.tamis.rest.controller.processes.jobs;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.n52.tamis.core.javarepresentations.processes.jobs.result.ResultDocument;
+import org.n52.tamis.core.javarepresentations.processes.jobs.result.ResultOutput;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.rest.controller.AbstractRestController;
 import org.n52.tamis.rest.controller.ParameterValueStore;
-import org.n52.tamis.rest.forward.processes.jobs.ResultRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * REST Controller for result requests. (Only handles GET requests to that URL).
@@ -29,15 +33,76 @@ public class ResultController extends AbstractRestController {
 	private static final String OUTPUT_FORMAT_PARAMETER_NAME = "outputformat";
 	private static final String OUTPUT_FORMAT_PARAMETER_VALUE = "json";
 
-	@Autowired
-	ResultRequestForwarder resultRequestForwarder;
+	private static final String JSON_EXTENSION_VALUE = ".json";
 
 	@Autowired
 	ParameterValueStore parameterValueStore;
 
+	// /**
+	// * Returns the result.
+	// *
+	// * @param serviceId
+	// * inside the URL the variable
+	// * {@link URL_Constants_TAMIS#SERVICE_ID_VARIABLE_NAME} specifies
+	// * the id of the service.
+	// * @param processId
+	// * inside the URL the variable
+	// * {@link URL_Constants_TAMIS#PROCESS_ID_VARIABLE_NAME} specifies
+	// * the id of the process.
+	// * @param jobId
+	// * inside the URL the variable
+	// * {@link URL_Constants_TAMIS#JOB_ID_VARIABLE_NAME} specifies the
+	// * id of the job.
+	// * @param outputId
+	// * inside the URL the variable
+	// * {@link URL_Constants_TAMIS#OUTPUT_ID_VARIABLE_NAME} specifies
+	// * the id of the output.
+	// * @param request
+	// * @return the result
+	// */
+	// @RequestMapping(value = URL_Constants_TAMIS.OUTPUT_ID_VARIABLE_NAME +
+	// ":.+.json")
+	// @ResponseBody
+	// public Object getResult_DotJsonUrlExtension(
+	// @PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String
+	// serviceId,
+	// @PathVariable(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME) String
+	// processId,
+	// @PathVariable(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME) String jobId,
+	// @PathVariable(URL_Constants_TAMIS.OUTPUT_ID_VARIABLE_NAME) String
+	// outputId, HttpServletRequest request) {
+	//
+	// logger.info(
+	// "Received get result request with \".json\" URL extension for service id
+	// \"{}\", process id \"{}\", job id \"{}\" and output id \"{}\"!",
+	// serviceId, processId, jobId, outputId);
+	//
+	// initializeParameterValueStore(serviceId, processId, jobId, outputId);
+	//
+	// ResultDocument resultDocument = fetchResultDocumentForJob(jobId,
+	// request);
+	//
+	// return getOutput(outputId, resultDocument);
+	// }
+
+	private void initializeParameterValueStore(String serviceId, String processId, String jobId, String outputId) {
+		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME, serviceId);
+		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME, processId);
+		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME, jobId);
+		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.OUTPUT_ID_VARIABLE_NAME, outputId);
+	}
+
 	/**
-	 * Returns the result.
+	 * Returns a single output. Hereby it will inspect three methods to set
+	 * responseFormat to JSON<br/>
+	 * <br/>
+	 * <br/>
+	 * 1. ".json" extension at URL <br/>
+	 * 2. request parameter "outputFormat" is set to "json" <br/>
+	 * 3. Accept header is set to "application/json"
 	 * 
+	 * @param outputFormat
+	 *            may be omitted or set to value "json".
 	 * @param serviceId
 	 *            inside the URL the variable
 	 *            {@link URL_Constants_TAMIS#SERVICE_ID_VARIABLE_NAME} specifies
@@ -55,34 +120,10 @@ public class ResultController extends AbstractRestController {
 	 *            {@link URL_Constants_TAMIS#OUTPUT_ID_VARIABLE_NAME} specifies
 	 *            the id of the output.
 	 * @param request
-	 * @return the result
+	 * @return
 	 */
-	@RequestMapping(value = ".json")
-	@ResponseBody
-	public Object getResult_DotJsonUrlExtension(
-			@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId,
-			@PathVariable(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME) String processId,
-			@PathVariable(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME) String jobId,
-			@PathVariable(URL_Constants_TAMIS.OUTPUT_ID_VARIABLE_NAME) String outputId, HttpServletRequest request) {
-
-		logger.info(
-				"Received get result request with \".json\" URL extension for service id \"{}\", process id \"{}\", job id \"{}\" and output id \"{}\"!",
-				serviceId, processId, jobId, outputId);
-
-		initializeParameterValueStore(serviceId, processId, jobId, outputId);
-
-		return resultRequestForwarder.forwardRequestToWpsProxy(request, null, parameterValueStore);
-	}
-
-	private void initializeParameterValueStore(String serviceId, String processId, String jobId, String outputId) {
-		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME, serviceId);
-		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME, processId);
-		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME, jobId);
-		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.OUTPUT_ID_VARIABLE_NAME, outputId);
-	}
-
 	@RequestMapping("")
-	public Object getResult_acceptHeaderOrRequestParam(@RequestParam(OUTPUT_FORMAT_PARAMETER_NAME) String outputFormat,
+	public Object getResult(@RequestParam(value = OUTPUT_FORMAT_PARAMETER_NAME, required = false) String outputFormat,
 			@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId,
 			@PathVariable(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME) String processId,
 			@PathVariable(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME) String jobId,
@@ -90,17 +131,40 @@ public class ResultController extends AbstractRestController {
 
 		String acceptHeader = request.getHeader("Accept");
 
-		if (acceptHeader != null) {
+		/*
+		 * Since the outputId may have dots within it (e.g. "my.output"), the
+		 * ".json" extension might be interpreted as part of the outputId
+		 * 
+		 * inspect outputID for .json extension
+		 * 
+		 */
+		if (outputId.contains(JSON_EXTENSION_VALUE)) {
+			/*
+			 * remove .json extnesion from outputId
+			 */
+
+			outputId = outputId.split(JSON_EXTENSION_VALUE)[0];
+
+			logger.info(
+					"Received get result request with \".json\" URL extension for service id\"{}\", process id \"{}\", job id \"{}\" and output id \"{}\"!",
+					serviceId, processId, jobId, outputId);
+		}
+
+		/*
+		 * inspect accept header
+		 */
+
+		else if (acceptHeader.equalsIgnoreCase(MediaType.APPLICATION_JSON.toString())) {
 			logger.info(
 					"Received get result request with expected \"application/json\" as accept-header for service id \"{}\", process id \"{}\", job id \"{}\" and output id \"{}\"!",
 					serviceId, processId, jobId, outputId);
-
-			if (!acceptHeader.equals(MediaType.APPLICATION_JSON)) {
-				logger.error("No \"{}\" accept Header present!", MediaType.APPLICATION_JSON);
-			}
 		}
 
-		if (outputFormat != null) {
+		/*
+		 * inspect outputFormst query parameter
+		 */
+
+		else if (outputFormat != null) {
 			logger.info(
 					"Received get result request with output format as request parameter for service id \"{}\", process id \"{}\", job id \"{}\" and output id \"{}\"!",
 					serviceId, processId, jobId, outputId);
@@ -111,9 +175,69 @@ public class ResultController extends AbstractRestController {
 			}
 		}
 
+		else {
+			/*
+			 * JSON output format was not properly specified by client
+			 */
+			logger.error(
+					"Client request did not specify output format, neither by \".json\" file extension, nor through \"Accept\" header, not via query parameter \"outputFormat=json\"!");
+		}
+
 		initializeParameterValueStore(serviceId, processId, jobId, outputId);
 
-		return resultRequestForwarder.forwardRequestToWpsProxy(request, null, parameterValueStore);
+		ResultDocument resultDocument = fetchResultDocumentForJob(jobId, request);
+
+		return getOutput(outputId, resultDocument);
+	}
+
+	private Object getOutput(String outputId, ResultDocument resultDocument) {
+		/*
+		 * now extract the requested output from the complete document
+		 */
+
+		List<ResultOutput> outputs = resultDocument.getResult().getOutputs();
+
+		for (ResultOutput resultOutput : outputs) {
+			if (resultOutput.getId().equalsIgnoreCase(outputId))
+				return ResponseEntity.ok(resultOutput);
+		}
+
+		/**
+		 * should this code be reached then the requested output was not found.
+		 */
+
+		logger.error("Could not find output with id \"{}\" in result document \"{}\"", outputId, resultDocument);
+
+		return ResponseEntity.notFound();
+	}
+
+	private ResultDocument fetchResultDocumentForJob(String jobId, HttpServletRequest request) {
+		/*
+		 * Fetches the complete resultDocument (by sending a GET outputs request
+		 * against the specified jobId) and extracts the requested output with
+		 * the specified id.
+		 */
+		/*
+		 * request URL looks like =
+		 * <tamis-rest-baseURL>/prefixes/services/{serviceID}/processes/{
+		 * processID}/jobs/{jobId}/outputs/{outputId}
+		 * 
+		 * outputs request URL looks like (trailing outputId must be cut off):
+		 * request URL looks like =
+		 * <tamis-rest-baseURL>/prefixes/services/{serviceID}/processes/{
+		 * processID}/jobs/{jobId}/outputs
+		 */
+
+		logger.info("Trying to fetch the complete result document from job with jobId=\"{}\"", jobId);
+
+		String slashOutputId = "/"
+				+ parameterValueStore.getParameterValuePairs().get(URL_Constants_TAMIS.OUTPUT_ID_VARIABLE_NAME);
+		String getOutputsUrl = request.getRequestURL().toString().split(slashOutputId)[0];
+
+		RestTemplate getOutputs = new RestTemplate();
+		ResultDocument resultDocument = getOutputs.getForObject(getOutputsUrl, ResultDocument.class);
+
+		return resultDocument;
 	}
 
 }

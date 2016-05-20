@@ -41,7 +41,6 @@
 	<bean class="org.n52.tamis.rest.forward.processes.execute.ExecuteRequestForwarder" name="executeForwarder" />
 	<bean class="org.n52.tamis.rest.forward.processes.jobs.StatusRequestForwarder"/>
 	<bean class="org.n52.tamis.rest.forward.processes.jobs.JobOutputsRequestForwarder"/>
-	<bean class="org.n52.tamis.rest.forward.processes.jobs.ResultRequestForwarder"/>
 	<bean class="org.n52.tamis.rest.forward.processes.jobs.DeleteRequestForwarder"/>
 	
 	<!-- other -->
