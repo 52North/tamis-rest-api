@@ -51,8 +51,9 @@ public class DeleteRequestController extends AbstractRestController {
 			responseEntity = deleteRequestForwarder.forwardRequestToWpsProxy(request, null, parameterValueStore);
 
 		} catch (Exception e) {
-			logger.info("Trying to delete resouce at \"{}\" failed.", request.getRequestURL());
+			logger.info("DELETE request for resouce at \"{}\" failed.", request.getRequestURL());
 			response.setStatus(HttpStatus.NOT_FOUND.value());
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
 
 		return responseEntity;
