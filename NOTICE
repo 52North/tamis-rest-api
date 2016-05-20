@@ -11,6 +11,7 @@ This project includes:
   jackson-databind under The Apache Software License, Version 2.0
   Java Servlet API under CDDL 1.1 or GPL2 w/ CPE
   JCL 1.1.1 implemented over SLF4J under MIT License
+  Joda-Time under Apache 2
   JUL to SLF4J bridge under MIT License
   JUnit under Eclipse Public License 1.0
   Log4j Implemented Over SLF4J under Apache Software Licenses

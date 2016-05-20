@@ -18,6 +18,7 @@ This project includes:
   Jackson-annotations under The Apache Software License, Version 2.0
   Jackson-core under The Apache Software License, Version 2.0
   jackson-databind under The Apache Software License, Version 2.0
+  Joda-Time under Apache 2
   JUnit under Eclipse Public License 1.0
   SLF4J API Module under MIT License
   Spring AOP under The Apache Software License, Version 2.0
