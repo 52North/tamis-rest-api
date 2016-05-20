@@ -12,6 +12,7 @@ import org.n52.tamis.rest.controller.ParameterValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -123,7 +124,7 @@ public class ResultController extends AbstractRestController {
 	 * @return
 	 */
 	@RequestMapping("")
-	public Object getResult(@RequestParam(value = OUTPUT_FORMAT_PARAMETER_NAME, required = false) String outputFormat,
+	public ResponseEntity getResult(@RequestParam(value = OUTPUT_FORMAT_PARAMETER_NAME, required = false) String outputFormat,
 			@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId,
 			@PathVariable(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME) String processId,
 			@PathVariable(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME) String jobId,
@@ -190,7 +191,7 @@ public class ResultController extends AbstractRestController {
 		return getOutput(outputId, resultDocument);
 	}
 
-	private Object getOutput(String outputId, ResultDocument resultDocument) {
+	private ResponseEntity getOutput(String outputId, ResultDocument resultDocument) {
 		/*
 		 * now extract the requested output from the complete document
 		 */
@@ -208,7 +209,7 @@ public class ResultController extends AbstractRestController {
 
 		logger.error("Could not find output with id \"{}\" in result document \"{}\"", outputId, resultDocument);
 
-		return ResponseEntity.notFound();
+		return new ResponseEntity(HttpStatus.NOT_FOUND);
 	}
 
 	private ResultDocument fetchResultDocumentForJob(String jobId, HttpServletRequest request) {

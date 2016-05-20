@@ -37,6 +37,7 @@ import org.n52.tamis.rest.forward.processes.SingleProcessDescriptionRequestForwa
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -77,7 +78,7 @@ public class SingleProcessDescriptionController extends AbstractRestController {
 	 */
 	@RequestMapping("")
 	@ResponseBody
-	public ProcessDescription_singleProcess getSingleProcessDescription(
+	public ResponseEntity<ProcessDescription_singleProcess> getSingleProcessDescription(
 			@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId,
 			@PathVariable(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME) String processId, HttpServletRequest request) {
 
@@ -90,7 +91,7 @@ public class SingleProcessDescriptionController extends AbstractRestController {
 		ProcessDescription_singleProcess singleProcessDescription = sProcessDescrRequestForwarder
 				.forwardRequestToWpsProxy(request, null, parameterValueStore);
 
-		return singleProcessDescription;
+		return ResponseEntity.ok(singleProcessDescription);
 	}
 
 }

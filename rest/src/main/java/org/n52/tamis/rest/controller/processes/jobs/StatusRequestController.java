@@ -11,6 +11,7 @@ import org.n52.tamis.rest.forward.processes.jobs.StatusRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -53,7 +54,7 @@ public class StatusRequestController extends AbstractRestController {
 	 */
 	@RequestMapping("")
 	@ResponseBody
-	public StatusDescription getStatusDescription(
+	public ResponseEntity<StatusDescription> getStatusDescription(
 			@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId,
 			@PathVariable(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME) String processId,
 			@PathVariable(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME) String jobId, HttpServletRequest request) {
@@ -68,7 +69,7 @@ public class StatusRequestController extends AbstractRestController {
 		StatusDescription singleStatusDescription = statusRequestForwarder.forwardRequestToWpsProxy(request,
 				null, parameterValueStore);
 
-		return singleStatusDescription;
+		return ResponseEntity.ok(singleStatusDescription);
 	}
 
 }

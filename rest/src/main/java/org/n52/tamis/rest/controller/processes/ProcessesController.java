@@ -37,6 +37,7 @@ import org.n52.tamis.rest.forward.processes.ProcessesRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -65,7 +66,7 @@ public class ProcessesController extends AbstractRestController {
 	 */
 	@RequestMapping("")
 	@ResponseBody
-	public Processes_Tamis getProcessesOverview(
+	public ResponseEntity<Processes_Tamis> getProcessesOverview(
 			@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId, HttpServletRequest request) {
 
 		logger.info("Received processes request (overview of available processes) for service id \"{}\"!", serviceId);
@@ -75,7 +76,7 @@ public class ProcessesController extends AbstractRestController {
 		Processes_Tamis processesOverview = processesRequestForwarder.forwardRequestToWpsProxy(request,
 				null, parameterValueStore);
 
-		return processesOverview;
+		return ResponseEntity.ok(processesOverview);
 	}
 
 }

@@ -81,8 +81,8 @@ public class CapabilitiesRequestForwarder extends AbstractRequestForwarder {
 		 * Retrieve the base URL from the HtteServletRequest object 
 		 */
 		String requestURL = request.getRequestURL().toString();
-		String wpsBaseUrl_tamisProxy = requestURL.split(URL_Constants_TAMIS.TAMIS_PREFIX)[0];
-		capabilitiesDoc.setUrl(wpsBaseUrl_tamisProxy);
+//		String wpsBaseUrl_tamisProxy = requestURL.split(URL_Constants_TAMIS.TAMIS_PREFIX)[0];
+		capabilitiesDoc.setUrl(requestURL);
 
 		return capabilitiesDoc;
 	}

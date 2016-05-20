@@ -37,6 +37,7 @@ import org.n52.tamis.rest.forward.capabilities.CapabilitiesRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -71,7 +72,7 @@ public class CapabilitiesController extends AbstractRestController {
 	 */
 	@RequestMapping("")
 	@ResponseBody
-	public Capabilities_Tamis getCapabilities(
+	public ResponseEntity<Capabilities_Tamis> getCapabilities(
 			@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId, HttpServletRequest request) {
 
 		/*
@@ -86,7 +87,7 @@ public class CapabilitiesController extends AbstractRestController {
 				null, this.parameterValueStore);
 
 		// return to client; will be converted to JSON implicitly
-		return capabilitiesDoc;
+		return ResponseEntity.ok(capabilitiesDoc);
 	}
 
 }

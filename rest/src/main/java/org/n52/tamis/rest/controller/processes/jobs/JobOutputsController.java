@@ -10,6 +10,7 @@ import org.n52.tamis.rest.forward.processes.jobs.JobOutputsRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,7 +53,7 @@ public class JobOutputsController extends AbstractRestController {
 	 */
 	@RequestMapping("")
 	@ResponseBody
-	public ResultDocument getResultDocument(
+	public ResponseEntity<ResultDocument> getResultDocument(
 			@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId,
 			@PathVariable(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME) String processId,
 			@PathVariable(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME) String jobId, HttpServletRequest request) {
@@ -67,7 +68,7 @@ public class JobOutputsController extends AbstractRestController {
 		ResultDocument resultDocument = jobOutputsRequestForwarder.forwardRequestToWpsProxy(request,
 				null, parameterValueStore);
 
-		return resultDocument;
+		return ResponseEntity.ok(resultDocument);
 	}
 	
 }
