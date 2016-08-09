@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Documentation WPS 2.0 REST-API (TAMIS)</title>
+
+<!-- Bootstrap -->
+<link href="css/bootstrap-3.0.0-rc1/bootstrap.min.css" rel="stylesheet">
+<link href="css/n52/apidoc-style.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container-fluid">
+
+        <!-- 52n nav
+            ================================================== -->
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">WPS 2.0 REST API TAMIS</a>
+                </div>
+                <div class="navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="http://52north.org/communities/geoprocessing/">Geoprocessing Web</a></li>
+                        <li><a href="https://github.com/cDanowski/tamis-rest-api/">Sources</a></li>
+                        <li><a href="http://blog.52north.org">Blog</a></li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+
+
+        <!-- Content nav
+            ================================================== -->
+        <div class="col-lg-2 n52-sidebar">
+            <div id="contents" class="bs-sidebar hidden-print">
+                <a href="http://52north.org" style="position: fixed"><img alt="52&deg;North logo"
+                    src="http://52north.org/templates/52n-2012/images/52n-logo.gif" /></a>
+                <ul class="nav bs-sidenav" data-spy="affix">
+                    <li>
+                        <!-- General --> <a data-toggle="collapse" data-parent="#contents"
+                        data-target="#general-subitems" href="#general">General</a>
+                        <ul id="general-subitems" class="nav collapse">
+                            <li><a href="#general-common-status-codes">Common Status Codes</a></li>
+                            <li><a href="#endpoint-url">Endpoint URL</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <!-- Capabilities --> <a data-toggle="collapse" data-parent="#contents"
+                        data-target="#capabilities-subitems" href="#capabilities">Capabilities</a>
+                        <ul id="capabilities-subitems" class="nav collapse">
+                            <li><a href="#capabilities-urls">URLs</a></li>
+                            <li><a href="#capabilities-examples">Examples</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <!--Processes--> <a data-toggle="collapse" data-parent="#contents"
+                        data-target="#processes-subitems" href="#processes">Processes</a>
+                        <ul id="processes-subitems" class="nav collapse">
+                            <li><a href="#processes-urls">URLs</a></li>
+                            <li><a href="#processes-examples">Examples</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <!-- Process Description --> <a data-toggle="collapse" data-parent="#contents"
+                        data-target="#process-description-subitems" href="#process-description">Process Description</a>
+                        <ul id="process-description-subitems" class="nav collapse">
+                            <li><a href="#process-description-urls">URLs</a></li>
+                            <li><a href="#process-description-examples">Examples</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <!-- Process Execution --> <a data-toggle="collapse" data-parent="#contents"
+                        data-target="#process-execution-subitems" href="#process-execution">Process Execution</a>
+                        <ul id="process-execution-subitems" class="nav collapse">
+                            <li><a href="#process-execution-urls">URLs</a></li>
+                            <li><a href="#process-execution-payload">Execute Payload</a></li>
+                            <li><a href="#process-execution-examples">Examples</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <!-- Get Status --> <a data-toggle="collapse" data-parent="#contents"
+                        data-target="#status-subitems" href="#status">Get Status</a>
+                        <ul id="status-subitems" class="nav collapse">
+                            <li><a href="#status-urls">URLs</a></li>
+                            <li><a href="#status-examples">Examples</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <!-- Get Result--> <a data-toggle="collapse" data-parent="#contents"
+                        data-target="#result-subitems" href="#result">Get Result</a>
+                        <ul id="result-subitems" class="nav collapse">
+                            <li><a href="#result-urls">URLs</a></li>
+                            <li><a href="#result-examples">Examples</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <!-- Dismiss--> <a data-toggle="collapse" data-parent="#contents"
+                        data-target="#dismiss-subitems" href="#dismiss">Dismiss</a>
+                        <ul id="dismiss-subitems" class="nav collapse">
+                            <li><a href="#dismiss-urls">URLs</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-9 n52-content">
+
+            <!-- About
+                ================================================== -->
+            <section id="about">
+                <h2>About</h2>
+                <div>
+                    <p>
+                        The <a href="http://52north.org">52&deg;North</a> WPS 2.0 REST API for TAMIS provides a thin access layer to
+                        processing fucntionalities via RESTful Web binding.
+                    </p>
+
+                    <p>
+                        This API development intends to make processing services (provided by <a
+                            href="http://opengeospatial.org">OGC</a> <a
+                            href="http://52north.org/communities/geoprocessing/wps/">Web Processing Services (WPS)</a>) better
+                        accessible for leightweight clients like mobile devices.
+                    </p>
+
+                </div>
+
+                <h3>Document status</h3>
+                <div class="n52-callout n52-callout-info">
+                    <table class="table">
+                        <tr>
+                            <th>What</th>
+                            <th>When</th>
+                        </tr>
+                        <tr>
+                            <td>Initial creation
+                            </td>
+                            <td>2016-08-09</td>
+                        </tr>
+                    </table>
+                </div>
+
+            </section>
+
+            <!-- General
+                ================================================== -->
+            <section id="general">
+                <div class="page-header">
+                    <h2>General</h2>
+                    <p class="pull-right up-link">
+                        <a href="#"><i class="icon-chevron-up"></i> top</a>
+                    </p>
+                </div>
+                <div>
+
+                    <div id="general-common-status-codes">
+                        <!-- Status Codes -->
+                        <h3>Common Status Codes</h3>
+                        <p>A client shall expect the following HTTP status codes returned by the API.</p>
+                        <table class="table">
+                            <tr>
+                                <th>Code</th>
+                                <th>When</th>
+                            </tr>
+
+                            <tr>
+                                <td><code>200</code></td>
+                                <td>Status <code>OK</code>. All went fine.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>201</code></td>
+                                <td>Status <code>Created</code>. New job created.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>400</code></td>
+                                <td>Status <code>Bad Request</code>. The request data cannot be read.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>404</code></td>
+                                <td>Status <code>Not Found</code>. The resource is not available. In particular,
+                                  when trying to <code>dismiss</code> an existing <code>job</code> more than once, this status is returned.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>415</code></td>
+                                <td>Status <code>Unsupported Media Type</code>. The media-type of the request payload is not supported.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>500</code></td>
+                                <td>Status <code>Internal Server Error</code>. Please contact the webadmin. In some
+                                    cases an error message will be shown. But in general the server logs will help to
+                                    trace the problem.
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+                    <div id="endpoint-url">
+                        <!-- Status Codes -->
+                        <h3>Endpoint URL</h3>
+                        <p>The entry point of the REST API is configurable and will be referenced as the <code>&lt;base-url&gt;</code> throughout the rest of this document.
+                          The <code>&lt;base-url&gt;</code> consists of the WPS endpoint and a static suffix <code>/api/v1/service/{service-id}</code>
+                          whereby <code>{service-id}</code> is a variable to differentiate between mutliple WPS instances. </p>
+
+                        <p>For instance, a running endpoint is provided by the following
+                          enpoint URL: <code><a href="http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/">http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/</a></code>.</p>
+
+                        <div class="n52-callout n52-callout-info">
+                            Developer Note: to configure the endpoint URL, change the property
+                            <code>wpsProxy_baseUrl</code> in the file <code>wpsProxy-properties</code> located at the project folder
+                            <code>tamis-rest-api/rest/src/main/resources/wpsProxy.properties</code>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Capabilities
+                ================================================== -->
+            <section id="capabilities">
+                <div class="page-header">
+                    <h2>Capabilities</h2>
+                    <p class="pull-right up-link">
+                        <a href="#"><i class="icon-chevron-up"></i> top</a>
+                    </p>
+                </div>
+                <div>
+                    <div id="capabilities-urls">
+                        <!-- URLs -->
+                        <h3>URLs</h3>
+                        <p>API calls are triggered by using the following URLs.</p>
+                        <table class="table">
+                            <tr>
+                                <th>Method</th>
+                                <th>Path</th>
+                                <th>Content-Type</th>
+                                <th>Description</th>
+                            </tr>
+
+                            <tr>
+                                <td><code>GET</code></td>
+                                <td><code>&lt;base-url&gt;</code></td>
+                                <td><code>application/json</code></td>
+                                <td>Lists capabilities of the WPS.</td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+                    <div id="capabilities-examples">
+                        <!-- Examples -->
+                        <h3>Examples</h3>
+                        <div>
+                            <h4>Capabilities Response</h4>
+                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/ HTTP/1.1
+Host: tamis.dev.52north.org
+Accept: application/json</pre>
+                            <pre id="capabilities-example" class="collapse">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "id": "1",
+  "label": "52°North WPS 4.0.0-SNAPSHOT",
+  "type": "WPS",
+  "url": "http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/",
+  "contact": "Benjamin Pross"
+}</pre>
+                            <button data-toggle="collapse" data-parent="#capabilities-examples"
+                                data-target="#capabilities-example" class="btn btn-primary">Show/Hide
+                                Response</button>
+                        </div>
+
+                    </div>
+
+                    <div class="n52-callout n52-callout-info">
+                        The returned Capabilities document contains a parameter <code>url</code> that points to the REST API endpoint of the service instance.
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Processes
+                ================================================== -->
+            <section id="processes">
+                <div class="page-header">
+                    <h1>Processes</h1>
+                    <p class="pull-right up-link">
+                        <a href="#"><i class="icon-chevron-up"></i> top</a>
+                    </p>
+                </div>
+                <div>
+                    <div id="processes-urls">
+                        <!-- URLs -->
+                        <h3>URLs</h3>
+                        <p>API calls are triggered by using the following URLs.</p>
+                        <table class="table">
+                            <tr>
+                                <th>Method</th>
+                                <th>Path</th>
+                                <th>Content-Type</th>
+                                <th>Description</th>
+                            </tr>
+
+                            <tr>
+                                <td><code>GET</code></td>
+                                <td><code>&lt;base-url&gt;/processes</code></td>
+                                <td><code>application/json</code></td>
+                                <td>Lists the available processes of the WPS.
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+                    <div id="processes-examples">
+                        <!-- Examples -->
+                        <h3>Examples</h3>
+                        <div>
+                            <h4>Processes Example</h4>
+                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/ HTTP/1.1
+Host: tamis.dev.52north.org
+Accept: application/json</pre>
+                            <pre id="processes-example" class="collapse">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+[
+  {
+    "id": "org.n52.wps.server.r.tamis-interpolation",
+    "label": "Interpolation of Wasserstand at Bevertalsperre",
+    "description": "Interpolation of Wasserstand at Bevertalsperre",
+    "url": "http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation"
+  },
+  {
+    "id": "org.n52.wps.server.r.tamis-regression",
+    "label": "TaMIS Regression Model for Wasserstand_im_Damm or Schuettmenge at Bever-Talsperre",
+    "description": "TaMIS Regression Model for Wasserstand_im_Damm or Schuettmenge at Bever-Talsperre",
+    "url": "http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression"
+  }
+]
+</pre>
+                            <button data-toggle="collapse" data-parent="#processes-examples"
+                                data-target="#processes-example" class="btn btn-primary">Show/Hide
+                                Response</button>
+                        </div>
+
+                        <div class="n52-callout n52-callout-info">
+                            Each encoded process is enroched with a parameter <code>url</code> that represents the REST API call to obtain the
+                            corresponding <a href="#process-description">Process Description</a>.
+                        </div>
+
+					          </div>
+
+                </div>
+            </section>
+
+            <!-- Process Description
+                ================================================== -->
+            <section id="process-description">
+                <div class="page-header">
+                    <h1>Process Description</h1>
+                    <p class="pull-right up-link">
+                        <a href="#"><i class="icon-chevron-up"></i> top</a>
+                    </p>
+                </div>
+                <div>
+                    <div id="process-description-urls">
+                        <!-- URLs -->
+                        <h3>URLs</h3>
+                        <p>API calls are triggered by using the following URLs.</p>
+                        <table class="table">
+                            <tr>
+                                <th>Method</th>
+                                <th>Path</th>
+                                <th>Content-Type</th>
+                                <th>Description</th>
+                            </tr>
+
+                            <tr>
+                                <td><code>GET</code></td>
+                                <td><code>&lt;baseURL&gt;/processes/{process-id}</code></td>
+                                <td><code>application/json</code></td>
+                                <td>Returns the process description for the process with the specified <code>{process-id}</code>.
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+                    <div id="process-description-examples">
+                        <!-- Examples -->
+                        <h3>Examples</h3>
+                        <div>
+                            <h4>Process Description Example</h4>
+                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation HTTP/1.1
+Host: tamis.dev.52north.org
+Accept: application/json</pre>
+                            <pre id="process-description-example" class="collapse">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "id": "org.n52.wps.server.r.tamis-interpolation",
+  "label": "Interpolation of Wasserstand at Bevertalsperre",
+  "description": "Interpolation of Wasserstand at Bevertalsperre",
+  "inputs": [
+    {
+      "id": "sosInputData",
+      "label": "SOS-request",
+      "type": "text/plain | text/xml",
+      "required": false
+    },
+    {
+      "id": "target",
+      "label": "target",
+      "type": "application/geotiff | application/vnd.google-earth.kml+xml | text/xml | text/xml | text/xml | text/xml | text/xml; subtype=gml/2.0.0 | text/xml; subtype=gml/2.1.1 | text/xml; subtype=gml/2.1.2 | text/xml; subtype=gml/2.1.2.1 | text/xml | text/xml | text/xml | text/xml | text/xml | text/xml; subtype=gml/3.0.0 | text/xml; subtype=gml/3.0.1 | text/xml; subtype=gml/3.1.0 | text/xml; subtype=gml/3.1.1 | text/xml; subtype=gml/3.2.1 | application/dbase | application/dbase | application/dgn | application/dgn | application/geotiff | application/geotiff | application/hdf4-eos | application/hdf4-eos | application/img | application/img | application/rData | application/rData | application/rData+Spatial | application/rData+Spatial | application/rData+SpatialPoints | application/rData+SpatialPoints | application/rData+SpatialPolygons | application/rData+SpatialPolygons | application/remap | application/remap | application/x-erdas-hfa | application/x-erdas-hfa | application/x-geotiff | application/x-geotiff | application/x-netcdf | application/x-netcdf | application/x-zipped-shp | application/x-zipped-shp | image/jpeg | image/jpeg | image/png | image/png | image/tiff | image/tiff | text/csv | text/csv | text/html | text/html | text/plain | text/plain | text/x-markdown | text/x-markdown",
+      "required": true
+    }
+  ],
+  "outputs": [
+    {
+      "id": "dataPos",
+      "label": "dataPos",
+      "type": "image/png | image/png"
+    },
+    {
+      "id": "vgmFit",
+      "label": "vgmFit",
+      "type": "image/png | image/png"
+    },
+    {
+      "id": "predictions",
+      "label": "predictions",
+      "type": "application/geotiff | text/xml | text/xml | text/xml | text/xml | text/xml | text/xml | text/xml | text/xml | text/xml; subtype=gml/3.0.0 | text/xml; subtype=gml/3.0.1 | text/xml; subtype=gml/3.1.0 | text/xml; subtype=gml/3.1.1 | text/xml; subtype=gml/3.2.1 | application/x-jsongeometry | application/dbase | application/dbase | application/dgn | application/dgn | application/geotiff | application/geotiff | application/hdf4-eos | application/hdf4-eos | application/img | application/img | application/rData | application/rData | application/rData+Spatial | application/rData+Spatial | application/rData+SpatialPoints | application/rData+SpatialPoints | application/rData+SpatialPolygons | application/rData+SpatialPolygons | application/remap | application/remap | application/x-erdas-hfa | application/x-erdas-hfa | application/x-geotiff | application/x-geotiff | application/x-netcdf | application/x-netcdf | application/x-zipped-shp | application/x-zipped-shp | image/jpeg | image/jpeg | image/png | image/png | image/tiff | image/tiff | text/plain | text/plain"
+    },
+    {
+      "id": "predMap",
+      "label": "predMap",
+      "type": "image/png | image/png"
+    },
+    {
+      "id": "sessionInfo",
+      "label": "Information about the R session which has been used",
+      "type": "text/plain"
+    },
+    {
+      "id": "warnings",
+      "label": "Warnings from R",
+      "type": "text/plain"
+    }
+  ]
+}</pre>
+                            <button data-toggle="collapse" data-parent="#process-description-examples"
+                                data-target="#process-description-example" class="btn btn-primary">Show/Hide
+                                Response</button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Process Execution
+                ================================================== -->
+            <section id="process-execution">
+                <div class="page-header">
+                    <h1>Process Execution</h1>
+                    <p class="pull-right up-link">
+                        <a href="#"><i class="icon-chevron-up"></i> top</a>
+                    </p>
+                </div>
+                <div>
+                    <div id="process-execution-urls">
+                        <!-- URLs -->
+                        <h3>URLs</h3>
+                        <p>API calls are triggered by using the following URLs.</p>
+                        <table class="table">
+                            <tr>
+                                <th>Method</th>
+                                <th>Path</th>
+                                <th style="width: 21%">Content-Type</th>
+                                <th>Description</th>
+                            </tr>
+
+                            <tr>
+                                <td><code>POST</code></td>
+                                <td><code>&lt;base-url&gt;/processes/{process-id}?sync-execute=false</code></td>
+                                <td><code>application/json</code></td>
+                                <td>Creates a new <code>job</code> for process with specified <code>{process-id}</code> and executes it <code>ASYNCHRONOUSLY</code>.
+                                  Consequentially, the response will be <code>HTTP status 201</code>, containing a <code>Location</code> header pointing to
+                                  the <a href="#status">Status Info</a> document.</td>
+                            </tr>
+
+                            <tr>
+                                <td><code>POST</code></td>
+                                <td><code>&lt;base-url&gt;/processes/{process-id}?sync-execute=true</code></td>
+                                <td><code>application/json</code></td>
+                                <td>Creates a new <code>job</code> for process with specified <code>{process-id}</code> and executes it <code>SYNCHRONOUSLY</code>.
+                                  Consequentially, after the job has completely finished, the response will be a <a href="#result">Result</a> document,
+                                containing the computed results.</td>
+                            </tr>
+
+                        </table>
+
+                        <div class="n52-callout n52-callout-info">
+                            The query parameter <code>sync-execute</code> may be omitted. Then <code>sync-execute=false</code> is used per default.
+                        </div>
+                    </div>
+
+                    <div id="process-execution-payload">
+                        <!-- Payload -->
+                        <h3>POST Payload</h3>
+
+                        <div class="n52-callout n52-callout-info">
+                            Since the execute operation is done via HTTP POST, a proper <code>Execute Request Body</code> has to be specified! Note that you have to set the header <code>Content-Type: application/json</code>
+                        </div>
+
+                        <div>
+                            <!-- Simple Collection -->
+                            <h4>Exemplar Execute Request Payload</h4>
+                            <pre>POST http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation?sync-execute=false HTTP/1.1
+Host: tamis.dev.52north.org
+Accept: application/json</pre>
+                            <pre id="process-execution-payload-example" class="collapse">Content-Type: application/json;
+
+{
+    "inputs": [
+        {
+            "id": "sosInputNiederschlag",
+            "value": "http://www.fluggs.de/sos2/sos?service%3DSOS&version%3D2.0.0&request%3DGetObservation&responseformat%3Dhttp://www.opengis.net/om/2.0&observedProperty%3DNiederschlagshoehe&procedure%3DTagessumme&featureOfInterest%3DBever-Talsperre&&namespaces%3Dxmlns%28sams%2Chttp%3A%2F%2Fwww.opengis.net%2FsamplingSpatial%2F2.0%29%2Cxmlns%28om%2Chttp%3A%2F%2Fwww.opengis.net%2Fom%2F2.0%29&temporalFilter%3Dom%3AphenomenonTime%2C2016-01-01T10:00:00.00Z%2F2016-04-30T23:59:00.000Z",
+			"type" : "text/plain"
+        },
+        {
+            "id": "sosInputFuellstand",
+            "value": "http://www.fluggs.de/sos2/sos?service%3DSOS&version%3D2.0.0&request%3DGetObservation&responseformat%3Dhttp://www.opengis.net/om/2.0&observedProperty%3DSpeicherfuellstand&procedure%3DEinzelwert&featureOfInterest%3DBever-Talsperre_Windenhaus&namespaces%3Dxmlns%28sams%2Chttp%3A%2F%2Fwww.opengis.net%2FsamplingSpatial%2F2.0%29%2Cxmlns%28om%2Chttp%3A%2F%2Fwww.opengis.net%2Fom%2F2.0%29&temporalFilter%3Dom%3AphenomenonTime%2C2016-01-01T10:00:00.00Z%2F2016-04-30T23:59:00.000Z",
+			"type" : "text/plain"
+        },
+        {
+            "id": "sosInputTarget",
+            "value": "http://fluggs.wupperverband.de/sos2-tamis/service?service%3DSOS&version%3D2.0.0&request%3DGetObservation&responseformat%3Dhttp://www.opengis.net/om/2.0&observedProperty%3DWasserstand_im_Damm&procedure%3DHandeingabe&featureOfInterest%3DBever-Talsperre_MQA7_Piezometer_Kalkzone&namespaces%3Dxmlns%28sams%2Chttp%3A%2F%2Fwww.opengis.net%2FsamplingSpati-al%2F2.0%29%2Cxmlns%28om%2Chttp%3A%2F%2Fwww.opengis.net%2Fom%2F2.0%29&temporalFilter%3Dom%3AphenomenonTime%2C2016-01-01T00:01:00.00Z%2F2016-04-30T23:59:00.000Z",
+			"type" : "text/plain"
+        }
+    ],
+    "outputs": [
+      {
+              "id": "targetObs_plot",
+              "type": "image/png"
+       },
+      {
+              "id": "model_diagnostics",
+              "type": "image/png"
+       },
+      {
+              "id": "relations",
+              "type": "image/png"
+       },
+      {
+              "id": "model_prediction",
+              "type": "text/csv"
+       },
+      {
+              "id": "metaJson",
+              "type": "application/json"
+       },
+      {
+              "id": "dataJson",
+              "type": "application/json"
+       }
+    ]
+}</pre>
+                            <button data-toggle="collapse" data-parent="#process-execution-payload"
+                                data-target="#process-execution-payload-example" class="btn btn-primary">Show/Hide
+                                Execute Request Payload</button>
+
+                        </div>
+
+                        <div>
+
+                    </div>
+
+                    <div id="process-execution-examples">
+                        <!-- Examples -->
+                        <h3>Examples</h3>
+                        <div>
+                            <!-- Asynchronous Execution -->
+                            <h4>Process Execution - Asynchronous</h4>
+                            <pre>POST http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation?sync-execute=false HTTP/1.1
+Host: tamis.dev.52north.org
+Accept: application/json</pre>
+                            <pre id="process-execution-async" class="collapse">HTTP/1.1 201 CREATED
+Location: http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation/jobs/04e763cc-d108-4954-8361-98b8cda422ba
+</pre>
+                            <button data-toggle="collapse" data-parent="#process-execution-examples"
+                                data-target="#process-execution-async" class="btn btn-primary">Show/Hide
+                                Response</button>
+                            <div class="n52-callout n52-callout-info">
+                                In case of <code>asynchronous</code> execution, the response contains no body, but a <code>Location</code> header with a URL to the created job-instance,
+                                which may be used to retrieve the corresponding <a href="#status">StatusInfo</a> document.
+                            </div>
+                        </div>
+
+                        <!-- Synchronous Execution -->
+                        <h4>Process Execution - Synchronous</h4>
+                        <pre>POST http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation?sync-execute=true HTTP/1.1
+Host: tamis.dev.52north.org
+Accept: application/json</pre>
+                        <pre id="process-execution-sync" class="collapse">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+TODO insert working response for previous request payload
+</pre>
+                        <button data-toggle="collapse" data-parent="#process-execution-examples"
+                            data-target="#process-execution-sync" class="btn btn-primary">Show/Hide
+                            Response</button>
+                        <div class="n52-callout n52-callout-info">
+                            In case of <code>synchronous</code> execution, the response represents the corresponding <a href="#result">Result</a> document.
+                        </div>
+                    </div>
+
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- StatusInfo
+                ================================================== -->
+            <section id="status">
+                <div class="page-header">
+                    <h1>Status Info / Get Status</h1>
+                    <p class="pull-right up-link">
+                        <a href="#"><i class="icon-chevron-up"></i> top</a>
+                    </p>
+                </div>
+                <div>
+                    <div id="status-urls">
+                        <!-- URLs -->
+                        <h3>URLs</h3>
+                        <p>API calls are triggered by using the following URLs.</p>
+                        <table class="table">
+                            <tr>
+                                <th>Method</th>
+                                <th>Path</th>
+                                <th style="width: 21%">Content-Type</th>
+                                <th>Description</th>
+                            </tr>
+
+                            <tr>
+                                <td><code>GET</code></td>
+                                <td><code>&lt;base-url&gt;/processes/{process-id}/jobs/{job-id}</code></td>
+                                <td><code>application/json</code></td>
+                                <td>Returns a <code>StatusInfo</code> document for the specified process with
+                                  id <code>{process-id}</code> and job with id <code>{job-id}</code>.</td>
+                            </tr>
+
+                        </table>
+
+                        <div class="n52-callout n52-callout-info">
+                            Note that job instances are deleted from time to time. Hence, a <code>{job-id}</code> will become invalid after a certain period of time!
+                        </div>
+                    </div>
+
+                    <div id="status-examples">
+                        <!-- Examples -->
+                        <h3>Examples</h3>
+                        <div>
+                            <!-- Process Accepted -->
+                            <h4>Get Status Example - Process Accepted</h4>
+                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation/jobs/04e763cc-d108-4954-8361-98b8cda422ba HTTP/1.1
+Host: tamis.dev.52north.org
+Accept: application/json</pre>
+                            <pre id="status-example-accepted" class="collapse">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "StatusInfo": {
+        "JobID": "04e763cc-d108-4954-8361-98b8cda422ba",
+        "Status": "Accepted",
+        “Progress”:42
+    }
+}</pre>
+                            <button data-toggle="collapse" data-parent="#status-examples"
+                                data-target="#status-example-accepted" class="btn btn-primary">Show/Hide
+                                Response</button>
+                            <div class="n52-callout n52-callout-info">
+                                Note that parameter
+                                <code>Status</code>
+                                is set to
+                                <code>Accepted</code>
+                                and parameter
+                                <code>Progress</code>
+                                indicates the percentage of job completion (if supported by the WPS instance).
+                            </div>
+                        </div>
+
+                        <div>
+                            <!-- Process finished -->
+                            <h4>Get Status Example - Process Finished</h4>
+                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation/jobs/04e763cc-d108-4954-8361-98b8cda422ba HTTP/1.1
+Host: tamis.dev.52north.org
+Accept: application/json</pre>
+                            <pre id="status-example-finished" class="collapse">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "StatusInfo": {
+        "JobID": "04e763cc-d108-4954-8361-98b8cda422ba",
+        "Status": "Successful"
+        “Outputs”: “http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation/jobs/04e763cc-d108-4954-8361-98b8cda422ba/outputs”
+    }
+}</pre>
+                            <button data-toggle="collapse" data-parent="#status-examples"
+                                data-target="#status-example-finished" class="btn btn-primary">Show/Hide
+                                Response</button>
+                            <div class="n52-callout n52-callout-info">
+                                Note that parameter
+                                <code>Status</code>
+                                is now set to
+                                <code>Successful</code>
+                                and that there is a new parameter
+                                <code>Outputs</code>
+                                that contains a link to the outputs of the finished job, encoded as a <a href="#result">Result</a> document.
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- Result
+                ================================================== -->
+            <section id="result">
+                <div class="page-header">
+                    <h1>Result Document / Get result</h1>
+                    <p class="pull-right up-link">
+                        <a href="#"><i class="icon-chevron-up"></i> top</a>
+                    </p>
+                </div>
+
+                <div>
+                    <div id="result-urls">
+                        <!-- URLs -->
+                        <h3>URLs</h3>
+                        <p>API calls are triggered by using the following URLs.</p>
+                        <table class="table">
+                            <tr>
+                                <th>Method</th>
+                                <th>Path</th>
+                                <th style="width: 21%">Content-Type</th>
+                                <th>Description</th>
+                            </tr>
+
+                            <tr>
+                                <td><code>GET</code></td>
+                                <td><code>&lt;base-url&gt;/processes/{process-id}/jobs/{job-id}/outputs</code></td>
+                                <td><code>application/json</code></td>
+                                <td>Returns a <code>Result</code> document for the specified process with
+                                  id <code>{process-id}</code> and job with id <code>{job-id}</code>.
+                                  It comprises all requested outputs for the specified job.</td>
+                            </tr>
+
+                            <tr>
+                                <td><code>GET</code></td>
+                                <td><code>&lt;base-url&gt;/processes/{process-id}/jobs/{job-id}/outputs/{output-id}</code></td>
+                                <td><code>application/json</code></td>
+                                <td>Returns a single output for the specified process with
+                                  id <code>{process-id}</code> and job with id <code>{job-id}</code> and output with id
+                                  <code>{output-id}</code>. In contrast to a complete <code>Result</code> document, the encoded JSON response
+                                  only displays the information of that specific output (without surrounding <code>Result</code> and <code>Output</code> elements)</td>
+                            </tr>
+
+                        </table>
+
+                        <div class="n52-callout n52-callout-info">
+                            Note that job instances are deleted from time to time. Hence, a <code>{job-id}</code> will become invalid after a certain period of time!
+                        </div>
+
+                        <div class="n52-callout n52-callout-info">
+                            The desired output format (application/json) may be transmitted in three ways:
+                            <ul>
+
+                              <li>in the <code>Accept</code> header: <code>Accept: application/json</code></li>
+
+                              <li>as query parameter <code>format</code> of the request: <code>&lt;baseURL&gt;/processes/{process-id}/jobs/{job-id}/outputs?format=json</code>
+                              or <code>&lt;baseURL&gt;/processes/{process-id}/jobs/{job-id}/outputs/{output-id}?format=json</code> respectively</li>
+
+                              <li>as URL suffix <code>.json</code>: <code>&lt;baseURL&gt;/processes/{process-id}/jobs/{job-id}/outputs.json</code>
+                              or <code>&lt;baseURL&gt;/processes/{process-id}/jobs/{job-id}/outputs/{output-id}.json</code> respectively</li>
+
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="result-examples">
+                        <!-- Examples -->
+                        <h3>Examples</h3>
+                        <div>
+                            <!-- Result Document -->
+                            <h4>Get Result Example - Complete Result Document</h4>
+                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61082-688b-46f8-83d0-0c24d38573eb/outputs HTTP/1.1
+Host: tamis.dev.52north.org
+Accept: application/json</pre>
+                            <pre id="result-example-complete" class="collapse">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "Result": {
+    "JobID": "c8b61082-688b-46f8-83d0-0c24d38573eb",
+    "Output": [
+      {
+        "ID": "targetObs_plot",
+        "Reference": {
+          "_mimeType": "image/png",
+          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebtargetObs_plot.d59e34c0-8a89-4793-98cd-bf93bae6b6a4"
+        }
+      },
+      {
+        "ID": "model_diagnostics",
+        "Reference": {
+          "_mimeType": "image/png",
+          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebmodel_diagnostics.4ce97ee5-d6ba-4f18-9fef-f1eb1d184b19"
+        }
+      },
+      {
+        "ID": "relations",
+        "Reference": {
+          "_mimeType": "image/png",
+          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebrelations.c195b642-8b8b-477e-a371-5892dc94a9a4"
+        }
+      },
+      {
+        "ID": "model_prediction",
+        "Reference": {
+          "_mimeType": "text/csv",
+          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebmodel_prediction.56f1cc88-172b-4a5e-8fb9-4043476d6d0c"
+        }
+      },
+      {
+        "ID": "metaJson",
+        "Reference": {
+          "_mimeType": "application/json",
+          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebmetaJson.549068d7-823c-48be-9fcc-64f8756eeb59"
+        }
+      },
+      {
+        "ID": "dataJson",
+        "Reference": {
+          "_mimeType": "application/json",
+          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebdataJson.cf37e88a-2622-48a8-b7c9-eab89d26844a"
+        }
+      }
+    ]
+  }
+}</pre>
+                            <button data-toggle="collapse" data-parent="#result-examples"
+                                data-target="#result-example-complete" class="btn btn-primary">Show/Hide
+                                Response</button>
+
+                        </div>
+
+                        <div>
+                            <!-- Single Output -->
+                            <h4>Get Result Example - Single Output</h4>
+                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61082-688b-46f8-83d0-0c24d38573eb/outputs/dataJson HTTP/1.1
+Host: tamis.dev.52north.org
+Accept: application/json</pre>
+                            <pre id="result-example-single-output" class="collapse">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "ID": "dataJson",
+  "Reference": {
+    "_mimeType": "application/json",
+    "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=69e14716-405d-4be8-8047-2c4142f2da2ddataJson.50f62ecc-38cc-43d1-9f87-15814d6bc1c0"
+  }
+}</pre>
+                            <button data-toggle="collapse" data-parent="#result-examples"
+                                data-target="#result-example-single-output" class="btn btn-primary">Show/Hide
+                                Response</button>
+
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dismiss
+                ================================================== -->
+            <section id="dismiss">
+                <div class="page-header">
+                    <h1>Dismiss</h1>
+                    <p class="pull-right up-link">
+                        <a href="#"><i class="icon-chevron-up"></i> top</a>
+                    </p>
+                </div>
+
+                <div>
+                    <div id="dismiss-urls">
+                        <!-- URLs -->
+                        <h3>URLs</h3>
+                        <p>API calls are triggered by using the following URLs.</p>
+                        <table class="table">
+                            <tr>
+                                <th>Method</th>
+                                <th>Path</th>
+                                <th style="width: 21%">Content-Type</th>
+                                <th>Description</th>
+                            </tr>
+
+                            <tr>
+                                <td><code>DELETE</code></td>
+                                <td><code>&lt;base-url&gt;/processes/{process-id}/jobs/{job-id}</code></td>
+                                <td><code>application/json</code></td>
+                                <td>Stops/Deletes an existing job with the id <code>{job-id}</code> for process with id <code>process-id</code>.
+                                  On valid dismiss, returns HTTP status <code>200 - OK</code>.</td>
+                            </tr>
+
+                        </table>
+
+                        <div class="n52-callout n52-callout-info">
+                            Note that subsequent calls to the same or non-existing <code>{job-id}</code> result in a HTTP status code <code>404 - NOT FOUND</code>.
+                        </div>
+
+                        <div class="n52-callout n52-callout-todo">
+                            Currently (as of 2016-08-09), the operation is not yet implemented in the 52&deg;North WPS. Hence, the REST-API call will fail
+                            and the job with id <code>{job-id}</code> still exists!.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+    <!-- Footer
+        ================================================== -->
+
+    <div class="col-lg-12">
+        <footer class="footer">
+            <div>
+                <div class="pull-right">
+                    <a href="#">top</a>
+                </div>
+
+                <p>
+                    Design and Content <a href="http://52north.org/" target="_blank">52&deg;North</a>.
+                </p>
+
+                <p>
+                    Content licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.
+                </p>
+
+                <p>
+                    <a href="http://glyphicons.com">Glyphicons Free</a> licensed under <a
+                        href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.
+                </p>
+
+                <ul class="footer-links">
+                    <li><a href="http://52north.org/communities/geoprocessing/">Geoprocessing Community</a></li>
+                    <li class="muted">&middot;</li>
+                    <li><a href="mailto:b.pross@52north.org">Contact</a></li>
+                </ul>
+
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="js/bootstrap-3.0.0-rc1/bootstrap.min.js"></script>
+</body>
+</html>
