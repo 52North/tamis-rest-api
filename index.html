@@ -632,7 +632,17 @@ Accept: application/json</pre>
                             <h4>Process Execution - Asynchronous</h4>
                             <pre>POST http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression?sync-execute=false HTTP/1.1
 Host: tamis.dev.52north.org
-Accept: application/json</pre>
+Accept: application/json
+
+
+{
+    "inputs": [
+      ... // omitted for readability; see payload example above
+    ],
+    "outputs": [
+      ... // omitted for readability; see payload example above
+    ]
+}</pre>
                             <pre id="process-execution-async" class="collapse">HTTP/1.1 201 CREATED
 Location: http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61082-688b-46f8-83d0-0c24d38573eb
 </pre>
@@ -649,7 +659,17 @@ Location: http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/or
                         <h4>Process Execution - Synchronous</h4>
                         <pre>POST http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression?sync-execute=true HTTP/1.1
 Host: tamis.dev.52north.org
-Accept: application/json</pre>
+Accept: application/json
+
+
+{
+    "inputs": [
+      ... // omitted for readability; see payload example above
+    ],
+    "outputs": [
+      ... // omitted for readability; see payload example above
+    ]
+}</pre>
                         <pre id="process-execution-sync" class="collapse">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 
