@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 <head>
 <meta charset="UTF-8">
 <title>Documentation WPS 2.0 REST-API (TAMIS)</title>
@@ -333,7 +333,7 @@ Content-Type: application/json;charset=UTF-8
 
 [
   {
-    "id": "org.n52.wps.server.r.tamis-interpolation",
+    "id": "org.n52.wps.server.r.tamis-regression",
     "label": "Interpolation of Wasserstand at Bevertalsperre",
     "description": "Interpolation of Wasserstand at Bevertalsperre",
     "url": "http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation"
@@ -352,7 +352,7 @@ Content-Type: application/json;charset=UTF-8
                         </div>
 
                         <div class="n52-callout n52-callout-info">
-                            Each encoded process is enroched with a parameter <code>url</code> that represents the REST API call to obtain the
+                            Each encoded process is enriched with a parameter <code>url</code> that represents the REST API call to obtain the
                             corresponding <a href="#process-description">Process Description</a>.
                         </div>
 
@@ -399,50 +399,90 @@ Content-Type: application/json;charset=UTF-8
                         <h3>Examples</h3>
                         <div>
                             <h4>Process Description Example</h4>
-                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation HTTP/1.1
+                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression HTTP/1.1
 Host: tamis.dev.52north.org
 Accept: application/json</pre>
                             <pre id="process-description-example" class="collapse">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 
 {
-  "id": "org.n52.wps.server.r.tamis-interpolation",
-  "label": "Interpolation of Wasserstand at Bevertalsperre",
-  "description": "Interpolation of Wasserstand at Bevertalsperre",
+  "id": "org.n52.wps.server.r.tamis-regression",
+  "label": "TaMIS Regression Model for Wasserstand_im_Damm or Schuettmenge at Bever-Talsperre",
+  "description": "TaMIS Regression Model for Wasserstand_im_Damm or Schuettmenge at Bever-Talsperre",
   "inputs": [
     {
-      "id": "sosInputData",
+      "id": "sosInputNiederschlag",
       "label": "SOS-request",
       "type": "text/plain | text/xml",
       "required": false
     },
     {
-      "id": "target",
-      "label": "target",
-      "type": "application/geotiff | application/vnd.google-earth.kml+xml | text/xml | text/xml | text/xml | text/xml | text/xml; subtype=gml/2.0.0 | text/xml; subtype=gml/2.1.1 | text/xml; subtype=gml/2.1.2 | text/xml; subtype=gml/2.1.2.1 | text/xml | text/xml | text/xml | text/xml | text/xml | text/xml; subtype=gml/3.0.0 | text/xml; subtype=gml/3.0.1 | text/xml; subtype=gml/3.1.0 | text/xml; subtype=gml/3.1.1 | text/xml; subtype=gml/3.2.1 | application/dbase | application/dbase | application/dgn | application/dgn | application/geotiff | application/geotiff | application/hdf4-eos | application/hdf4-eos | application/img | application/img | application/rData | application/rData | application/rData+Spatial | application/rData+Spatial | application/rData+SpatialPoints | application/rData+SpatialPoints | application/rData+SpatialPolygons | application/rData+SpatialPolygons | application/remap | application/remap | application/x-erdas-hfa | application/x-erdas-hfa | application/x-geotiff | application/x-geotiff | application/x-netcdf | application/x-netcdf | application/x-zipped-shp | application/x-zipped-shp | image/jpeg | image/jpeg | image/png | image/png | image/tiff | image/tiff | text/csv | text/csv | text/html | text/html | text/plain | text/plain | text/x-markdown | text/x-markdown",
-      "required": true
+      "id": "sosInputFuellstand",
+      "label": "SOS-request",
+      "type": "text/plain | text/xml",
+      "required": false
+    },
+    {
+      "id": "sosInputTarget",
+      "label": "SOS-request",
+      "type": "text/plain | text/xml",
+      "required": false
+    },
+    {
+      "id": "sosInputNiederschlagPred",
+      "label": "SOS-request",
+      "type": "text/plain | text/xml",
+      "required": false
+    },
+    {
+      "id": "sosInputFuellstandPred",
+      "label": "SOS-request",
+      "type": "text/plain | text/xml",
+      "required": false
+    },
+    {
+      "id": "singleInputNiederschlagPred",
+      "label": "single value",
+      "type": "text/plain | text/xml",
+      "required": false
+    },
+    {
+      "id": "singleInputFuellstandPred",
+      "label": "single value",
+      "type": "text/plain | text/xml",
+      "required": false
     }
   ],
   "outputs": [
     {
-      "id": "dataPos",
-      "label": "dataPos",
+      "id": "targetObs_plot",
+      "label": "targetObs_plot",
       "type": "image/png | image/png"
     },
     {
-      "id": "vgmFit",
-      "label": "vgmFit",
+      "id": "model_diagnostics",
+      "label": "model_diagnostics",
       "type": "image/png | image/png"
     },
     {
-      "id": "predictions",
-      "label": "predictions",
-      "type": "application/geotiff | text/xml | text/xml | text/xml | text/xml | text/xml | text/xml | text/xml | text/xml | text/xml; subtype=gml/3.0.0 | text/xml; subtype=gml/3.0.1 | text/xml; subtype=gml/3.1.0 | text/xml; subtype=gml/3.1.1 | text/xml; subtype=gml/3.2.1 | application/x-jsongeometry | application/dbase | application/dbase | application/dgn | application/dgn | application/geotiff | application/geotiff | application/hdf4-eos | application/hdf4-eos | application/img | application/img | application/rData | application/rData | application/rData+Spatial | application/rData+Spatial | application/rData+SpatialPoints | application/rData+SpatialPoints | application/rData+SpatialPolygons | application/rData+SpatialPolygons | application/remap | application/remap | application/x-erdas-hfa | application/x-erdas-hfa | application/x-geotiff | application/x-geotiff | application/x-netcdf | application/x-netcdf | application/x-zipped-shp | application/x-zipped-shp | image/jpeg | image/jpeg | image/png | image/png | image/tiff | image/tiff | text/plain | text/plain"
+      "id": "relations",
+      "label": "relations",
+      "type": "image/png | image/png"
     },
     {
-      "id": "predMap",
-      "label": "predMap",
-      "type": "image/png | image/png"
+      "id": "model_prediction",
+      "label": "model_prediction",
+      "type": "text/csv | text/csv"
+    },
+    {
+      "id": "metaJson",
+      "label": "metaJson",
+      "type": "application/json | application/json"
+    },
+    {
+      "id": "dataJson",
+      "label": "dataJson",
+      "type": "application/json | application/json"
     },
     {
       "id": "sessionInfo",
@@ -524,7 +564,7 @@ Content-Type: application/json;charset=UTF-8
                         <div>
                             <!-- Simple Collection -->
                             <h4>Exemplar Execute Request Payload</h4>
-                            <pre>POST http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation?sync-execute=false HTTP/1.1
+                            <pre>POST http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression?sync-execute=false HTTP/1.1
 Host: tamis.dev.52north.org
 Accept: application/json</pre>
                             <pre id="process-execution-payload-example" class="collapse">Content-Type: application/json;
@@ -590,11 +630,11 @@ Accept: application/json</pre>
                         <div>
                             <!-- Asynchronous Execution -->
                             <h4>Process Execution - Asynchronous</h4>
-                            <pre>POST http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation?sync-execute=false HTTP/1.1
+                            <pre>POST http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression?sync-execute=false HTTP/1.1
 Host: tamis.dev.52north.org
 Accept: application/json</pre>
                             <pre id="process-execution-async" class="collapse">HTTP/1.1 201 CREATED
-Location: http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation/jobs/04e763cc-d108-4954-8361-98b8cda422ba
+Location: http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61082-688b-46f8-83d0-0c24d38573eb
 </pre>
                             <button data-toggle="collapse" data-parent="#process-execution-examples"
                                 data-target="#process-execution-async" class="btn btn-primary">Show/Hide
@@ -607,13 +647,61 @@ Location: http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/or
 
                         <!-- Synchronous Execution -->
                         <h4>Process Execution - Synchronous</h4>
-                        <pre>POST http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation?sync-execute=true HTTP/1.1
+                        <pre>POST http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression?sync-execute=true HTTP/1.1
 Host: tamis.dev.52north.org
 Accept: application/json</pre>
                         <pre id="process-execution-sync" class="collapse">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 
-TODO insert working response for previous request payload
+{
+  "Result": {
+    "JobID": "c8b61082-688b-46f8-83d0-0c24d38573eb",
+    "Output": [
+      {
+        "ID": "targetObs_plot",
+        "Reference": {
+          "_mimeType": "image/png",
+          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebtargetObs_plot.d59e34c0-8a89-4793-98cd-bf93bae6b6a4"
+        }
+      },
+      {
+        "ID": "model_diagnostics",
+        "Reference": {
+          "_mimeType": "image/png",
+          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebmodel_diagnostics.4ce97ee5-d6ba-4f18-9fef-f1eb1d184b19"
+        }
+      },
+      {
+        "ID": "relations",
+        "Reference": {
+          "_mimeType": "image/png",
+          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebrelations.c195b642-8b8b-477e-a371-5892dc94a9a4"
+        }
+      },
+      {
+        "ID": "model_prediction",
+        "Reference": {
+          "_mimeType": "text/csv",
+          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebmodel_prediction.56f1cc88-172b-4a5e-8fb9-4043476d6d0c"
+        }
+      },
+      {
+        "ID": "metaJson",
+        "Reference": {
+          "_mimeType": "application/json",
+          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebmetaJson.549068d7-823c-48be-9fcc-64f8756eeb59"
+        }
+      },
+      {
+        "ID": "dataJson",
+        "Reference": {
+          "_mimeType": "application/json",
+          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebdataJson.cf37e88a-2622-48a8-b7c9-eab89d26844a"
+        }
+      }
+    ]
+  }
+}
 </pre>
                         <button data-toggle="collapse" data-parent="#process-execution-examples"
                             data-target="#process-execution-sync" class="btn btn-primary">Show/Hide
@@ -671,7 +759,7 @@ TODO insert working response for previous request payload
                         <div>
                             <!-- Process Accepted -->
                             <h4>Get Status Example - Process Accepted</h4>
-                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation/jobs/04e763cc-d108-4954-8361-98b8cda422ba HTTP/1.1
+                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61082-688b-46f8-83d0-0c24d38573eb HTTP/1.1
 Host: tamis.dev.52north.org
 Accept: application/json</pre>
                             <pre id="status-example-accepted" class="collapse">HTTP/1.1 200 OK
@@ -679,7 +767,7 @@ Content-Type: application/json;charset=UTF-8
 
 {
     "StatusInfo": {
-        "JobID": "04e763cc-d108-4954-8361-98b8cda422ba",
+        "JobID": "c8b61082-688b-46f8-83d0-0c24d38573eb",
         "Status": "Accepted",
         “Progress”:42
     }
@@ -701,7 +789,7 @@ Content-Type: application/json;charset=UTF-8
                         <div>
                             <!-- Process finished -->
                             <h4>Get Status Example - Process Finished</h4>
-                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation/jobs/04e763cc-d108-4954-8361-98b8cda422ba HTTP/1.1
+                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61082-688b-46f8-83d0-0c24d38573eb HTTP/1.1
 Host: tamis.dev.52north.org
 Accept: application/json</pre>
                             <pre id="status-example-finished" class="collapse">HTTP/1.1 200 OK
@@ -709,9 +797,9 @@ Content-Type: application/json;charset=UTF-8
 
 {
     "StatusInfo": {
-        "JobID": "04e763cc-d108-4954-8361-98b8cda422ba",
+        "JobID": "c8b61082-688b-46f8-83d0-0c24d38573eb",
         "Status": "Successful"
-        “Outputs”: “http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-interpolation/jobs/04e763cc-d108-4954-8361-98b8cda422ba/outputs”
+        “Outputs”: “http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61082-688b-46f8-83d0-0c24d38573eb/outputs”
     }
 }</pre>
                             <button data-toggle="collapse" data-parent="#status-examples"
