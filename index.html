@@ -42,6 +42,7 @@
                         <!-- General --> <a data-toggle="collapse" data-parent="#contents"
                         data-target="#general-subitems" href="#general">General</a>
                         <ul id="general-subitems" class="nav collapse">
+                            <li><a href="#architecture-and-role">Architecture and Role</a></li>
                             <li><a href="#general-content-types">Content Types</a></li>
                             <li><a href="#general-common-status-codes">Common Status Codes</a></li>
                             <li><a href="#endpoint-url">Endpoint URL</a></li>
@@ -116,7 +117,7 @@
                 <div>
                     <p>
                         The <a href="http://52north.org">52&deg;North</a> WPS 2.0 REST API for TAMIS provides a thin access layer to
-                        processing fucntionalities via RESTful Web binding.
+                        processing fucntionalities for timeseries data via RESTful Web binding.
                     </p>
 
                     <p>
@@ -129,9 +130,14 @@
                     <p>
                       As a specific REST API for the
                       <a href="http://52north.org/resources/references/sensor-web/398-tamis-talsperrenmessinformationssystem">52&deg;North BMBF TAMIS Project</a>,
-                      the main goal of this REST API is to downsize the content of exchanged messages. For this reason, in contrast to the full request/response structures
+                      the main goal of this REST API is to downsize the content of exchanged messages.
+                      For this reason, in contrast to the full request/response structures
                       declared in the official <a href="http://docs.opengeospatial.org/is/14-065/14-065.html">OGC WPS 2.0 Interface Standard</a>,
                       the contents of each request and response are reduced to a minimum.
+                      Additionally, it provides processing functionalities for timeseries data retrieved by an <a
+                          href="http://opengeospatial.org">OGC</a> <a
+                          href="http://52north.org/communities/sensorweb/sos/">Sensor Observation Service (SOS)</a>
+                          via the 52&deg;North <a href="http://52north.github.io/series-rest-api/">Series REST API</a>.
                     </p>
 
                 </div>
@@ -158,6 +164,8 @@
                                     <li>In particular, the <a href="#process-execution">Execute</a> section has been revised
                                       and extended with explanations of request/response encodings.</li>
                                     <li>minor text tweaks</li>
+                                    <li>correct false explanation of base-url</li>
+                                    <li>add section <a href="#architecture-and-role">Architecture and Role of TAMIS REST</a></li>
                                 </ul>
                             </td>
                             <td>2016-08-11</td>
@@ -177,6 +185,39 @@
                     </p>
                 </div>
                 <div>
+
+                  <div id="architecture-and-role">
+                    <h3>Architecture and Role of TAMIS REST component</h3>
+
+                    <img alt="architecture figure" src="img/architecture.png" title="Role of the TAMIS REST Proxy." />
+
+                    <p>
+                      From a developer's perspective, the TAMIS REST API is implemented as a proxy component as shown in the previous figure.
+                      Clients access the <b>TAMIS WPS REST Proxy</b> via REST URLs explained in this document. The <b>TAMIS WPS REST Proxy</b>
+                      then accesses another <b>Generic WPS REST Proxy</b> that provides a 1:1 REST interface for the <b>52&deg;North Web Processing Service</b>
+                      (1:1 means, that requests and responses are encoded in <code>application/json</code> but have the same structure as typical XML requests and -responses!).
+                    </p>
+
+                    <div class="n52-callout n52-callout-info">
+                        Developer Note: to configure the <b>General WPS REST Proxy</b> endpoint URL, change the property
+                        <code>wpsProxy_baseUrl</code> in the file <code>wpsProxy-properties</code> located at the project folder
+                        <code>tamis-rest-api/rest/src/main/resources/wpsProxy.properties</code>.
+                    </div>
+
+                    <p>
+                      The role of the <b>TAMIS WPS REST Proxy</b> is to simplify request/response structures compared to the <b>Generic WPS REST Proxy</b> and,
+                      thus, reduce message contents to a minimum and ease communication with clients.
+                      How this simplification affects each operation of a WPS is explained in each corresponding subsection.
+                    </p>
+
+                    <p>
+                      In addition, the <b>TAMIS WPS REST Proxy</b> offers processing functionalities for timeseries data, which is stored in a SOS.
+                      To retrieve timeseries data the <b>TAMIS WPS REST Proxy</b> uses the RESTful
+                      <a href="http://52north.github.io/series-rest-api/"><b>52&deg;North Series REST API</b></a>.
+                      Section <a href="process-execution">Process Execution</a> explains this functionality in more detail.
+                    </p>
+
+                  </div>
 
                   <div id="general-content-types">
                       <!-- Content-Types -->
@@ -261,17 +302,17 @@
                         <!-- Status Codes -->
                         <h3>Endpoint URL</h3>
                         <p>The entry point of the REST API will be referenced as the <code>&lt;base-url&gt;</code> throughout the rest of this document.
-                          The <code>&lt;base-url&gt;</code> consists of the WPS endpoint and a static suffix <code>/api/v1/service/{service-id}</code>
-                          whereby <code>{service-id}</code> is a variable to differentiate between mutliple WPS instances. </p>
+                          The <code>&lt;base-url&gt;</code> consists of the TAMIS WPS REST Proxy endpoint and a static suffix <code>/api/v1/service/{service-id}</code>
+                          whereby <code>{service-id}</code> is a variable to differentiate between mutliple WPS instances.</p>
 
-                        <p>For instance, a running endpoint is provided by the following
+                          <div class="n52-callout n52-callout-info">
+                              Currently, the <code>{service-id}</code> is simply set to 1. There is no support for multiple instances yet!
+                              The TAMIS WPS REST Proxy is configured to access the generic WPS REST Proxy as described in section
+                              <a href="#architecture-and-role">Architecture and Role of TAMIS REST component</a>.
+                          </div>
+
+                        <p>For instance, a valid endpoint is provided by the following
                           enpoint URL: <code><a href="http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/">http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/</a></code>.</p>
-
-                        <div class="n52-callout n52-callout-info">
-                            Developer Note: to configure the WPS endpoint URL, change the property
-                            <code>wpsProxy_baseUrl</code> in the file <code>wpsProxy-properties</code> located at the project folder
-                            <code>tamis-rest-api/rest/src/main/resources/wpsProxy.properties</code>
-                        </div>
 
                     </div>
 
