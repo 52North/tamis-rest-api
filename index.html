@@ -78,6 +78,7 @@
                         <ul id="process-execution-subitems" class="nav collapse">
                             <li><a href="#process-execution-urls">URLs</a></li>
                             <li><a href="#process-execution-payload">Execute Payload</a></li>
+                            <li><a href="#process-execution-timeseries-data">Extraction of Timeseries Data From a SOS</a></li>
                             <li><a href="#process-execution-examples">Examples</a></li>
                         </ul>
                     </li>
@@ -117,7 +118,7 @@
                 <div>
                     <p>
                         The <a href="http://52north.org">52&deg;North</a> WPS 2.0 REST API for TAMIS provides a thin access layer to
-                        processing fucntionalities for timeseries data via RESTful Web binding.
+                        processing functionalities for timeseries data via RESTful Web binding.
                     </p>
 
                     <p>
@@ -201,22 +202,22 @@
                     </p>
 
                     <div class="n52-callout n52-callout-info">
-                        Developer Note: to configure the <b>General WPS REST Proxy</b> endpoint URL, change the property
+                        Developer Note: to configure the <b>Generic WPS REST Proxy</b> endpoint URL, change the property
                         <code>wpsProxy_baseUrl</code> in the file <code>wpsProxy-properties</code> located at the project folder
                         <code>tamis-rest-api/rest/src/main/resources/wpsProxy.properties</code>.
                     </div>
 
                     <p>
-                      The role of the <b>TAMIS WPS REST Proxy</b> is to simplify request/response structures compared to the <b>Generic WPS REST Proxy</b> and,
+                      The role of the <b>TAMIS WPS REST Proxy</b> is to simplify request/response structures and,
                       thus, reduce message contents to a minimum and ease communication with clients.
                       How this simplification affects each operation of a WPS is explained in each corresponding subsection.
                     </p>
 
                     <p>
                       In addition, the <b>TAMIS WPS REST Proxy</b> offers processing functionalities for timeseries data, which is stored in a SOS.
-                      To retrieve timeseries data the <b>TAMIS WPS REST Proxy</b> uses the RESTful
+                      To retrieve timeseries data the <b>TAMIS WPS REST Proxy</b> uses the
                       <a href="http://52north.github.io/series-rest-api/"><b>52&deg;North Series REST API</b></a>.
-                      Section <a href="process-execution">Process Execution</a> explains this functionality in more detail.
+                      Section <a href="#process-execution">Process Execution</a> explains this functionality in more detail.
                     </p>
 
                   </div>
@@ -226,29 +227,22 @@
                       <h3>Content-Types</h3>
 
                       <p>
-                          The content type for message exchange (request/response for most WPS operations) is
+                          The content type for message exchange is
                           <code>application/json</code>
                           . It is set as the default content type but can be set via HTTP header.
                       </p>
 
                       <div class="n52-callout n52-callout-info">
-                          Nearsly each operation <b>Request</b> is fully formulated through a REST URL alone without request payload.
+                          Nearly each operation <b>request</b> is fully formulated through a REST URL alone without request payload.
                           Only the <a href="#process-execution">Execute Operation</a> requires the definition of in- and outputs
                           via a request payload ecnoded in <code>application/json</code>.
                       </div>
 
                       <div class="n52-callout n52-callout-info">
                           Nearly each operation <b>response</b> is also encoded in <code>application/json</code>. However there is one exception:
-                          <ul>
+                          <a href="#process-execution-examples-async">Asynchronous Execute</a> operation returns only a <code>Location</code> header
+                          containing a link to the corresponding <a href="#status">Status Info</a> document.
 
-                            <li>
-
-                              <a href="#process-execution-examples-async">Asynchronous Execute</a> operation returns only a <code>Location</code> header
-                              containing a link to the corresponding <a href="#status">Status Info</a> document.
-
-                            </li>
-
-                          </ul>
                       </div>
                   </div>
 
@@ -379,7 +373,7 @@ Content-Type: application/json;charset=UTF-8
                                 Note that in contrast to a full capabilities response, as specified in the formal
                                 <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#52">OGC WPS Interface Standard - GetCapabilities Response Section</a>
                                 the response of the WPS 2.0 TAMIS REST Interface is reduced dramatically. Nearly all meta-information
-                                (about service identification, service provider, operations metadata, languages, list of process summaries) is omitted to obtain a minimum response.
+                                (service identification, service provider, operations metadata, languages, list of process summaries) is omitted to obtain a minimum response.
                                 A list of available processes can be retrieved through the <a href="#processes">Processes</a> operation.
                             </div>
 
@@ -388,7 +382,7 @@ Content-Type: application/json;charset=UTF-8
                     </div>
 
                     <div class="n52-callout n52-callout-info">
-                        The returned Capabilities document contains a parameter <code>url</code> that points to the REST API endpoint of the service instance.
+                        The returned Capabilities document contains a parameter <code>url</code> that points to the TAMIS REST API endpoint of the service instance.
                     </div>
 
                 </div>
@@ -470,7 +464,7 @@ Content-Type: application/json;charset=UTF-8
                         </div>
 
                         <div class="n52-callout n52-callout-info">
-                            Each encoded process is enriched with a parameter <code>url</code> that represents the REST API call to obtain the
+                            Each encoded process is enriched with a parameter <code>url</code> that represents the TAMIS REST API call to obtain the
                             corresponding <a href="#process-description">Process Description</a>.
                         </div>
 
@@ -629,7 +623,7 @@ Content-Type: application/json;charset=UTF-8
 
                                 <div class="n52-callout n52-callout-info">
                                     Also note, that the description of each <code>input</code> and <code>output</code> is reduced to
-                                    <code>id</code>, <code>label</code> and <code>type</code> (which comprises available MimeTypes).
+                                    <code>id</code>, <code>label</code> and <code>type</code> (which represents available MimeTypes).
                                 </div>
 
                         </div>
@@ -688,7 +682,7 @@ Content-Type: application/json;charset=UTF-8
 
                                   <p>
                                     Creates a new <code>job</code> for process with specified id <code>{process-id}</code> and executes it <code>SYNCHRONOUSLY</code>
-                                    (request parameter <code>sync-execute=false</code> is equivalent to <code>mode=sync</code> as specified in the
+                                    (request parameter <code>sync-execute=true</code> is equivalent to <code>mode=sync</code> as specified in the
                                     <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#59">OGC WPS Interface Standard - Execute Request Section</a>).
                                   </p>
 
@@ -704,7 +698,7 @@ Content-Type: application/json;charset=UTF-8
 
                         <div class="n52-callout n52-callout-info">
                             The query parameter <code>sync-execute</code> may be omitted. Then <code>sync-execute=false</code>
-                            (equivalent to <code>mode</code> = <code>sync</code> as specified in the
+                            (equivalent to <code>mode=async</code> as specified in the
                             <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#59">OGC WPS Interface Standard - Execute Request Section</a>)
                             is used per default.
                         </div>
@@ -784,7 +778,7 @@ Content-Type: application/json;charset=UTF-8
 
                             <div class="n52-callout n52-callout-info">
                                 Also note, that the definition of each <code>input</code> and <code>output</code> is reduced to
-                                <code>id</code> and <code>type</code> (which comprises available MimeTypes).
+                                <code>id</code> and <code>type</code> (which represents available MimeTypes).
                             </div>
 
 
@@ -804,7 +798,7 @@ Content-Type: application/json;charset=UTF-8
                           The 52&deg;North WPS may utilize this SOAP request to fetch timeseries data and use it as process input.
                         </p>
 
-                        <p>However, a complete SOAP SOS GetObservation GET request is represented by a lenghty URL with many key-value-pairs as query parameters.
+                        <p>However, a complete SOAP SOS GetObservation GET request is represented by a lengthy URL with many key-value-pairs as query parameters.
                           For this reason, the <a href="http://52north.github.io/series-rest-api/"><b>52&deg;North Series REST API</b></a> offers a RESTful
                           and lightweight access to timeseries data.
 
@@ -817,9 +811,9 @@ Content-Type: application/json;charset=UTF-8
                         <p>
                           So, in theory, it would be nice to replace lengthy SOAP URLs with shorter <a href="http://52north.github.io/series-rest-api/"><b>52&deg;North Series REST API</b></a>
                           URLs to define timeseries data as input for process execution.
-                          But the 52&deg;North WPS is only capable of fetching timeseries data via SOAP URLs, which return XML encoded reponses. Hence, the TAMIS REST API offers
+                          <b>But the 52&deg;North WPS is only capable of fetching timeseries data via SOAP URLs, which return XML encoded reponses.</b> Hence, the <b>TAMIS REST API offers
                           the functionality to map a <a href="http://52north.github.io/series-rest-api/"><b>52&deg;North Series REST API</b></a>
-                          URL to a valid and equivalent SOAP GetObservation GET request. In consequence, the TAMIS REST API may receive an execute request payload
+                          URL to a valid and equivalent SOAP GetObservation GET request.</b>
                         </p>
 
                         <div>
@@ -836,13 +830,18 @@ Content-Type: application/json;charset=UTF-8
                             as shown in the following example:
                           </p>
 
-<pre>// series REST API timeseries query: http://fluggs.wupperverband.de/sos2/api/v1/timeseries/2/getData?timespan=PT12H/2013-08-06Z
+<pre>// series REST API timeseries query:
+ http://fluggs.wupperverband.de/sos2/api/v1/timeseries/2/getData?timespan=PT12H/2013-08-06Z
 
-// fetch needed metadata for SOS Get Observation request with URL: http://fluggs.wupperverband.de/sos2/api/v1/timeseries/2?expanded=true
+// fetch needed metadata for SOS Get Observation request with URL:
+ http://fluggs.wupperverband.de/sos2/api/v1/timeseries/2?expanded=true
 
 -------------------------------------------------------------------------------------------------------------------------------------
 
-// response:
+// response of http://fluggs.wupperverband.de/sos2/api/v1/timeseries/2?expanded=true:
+
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
 
 {
   "id": "2",
@@ -990,6 +989,10 @@ timespan: PT12H/2013-08-06
 
 temporalFilter: 2013-08-05T12:00:00.000Z/2013-08-06T00:00:00.000Z
 </pre>
+
+                          <p>
+                            Now that all information is collected, it can be combined to a valid SOS Get Observations request, which is used as new input for the request to the generic WPS Proxy.
+                          </p>
 
                         </div>
 
@@ -1371,7 +1374,7 @@ Content-Type: application/json;charset=UTF-8
                                 </div>
 
                                 <div class="n52-callout n52-callout-info">
-                                    Also note, that the description of each <code>output</code> is simplified.
+                                    Also note, that the description of each <code>Output</code> is simplified.
                                 </div>
 
                         </div>
@@ -1397,7 +1400,7 @@ Content-Type: application/json;charset=UTF-8
                                 Response</button>
 
                                 <div class="n52-callout n52-callout-info">
-                                    Note, that the description of the <code>output</code> is simplified in contrast to the formal
+                                    Note, that the description of the <code>Output</code> is simplified in contrast to the formal
                                     <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#48">OGC WPS Interface Standard - Result Document Section</a>.
                                 </div>
 
