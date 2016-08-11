@@ -42,6 +42,7 @@
                         <!-- General --> <a data-toggle="collapse" data-parent="#contents"
                         data-target="#general-subitems" href="#general">General</a>
                         <ul id="general-subitems" class="nav collapse">
+                            <li><a href="#general-content-types">Content Types</a></li>
                             <li><a href="#general-common-status-codes">Common Status Codes</a></li>
                             <li><a href="#endpoint-url">Endpoint URL</a></li>
                         </ul>
@@ -125,6 +126,14 @@
                         accessible for leightweight clients like mobile devices.
                     </p>
 
+                    <p>
+                      As a specific REST API for the
+                      <a href="http://52north.org/resources/references/sensor-web/398-tamis-talsperrenmessinformationssystem">52&deg;North BMBF TAMIS Project</a>,
+                      the main goal of this REST API is to downsize the content of exchanged messages. For this reason, in contrast to the full request/response structures
+                      declared in the official <a href="http://docs.opengeospatial.org/is/14-065/14-065.html">OGC WPS 2.0 Interface Standard</a>,
+                      the contents of each request and response are reduced to a minimum.
+                    </p>
+
                 </div>
 
                 <h3>Document status</h3>
@@ -138,6 +147,20 @@
                             <td>Initial creation
                             </td>
                             <td>2016-08-09</td>
+                        </tr>
+
+                        <tr>
+                            <td>Made several changes:
+                                <ul>
+                                    <li>more explanation on TAMIS project specific features.
+                                      Add comparison notes that show how the TAMIS REST interface differs from official OGC WPS spec.</li>
+                                    <li>Add <a href="#general-content-types">Content Types</a> section</li>
+                                    <li>In particular, the <a href="#process-execution">Execute</a> section has been revised
+                                      and extended with explanations of request/response encodings.</li>
+                                    <li>minor text tweaks</li>
+                                </ul>
+                            </td>
+                            <td>2016-08-11</td>
                         </tr>
                     </table>
                 </div>
@@ -154,6 +177,37 @@
                     </p>
                 </div>
                 <div>
+
+                  <div id="general-content-types">
+                      <!-- Content-Types -->
+                      <h3>Content-Types</h3>
+
+                      <p>
+                          The content type for message exchange (request/response for most WPS operations) is
+                          <code>application/json</code>
+                          . It is set as the default content type but can be set via HTTP header.
+                      </p>
+
+                      <div class="n52-callout n52-callout-info">
+                          Nearsly each operation <b>Request</b> is fully formulated through a REST URL alone without request payload.
+                          Only the <a href="#process-execution">Execute Operation</a> requires the definition of in- and outputs
+                          via a request payload ecnoded in <code>application/json</code>.
+                      </div>
+
+                      <div class="n52-callout n52-callout-info">
+                          Nearly each operation <b>response</b> is also encoded in <code>application/json</code>. However there is one exception:
+                          <ul>
+
+                            <li>
+
+                              <a href="#process-execution-examples-async">Asynchronous Execute</a> operation returns only a <code>Location</code> header
+                              containing a link to the corresponding <a href="#status">Status Info</a> document.
+
+                            </li>
+
+                          </ul>
+                      </div>
+                  </div>
 
                     <div id="general-common-status-codes">
                         <!-- Status Codes -->
@@ -189,6 +243,7 @@
                             <tr>
                                 <td><code>415</code></td>
                                 <td>Status <code>Unsupported Media Type</code>. The media-type of the request payload is not supported.
+                                  Prevent this error by setting the <code>Content-Type</code> header to <code>application/json</code>.
                                 </td>
                             </tr>
                             <tr>
@@ -205,7 +260,7 @@
                     <div id="endpoint-url">
                         <!-- Status Codes -->
                         <h3>Endpoint URL</h3>
-                        <p>The entry point of the REST API is configurable and will be referenced as the <code>&lt;base-url&gt;</code> throughout the rest of this document.
+                        <p>The entry point of the REST API will be referenced as the <code>&lt;base-url&gt;</code> throughout the rest of this document.
                           The <code>&lt;base-url&gt;</code> consists of the WPS endpoint and a static suffix <code>/api/v1/service/{service-id}</code>
                           whereby <code>{service-id}</code> is a variable to differentiate between mutliple WPS instances. </p>
 
@@ -213,7 +268,7 @@
                           enpoint URL: <code><a href="http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/">http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/</a></code>.</p>
 
                         <div class="n52-callout n52-callout-info">
-                            Developer Note: to configure the endpoint URL, change the property
+                            Developer Note: to configure the WPS endpoint URL, change the property
                             <code>wpsProxy_baseUrl</code> in the file <code>wpsProxy-properties</code> located at the project folder
                             <code>tamis-rest-api/rest/src/main/resources/wpsProxy.properties</code>
                         </div>
@@ -276,6 +331,15 @@ Content-Type: application/json;charset=UTF-8
                             <button data-toggle="collapse" data-parent="#capabilities-examples"
                                 data-target="#capabilities-example" class="btn btn-primary">Show/Hide
                                 Response</button>
+
+                            <div class="n52-callout n52-callout-info">
+                                Note that in contrast to a full capabilities response, as specified in the formal
+                                <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#52">OGC WPS Interface Standard - GetCapabilities Response Section</a>
+                                the response of the WPS 2.0 TAMIS REST Interface is reduced dramatically. Nearly all meta-information
+                                (about service identification, service provider, operations metadata, languages, list of process summaries) is omitted to obtain a minimum response.
+                                A list of available processes can be retrieved through the <a href="#processes">Processes</a> operation.
+                            </div>
+
                         </div>
 
                     </div>
@@ -349,6 +413,17 @@ Content-Type: application/json;charset=UTF-8
                             <button data-toggle="collapse" data-parent="#processes-examples"
                                 data-target="#processes-example" class="btn btn-primary">Show/Hide
                                 Response</button>
+
+                                <div class="n52-callout n52-callout-info">
+                                    Note that in contrast to a full process summary of a capabilities response, as specified in the formal
+                                    <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#52">OGC WPS Interface Standard - GetCapabilities Response Section</a>
+                                    the processes response of the WPS 2.0 TAMIS REST Interface is reduced to
+                                    <code>id</code>, <code>label</code> and <code>description</code>.
+                                    The remaining information
+                                    (version, keywords, metadata, process model, job control options, output transmission)
+                                    is omitted.
+                                </div>
+
                         </div>
 
                         <div class="n52-callout n52-callout-info">
@@ -387,7 +462,7 @@ Content-Type: application/json;charset=UTF-8
                                 <td><code>GET</code></td>
                                 <td><code>&lt;baseURL&gt;/processes/{process-id}</code></td>
                                 <td><code>application/json</code></td>
-                                <td>Returns the process description for the process with the specified <code>{process-id}</code>.
+                                <td>Returns the process description for the process with the specified id <code>{process-id}</code>.
                                 </td>
                             </tr>
 
@@ -499,6 +574,21 @@ Content-Type: application/json;charset=UTF-8
                             <button data-toggle="collapse" data-parent="#process-description-examples"
                                 data-target="#process-description-example" class="btn btn-primary">Show/Hide
                                 Response</button>
+
+                                <div class="n52-callout n52-callout-info">
+                                    Note that in contrast to a full DescribeProcess response, as specified in the formal
+                                    <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#56">OGC WPS Interface Standard - DescribeProcess Response Section</a>
+                                    the response of the WPS 2.0 TAMIS REST Interface is reduced to <code>id</code>, <code>label</code>, <code>description</code>
+                                    and arrays of <code>inputs</code> and <code>outputs</code> of the process. The remaining information
+                                    (version, keywords, metadata, process model, job control options, output transmission)
+                                    is omitted.
+                                </div>
+
+                                <div class="n52-callout n52-callout-info">
+                                    Also note, that the description of each <code>input</code> and <code>output</code> is reduced to
+                                    <code>id</code>, <code>label</code> and <code>type</code> (which comprises available MimeTypes).
+                                </div>
+
                         </div>
 
                     </div>
@@ -532,24 +622,48 @@ Content-Type: application/json;charset=UTF-8
                                 <td><code>POST</code></td>
                                 <td><code>&lt;base-url&gt;/processes/{process-id}?sync-execute=false</code></td>
                                 <td><code>application/json</code></td>
-                                <td>Creates a new <code>job</code> for process with specified <code>{process-id}</code> and executes it <code>ASYNCHRONOUSLY</code>.
-                                  Consequentially, the response will be <code>HTTP status 201</code>, containing a <code>Location</code> header pointing to
-                                  the <a href="#status">Status Info</a> document.</td>
+                                <td>
+
+                                  <p>
+                                      Creates a new <code>job</code> for process with specified id <code>{process-id}</code> and executes it <code>ASYNCHRONOUSLY</code>
+                                      (request parameter <code>sync-execute=false</code> is equivalent to <code>mode=async</code> as specified in the
+                                      <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#59">OGC WPS Interface Standard - Execute Request Section</a>).
+                                  </p>
+                                  <p>
+                                    Consequentially, the response will be <code>HTTP status 201</code>, containing a <code>Location</code> header pointing to
+                                    the <a href="#status">Status Info</a> document.
+                                  </p>
+
+                                </td>
                             </tr>
 
                             <tr>
                                 <td><code>POST</code></td>
                                 <td><code>&lt;base-url&gt;/processes/{process-id}?sync-execute=true</code></td>
                                 <td><code>application/json</code></td>
-                                <td>Creates a new <code>job</code> for process with specified <code>{process-id}</code> and executes it <code>SYNCHRONOUSLY</code>.
-                                  Consequentially, after the job has completely finished, the response will be a <a href="#result">Result</a> document,
-                                containing the computed results.</td>
+                                <td>
+
+                                  <p>
+                                    Creates a new <code>job</code> for process with specified id <code>{process-id}</code> and executes it <code>SYNCHRONOUSLY</code>
+                                    (request parameter <code>sync-execute=false</code> is equivalent to <code>mode=sync</code> as specified in the
+                                    <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#59">OGC WPS Interface Standard - Execute Request Section</a>).
+                                  </p>
+
+                                  <p>
+                                    Consequentially, after the job has completely finished, the response will be a <a href="#result">Result</a> document,
+                                    containing the computed results.
+                                </p>
+
+                              </td>
                             </tr>
 
                         </table>
 
                         <div class="n52-callout n52-callout-info">
-                            The query parameter <code>sync-execute</code> may be omitted. Then <code>sync-execute=false</code> is used per default.
+                            The query parameter <code>sync-execute</code> may be omitted. Then <code>sync-execute=false</code>
+                            (equivalent to <code>mode</code> = <code>sync</code> as specified in the
+                            <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#59">OGC WPS Interface Standard - Execute Request Section</a>)
+                            is used per default.
                         </div>
                     </div>
 
@@ -558,15 +672,15 @@ Content-Type: application/json;charset=UTF-8
                         <h3>POST Payload</h3>
 
                         <div class="n52-callout n52-callout-info">
-                            Since the execute operation is done via HTTP POST, a proper <code>Execute Request Body</code> has to be specified! Note that you have to set the header <code>Content-Type: application/json</code>
+                            Since the execute operation is done via HTTP POST, a proper <code>Execute Request Body</code> has to be specified!
+                            Note that you should set the header <code>Content-Type: application/json</code> in the request.
+                            Otherwise the WPS might reject the request with a HTTP status <code>415 - Unsupported Media Type</code>.
                         </div>
 
                         <div>
-                            <!-- Simple Collection -->
+                            <!-- Payload example -->
                             <h4>Exemplar Execute Request Payload</h4>
-                            <pre>POST http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression?sync-execute=false HTTP/1.1
-Host: tamis.dev.52north.org
-Accept: application/json</pre>
+
                             <pre id="process-execution-payload-example" class="collapse">Content-Type: application/json;
 
 {
@@ -618,6 +732,19 @@ Accept: application/json</pre>
                                 data-target="#process-execution-payload-example" class="btn btn-primary">Show/Hide
                                 Execute Request Payload</button>
 
+                            <div class="n52-callout n52-callout-info">
+                                Note that in contrast to a full request payload, as specified in the formal
+                                <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#59">OGC WPS Interface Standard - Execute Request Section</a>
+                                the payload for the WPS 2.0 TAMIS REST Interface is reduced to the definition of <code>inputs</code> and <code>outputs</code>, each as array.
+                                The remaining information (service, version, process identifier, execution mode and response format) are included in the REST URL or implied by the WPS instance.
+                            </div>
+
+                            <div class="n52-callout n52-callout-info">
+                                Also note, that the definition of each <code>input</code> and <code>output</code> is reduced to
+                                <code>id</code> and <code>type</code> (which comprises available MimeTypes).
+                            </div>
+
+
                         </div>
 
                         <div>
@@ -627,7 +754,7 @@ Accept: application/json</pre>
                     <div id="process-execution-examples">
                         <!-- Examples -->
                         <h3>Examples</h3>
-                        <div>
+                        <div id="process-execution-examples-async">
                             <!-- Asynchronous Execution -->
                             <h4>Process Execution - Asynchronous</h4>
                             <pre>POST http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression?sync-execute=false HTTP/1.1
@@ -769,7 +896,7 @@ Content-Type: application/json;charset=UTF-8
                         </table>
 
                         <div class="n52-callout n52-callout-info">
-                            Note that job instances are deleted from time to time. Hence, a <code>{job-id}</code> will become invalid after a certain period of time!
+                            Note that job instances are deleted from time to time. Hence, a certain <code>{job-id}</code> will become invalid after a certain period of time!
                         </div>
                     </div>
 
@@ -804,6 +931,17 @@ Content-Type: application/json;charset=UTF-8
                                 <code>Progress</code>
                                 indicates the percentage of job completion (if supported by the WPS instance).
                             </div>
+
+                            <div class="n52-callout n52-callout-info">
+                                Note that in contrast to a full StatusInfo response, as specified in the formal
+                                <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#48">OGC WPS Interface Standard - StatusInfo Document Section</a>
+                                the response of the WPS 2.0 TAMIS REST Interface is reduced to
+                                <code>JobID</code>, <code>Status</code> and <code>Progress</code> (which corresponds to formal <code>PercentCompleted</code> from the standard).
+                                The remaining information
+                                (expiration date, estimated completion and next poll)
+                                is omitted.
+                            </div>
+
                         </div>
 
                         <div>
@@ -834,6 +972,17 @@ Content-Type: application/json;charset=UTF-8
                                 <code>Outputs</code>
                                 that contains a link to the outputs of the finished job, encoded as a <a href="#result">Result</a> document.
                             </div>
+
+                            <div class="n52-callout n52-callout-info">
+                                Note that in contrast to a full StatusInfo response, as specified in the formal
+                                <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#48">OGC WPS Interface Standard - StatusInfo Document Section</a>
+                                the response of the WPS 2.0 TAMIS REST Interface is reduced to
+                                <code>JobID</code> and <code>Status</code> and a new parameter <code>Outputs</code>.
+                                The remaining information
+                                (expiration date, estimated completion and next poll, percentCompleted)
+                                is omitted.
+                            </div>
+
                         </div>
 
                     </div>
@@ -844,7 +993,7 @@ Content-Type: application/json;charset=UTF-8
                 ================================================== -->
             <section id="result">
                 <div class="page-header">
-                    <h1>Result Document / Get result</h1>
+                    <h1>Result Document / Get Result</h1>
                     <p class="pull-right up-link">
                         <a href="#"><i class="icon-chevron-up"></i> top</a>
                     </p>
@@ -885,7 +1034,7 @@ Content-Type: application/json;charset=UTF-8
                         </table>
 
                         <div class="n52-callout n52-callout-info">
-                            Note that job instances are deleted from time to time. Hence, a <code>{job-id}</code> will become invalid after a certain period of time!
+                            Note that job instances are deleted from time to time. Hence, a certain <code>{job-id}</code> will become invalid after a certain period of time!
                         </div>
 
                         <div class="n52-callout n52-callout-info">
@@ -969,6 +1118,20 @@ Content-Type: application/json;charset=UTF-8
                                 data-target="#result-example-complete" class="btn btn-primary">Show/Hide
                                 Response</button>
 
+                                <div class="n52-callout n52-callout-info">
+                                    Note that in contrast to a full GetResult response, as specified in the formal
+                                    <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#48">OGC WPS Interface Standard - Result Document Section</a>
+                                    the response of the WPS 2.0 TAMIS REST Interface is reduced to
+                                    <code>JobID</code> and the <code>Output</code> array.
+                                    The remaining information
+                                    (expiration date)
+                                    is omitted.
+                                </div>
+
+                                <div class="n52-callout n52-callout-info">
+                                    Also note, that the description of each <code>output</code> is simplified.
+                                </div>
+
                         </div>
 
                         <div>
@@ -990,6 +1153,11 @@ Content-Type: application/json;charset=UTF-8
                             <button data-toggle="collapse" data-parent="#result-examples"
                                 data-target="#result-example-single-output" class="btn btn-primary">Show/Hide
                                 Response</button>
+
+                                <div class="n52-callout n52-callout-info">
+                                    Note, that the description of the <code>output</code> is simplified in contrast to the formal
+                                    <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#48">OGC WPS Interface Standard - Result Document Section</a>.
+                                </div>
 
                         </div>
 
