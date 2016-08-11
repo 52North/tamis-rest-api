@@ -166,6 +166,8 @@
                                     <li>minor text tweaks</li>
                                     <li>correct false explanation of base-url</li>
                                     <li>add section <a href="#architecture-and-role">Architecture and Role of TAMIS REST</a></li>
+                                    <li>add notes on how <a href="http://52north.github.io/series-rest-api/">Series REST API</a> is utilized
+                                    to retrieve timeseries data for process execution</li>
                                 </ul>
                             </td>
                             <td>2016-08-11</td>
@@ -187,7 +189,7 @@
                 <div>
 
                   <div id="architecture-and-role">
-                    <h3>Architecture and Role of TAMIS REST component</h3>
+                    <h3>Architecture and Role of TAMIS REST Component</h3>
 
                     <img alt="architecture figure" src="img/architecture.png" title="Role of the TAMIS REST Proxy." />
 
@@ -788,7 +790,208 @@ Content-Type: application/json;charset=UTF-8
 
                         </div>
 
+                    </div>
+
+                    <div id="process-execution-timeseries-data">
+                        <!-- timeseries data from SOS -->
+                        <h3>Extraction of Timeseries Data From a SOS</h3>
+
+                        <p>
+                          As mentioned in section <a href="#architecture-and-role">Architecture and Role of TAMIS REST component</a>,
+                          the TAMIS WPS REST API allows the retrieval of timeseries data as input for a process execution.
+                          Inspecting the <a href="#process-execution-payload">payload</a> example above,
+                          the value of each input represents a valid SOAP GetObservation GET request against a SOS instance.
+                          The 52&deg;North WPS may utilize this SOAP request to fetch timeseries data and use it as process input.
+                        </p>
+
+                        <p>However, a complete SOAP SOS GetObservation GET request is represented by a lenghty URL with many key-value-pairs as query parameters.
+                          For this reason, the <a href="http://52north.github.io/series-rest-api/"><b>52&deg;North Series REST API</b></a> offers a RESTful
+                          and lightweight access to timeseries data.
+
+                          E.g. to query timeseries data via the <a href="http://52north.github.io/series-rest-api/"><b>52&deg;North Series REST API</b></a>,
+                          a URL like <code>http://fluggs.wupperverband.de/sos2/api/v1/timeseries/2/getData?timespan=PT12H/2013-08-06Z</code>
+                          can be used (which filters timeseries by an optional timespan parameter). Compared to the lengthy SOAP URLs, this RESTful access is much shorter and
+                          returns a JSON encoded equivalent to the SOAP call.
+                        </p>
+
+                        <p>
+                          So, in theory, it would be nice to replace lengthy SOAP URLs with shorter <a href="http://52north.github.io/series-rest-api/"><b>52&deg;North Series REST API</b></a>
+                          URLs to define timeseries data as input for process execution.
+                          But the 52&deg;North WPS is only capable of fetching timeseries data via SOAP URLs, which return XML encoded reponses. Hence, the TAMIS REST API offers
+                          the functionality to map a <a href="http://52north.github.io/series-rest-api/"><b>52&deg;North Series REST API</b></a>
+                          URL to a valid and equivalent SOAP GetObservation GET request. In consequence, the TAMIS REST API may receive an execute request payload
+                        </p>
+
                         <div>
+
+                          <br/>
+
+                          <h4>SOS URL Mapping - From Series REST API to Classical GetObservation Request</h4>
+
+                          <p>
+                            To perform the mapping, the TAMIS REST API inspects each execute input for <a href="http://52north.github.io/series-rest-api/"><b>52&deg;North Series REST API</b></a>
+                            URLs that have to be mapped. To transform it into an equivalent and full SOS GetObservation request, the TAMIS REST API has to fetch several metadata
+                            (featureOfInterest, offering, procedure, observedProperty, temporalFilter) from the SOS instance.
+                            Again, the <a href="http://52north.github.io/series-rest-api/"><b>52&deg;North Series REST API</b></a> can be utilized to fetch the needed data,
+                            as shown in the following example:
+                          </p>
+
+<pre>// series REST API timeseries query: http://fluggs.wupperverband.de/sos2/api/v1/timeseries/2/getData?timespan=PT12H/2013-08-06Z
+
+// fetch needed metadata for SOS Get Observation request with URL: http://fluggs.wupperverband.de/sos2/api/v1/timeseries/2?expanded=true
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+// response:
+
+{
+  "id": "2",
+  "label": "Abfluss Einzelwert, Häcksbilstein",
+  "uom": "m³/s",
+  "station": {
+    "properties": {
+      "id": 66,                                                                 //featureOfInterest
+      "label": "Häcksbilstein"
+    },
+    "geometry": {
+      "coordinates": [
+        7.304973185439583,
+        51.063763131689065,
+        "NaN"
+      ],
+      "type": "Point"
+    },
+    "type": "Feature"
+  },
+  "referenceValues": [
+    {
+      "referenceValueId": "279",
+      "label": "Mittlerer Hochwasserabfluss",
+      "lastValue": {
+        "timestamp": 1470885750000,
+        "value": 0
+      }
+    },
+    {
+      "referenceValueId": "278",
+      "label": "Mittelwasserabfluss",
+      "lastValue": {
+        "timestamp": 1470885750000,
+        "value": 0
+      }
+    },
+    {
+      "referenceValueId": "277",
+      "label": "Mittlerer Niedrigwasserabfluss",
+      "lastValue": {
+        "timestamp": 1470885750000,
+        "value": 0
+      }
+    }
+  ],
+  "firstValue": {
+    "timestamp": 1155250800000,
+    "value": 0.01
+  },
+  "lastValue": {
+    "timestamp": 1470885750000,
+    "value": 0
+  },
+  "parameters": {
+    "service": {
+      "id": "1",
+      "label": "Wupperverband Zeitreihen Dienst",
+      "serviceUrl": "http://fluggs.wupperverband.de/sos2-tamis"                 // SOS URL
+    },
+    "offering": {
+      "id": "254",                                                              // offering
+      "label": "Einzelwert"
+    },
+    "feature": {
+      "id": "66",
+      "label": "Häcksbilstein"
+    },
+    "procedure": {
+      "id": "254",                                                              // procedure
+      "label": "Einzelwert"
+    },
+    "phenomenon": {
+      "id": "2",                                                                 //observedProperty
+      "label": "Abfluss"
+    },
+    "category": {
+      "id": "7",
+      "label": "Gewässer"
+    }
+  },
+  "renderingHints": {
+    "chartType": "line",
+    "properties": {
+      "color": "#1E90FF",
+      "lineType": "solid",
+      "width": "1"
+    }
+  }
+}</pre>
+
+                          <p>
+                            Basically, to extract the needed properties to build a SOS GetObservation request, the URL
+                            <code>http://fluggs.wupperverband.de/sos2/api/v1/timeseries/2/getData?timespan=PT12H/2013-08-06Z</code>
+                            is modifed to
+                            <code>http://fluggs.wupperverband.de/sos2/api/v1/timeseries/2?expanded=true</code>, which returns JSON encoded
+                            timeseries metadata description. From this document we can extract the missing information, as concluded in the following table:
+                          </p>
+
+                          <br/>
+
+                            <table class="table">
+                              <tr>
+                                <th>SOS GetObservation Request Parameter</th>
+                                <th>JSON Response Element</th>
+                              </tr>
+
+                              <tr>
+                                <td>SOS URL</td>
+                                <td>parameters/service/serviceUrl</td>
+                              </tr>
+
+                              <tr>
+                                <td>featureOfInterest</td>
+                                <td>station/properties/id</td>
+                              </tr>
+
+                              <tr>
+                                <td>offering</td>
+                                <td>parameters/offering/id</td>
+                              </tr>
+
+                              <tr>
+                                <td>procedure</td>
+                                <td>parameters/procedure/id</td>
+                              </tr>
+
+                              <tr>
+                                <td>observedProperty</td>
+                                <td>parameters/phenomenon/id</td>
+                              </tr>
+
+                            </table>
+
+                            <p>
+                              The only GetObservation parameter left is <code>temporalFilter</code>, which has to be built from the initial <code>timespan</code> query parameter,
+                              as shown in the subsequent example:
+                            </p>
+
+<pre>// timespan to temporalFilter example
+
+timespan: PT12H/2013-08-06
+
+// is transformed to
+
+temporalFilter: 2013-08-05T12:00:00.000Z/2013-08-06T00:00:00.000Z
+</pre>
+
+                        </div>
 
                     </div>
 
@@ -899,8 +1102,6 @@ Content-Type: application/json;charset=UTF-8
                         </div>
                     </div>
 
-
-                    </div>
                 </div>
             </section>
 
