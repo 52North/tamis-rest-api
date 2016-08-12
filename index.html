@@ -234,7 +234,7 @@
 
                       <div class="n52-callout n52-callout-info">
                           Nearly each operation <b>request</b> is fully formulated through a REST URL alone without request payload.
-                          Only the <a href="#process-execution">Execute Operation</a> requires the definition of in- and outputs
+                          Only the <a href="#process-execution">Execute Operation</a> requires the definition of process in- and outputs
                           via a request payload ecnoded in <code>application/json</code>.
                       </div>
 
@@ -371,10 +371,10 @@ Content-Type: application/json;charset=UTF-8
 
                             <div class="n52-callout n52-callout-info">
                                 Note that in contrast to a full capabilities response, as specified in the formal
-                                <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#52">OGC WPS Interface Standard - GetCapabilities Response Section</a>
+                                <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#52">OGC WPS Interface Standard - GetCapabilities Response Section</a>,
                                 the response of the WPS 2.0 TAMIS REST Interface is reduced dramatically. Nearly all meta-information
-                                (service identification, service provider, operations metadata, languages, list of process summaries) is omitted to obtain a minimum response.
-                                A list of available processes can be retrieved through the <a href="#processes">Processes</a> operation.
+                                (service identification, service provider, operations metadata, languages, list of process summaries) is omitted.
+                                A list of available processes can be retrieved through the <a href="#processes">Processes</a> operation instead.
                             </div>
 
                         </div>
@@ -455,7 +455,8 @@ Content-Type: application/json;charset=UTF-8
                                     Note that in contrast to a full process summary of a capabilities response, as specified in the formal
                                     <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#52">OGC WPS Interface Standard - GetCapabilities Response Section</a>
                                     the processes response of the WPS 2.0 TAMIS REST Interface is reduced to
-                                    <code>id</code>, <code>label</code> and <code>description</code>.
+                                    <code>id</code>, <code>label</code> (which is used instead of formal <code>Title</code> property) and
+                                    <code>description</code> (which is used instead of formal <code>Abstract</code> property).
                                     The remaining information
                                     (version, keywords, metadata, process model, job control options, output transmission)
                                     is omitted.
@@ -614,8 +615,10 @@ Content-Type: application/json;charset=UTF-8
 
                                 <div class="n52-callout n52-callout-info">
                                     Note that in contrast to a full DescribeProcess response, as specified in the formal
-                                    <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#56">OGC WPS Interface Standard - DescribeProcess Response Section</a>
-                                    the response of the WPS 2.0 TAMIS REST Interface is reduced to <code>id</code>, <code>label</code>, <code>description</code>
+                                    <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#56">OGC WPS Interface Standard - DescribeProcess Response Section</a>,
+                                    the response of the WPS 2.0 TAMIS REST Interface is reduced to <code>id</code>,
+                                    <code>label</code> (which is used instead of formal <code>Title</code> property),
+                                    <code>description</code> (which is used instead of formal <code>Abstract</code> property)
                                     and arrays of <code>inputs</code> and <code>outputs</code> of the process. The remaining information
                                     (version, keywords, metadata, process model, job control options, output transmission)
                                     is omitted.
@@ -623,7 +626,7 @@ Content-Type: application/json;charset=UTF-8
 
                                 <div class="n52-callout n52-callout-info">
                                     Also note, that the description of each <code>input</code> and <code>output</code> is reduced to
-                                    <code>id</code>, <code>label</code> and <code>type</code> (which represents available MimeTypes).
+                                    <code>id</code>, <code>label</code> (which is used instead of formal <code>Title</code> property) and <code>type</code> (which represents available <code>MimeTypes</code>).
                                 </div>
 
                         </div>
@@ -720,10 +723,6 @@ Content-Type: application/json;charset=UTF-8
                             <!-- Payload example -->
                             <h4>Exemplar Execute Request Payload</h4>
 
-                            <div class="n52-callout n52-callout-todo">
-                                Insert a valid and working execute payload example! The current one is syntactically correct, but results in an error when executed...
-                            </div>
-
                             <pre id="process-execution-payload-example" class="collapse">Content-Type: application/json;
 
 {
@@ -784,7 +783,7 @@ Content-Type: application/json;charset=UTF-8
 
                             <div class="n52-callout n52-callout-info">
                                 Also note, that the definition of each <code>input</code> and <code>output</code> is reduced to
-                                <code>id</code> and <code>type</code> (which represents available MimeTypes).
+                                <code>id</code> and <code>type</code> (which represents available <code>MimeTypes</code>).
                             </div>
 
 
@@ -944,12 +943,14 @@ Content-Type: application/json;charset=UTF-8
                             <code>http://fluggs.wupperverband.de/sos2/api/v1/timeseries/2/getData?timespan=PT12H/2013-08-06Z</code>
                             is modifed to
                             <code>http://fluggs.wupperverband.de/sos2/api/v1/timeseries/2?expanded=true</code>, which returns JSON encoded
-                            timeseries metadata description. From this document we can extract the missing information, as concluded in the following table:
+                            timeseries metadata description (in this case for the timeseries with id <code>2</code>).
+                            The query parameter <code>expanded=true</code> returns an expanded version that includes additional metadata.
+                            From this document the missing information can be extracted, as concluded in the following table:
                           </p>
 
                           <br/>
 
-                            <table class="table">
+                            <table class="table table-striped">
                               <tr>
                                 <th>SOS GetObservation Request Parameter</th>
                                 <th>JSON Response Element</th>
@@ -984,7 +985,7 @@ Content-Type: application/json;charset=UTF-8
 
                             <p>
                               The only GetObservation parameter left is <code>temporalFilter</code>, which has to be built from the initial <code>timespan</code> query parameter,
-                              as shown in the subsequent example:
+                              as shown in the subsequent example. In essence, the encoded timespan is transformed into a String with explicit temporal start- and endpoint.
                             </p>
 
 <pre>// timespan to temporalFilter example
@@ -1012,6 +1013,7 @@ temporalFilter: 2013-08-05T12:00:00.000Z/2013-08-06T00:00:00.000Z
                             <h4>Process Execution - Asynchronous</h4>
                             <pre>POST http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression?sync-execute=false HTTP/1.1
 Host: tamis.dev.52north.org
+Content-Type: application/json
 Accept: application/json
 
 
@@ -1039,6 +1041,7 @@ Location: http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/or
                         <h4>Process Execution - Synchronous</h4>
                         <pre>POST http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression?sync-execute=true HTTP/1.1
 Host: tamis.dev.52north.org
+Content-Type: application/json
 Accept: application/json
 
 
@@ -1185,7 +1188,7 @@ Content-Type: application/json;charset=UTF-8
 
                             <div class="n52-callout n52-callout-info">
                                 Note that in contrast to a full StatusInfo response, as specified in the formal
-                                <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#48">OGC WPS Interface Standard - StatusInfo Document Section</a>
+                                <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#48">OGC WPS Interface Standard - StatusInfo Document Section</a>,
                                 the response of the WPS 2.0 TAMIS REST Interface is reduced to
                                 <code>JobID</code>, <code>Status</code> and <code>Progress</code> (which corresponds to formal <code>PercentCompleted</code> from the standard).
                                 The remaining information
@@ -1226,7 +1229,7 @@ Content-Type: application/json;charset=UTF-8
 
                             <div class="n52-callout n52-callout-info">
                                 Note that in contrast to a full StatusInfo response, as specified in the formal
-                                <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#48">OGC WPS Interface Standard - StatusInfo Document Section</a>
+                                <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#48">OGC WPS Interface Standard - StatusInfo Document Section</a>,
                                 the response of the WPS 2.0 TAMIS REST Interface is reduced to
                                 <code>JobID</code> and <code>Status</code> and a new parameter <code>Outputs</code>.
                                 The remaining information
@@ -1267,8 +1270,8 @@ Content-Type: application/json;charset=UTF-8
                                 <td><code>GET</code></td>
                                 <td><code>&lt;base-url&gt;/processes/{process-id}/jobs/{job-id}/outputs</code></td>
                                 <td><code>application/json</code></td>
-                                <td>Returns a <code>Result</code> document for the specified process with
-                                  id <code>{process-id}</code> and job with id <code>{job-id}</code>.
+                                <td>Returns a <code>Result</code> document for the specified job with
+                                  process id <code>{process-id}</code> and job id <code>{job-id}</code>.
                                   It comprises all requested outputs for the specified job.</td>
                             </tr>
 
@@ -1276,9 +1279,8 @@ Content-Type: application/json;charset=UTF-8
                                 <td><code>GET</code></td>
                                 <td><code>&lt;base-url&gt;/processes/{process-id}/jobs/{job-id}/outputs/{output-id}</code></td>
                                 <td><code>application/json</code></td>
-                                <td>Returns a single output for the specified process with
-                                  id <code>{process-id}</code> and job with id <code>{job-id}</code> and output with id
-                                  <code>{output-id}</code>. In contrast to a complete <code>Result</code> document, the encoded JSON response
+                                <td>Returns a single output entry with id <code>{output-id}</code> for the specified job with
+                                  process id <code>{process-id}</code> and job id <code>{job-id}</code> . In contrast to a complete <code>Result</code> document, the encoded JSON response
                                   only displays the information of that specific output (without surrounding <code>Result</code> and <code>Output</code> elements)</td>
                             </tr>
 
@@ -1371,7 +1373,7 @@ Content-Type: application/json;charset=UTF-8
 
                                 <div class="n52-callout n52-callout-info">
                                     Note that in contrast to a full GetResult response, as specified in the formal
-                                    <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#48">OGC WPS Interface Standard - Result Document Section</a>
+                                    <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#49">OGC WPS Interface Standard - Result Document Section</a>,
                                     the response of the WPS 2.0 TAMIS REST Interface is reduced to
                                     <code>JobID</code> and the <code>Output</code> array.
                                     The remaining information
@@ -1380,7 +1382,7 @@ Content-Type: application/json;charset=UTF-8
                                 </div>
 
                                 <div class="n52-callout n52-callout-info">
-                                    Also note, that the description of each <code>Output</code> is simplified.
+                                    Also note, that the description of each <code>Output</code> is simplified as opposed to the formal definition from the standard.
                                 </div>
 
                         </div>
@@ -1406,8 +1408,8 @@ Content-Type: application/json;charset=UTF-8
                                 Response</button>
 
                                 <div class="n52-callout n52-callout-info">
-                                    Note, that the description of the <code>Output</code> is simplified in contrast to the formal
-                                    <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#48">OGC WPS Interface Standard - Result Document Section</a>.
+                                    Note, that the description of the <code>Output</code> is simplified as opposed to the formal
+                                    <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#49">OGC WPS Interface Standard - Result Document Section</a>.
                                 </div>
 
                         </div>
