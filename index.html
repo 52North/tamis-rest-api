@@ -708,15 +708,21 @@ Content-Type: application/json;charset=UTF-8
                         <!-- Payload -->
                         <h3>POST Payload</h3>
 
-                        <div class="n52-callout n52-callout-info">
+                        <p>
                             Since the execute operation is done via HTTP POST, a proper <code>Execute Request Body</code> has to be specified!
                             Note that you should set the header <code>Content-Type: application/json</code> in the request.
-                            Otherwise the WPS might reject the request with a HTTP status <code>415 - Unsupported Media Type</code>.
-                        </div>
+                            Otherwise the WPS might reject the request with an HTTP status <code>415 - Unsupported Media Type</code>.
+                        </p>
+
+                        <br/>
 
                         <div>
                             <!-- Payload example -->
                             <h4>Exemplar Execute Request Payload</h4>
+
+                            <div class="n52-callout n52-callout-todo">
+                                Insert a valid and working execute payload example! The current one is syntactically correct, but results in an error when executed...
+                            </div>
 
                             <pre id="process-execution-payload-example" class="collapse">Content-Type: application/json;
 
