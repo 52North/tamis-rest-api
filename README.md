@@ -4,4 +4,4 @@ Web binding.
 
 ## Documentation
 The API documentation can be found here:
-https://cDanowski.github.io/tamis-rest-api
+https://52North.github.io/tamis-rest-api
