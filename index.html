@@ -235,7 +235,7 @@
                       <div class="n52-callout n52-callout-info">
                           Nearly each operation <b>request</b> is fully formulated through a REST URL alone without request payload.
                           Only the <a href="#process-execution">Execute Operation</a> requires the definition of process in- and outputs
-                          via a request payload ecnoded in <code>application/json</code>.
+                          via a request payload encoded in <code>application/json</code>.
                       </div>
 
                       <div class="n52-callout n52-callout-info">
@@ -263,7 +263,7 @@
                             </tr>
                             <tr>
                                 <td><code>201</code></td>
-                                <td>Status <code>Created</code>. New job created.
+                                <td>Status <code>Created</code>. New job (process execution) created.
                                 </td>
                             </tr>
                             <tr>
@@ -274,7 +274,7 @@
                             <tr>
                                 <td><code>404</code></td>
                                 <td>Status <code>Not Found</code>. The resource is not available. In particular,
-                                  when trying to <code>dismiss</code> an existing <code>job</code> more than once, this status is returned.
+                                  when trying to <a href="#dismiss">dismiss</a> an existing job more than once, this status is returned.
                                 </td>
                             </tr>
                             <tr>
@@ -341,7 +341,7 @@
                                 <td><code>GET</code></td>
                                 <td><code>&lt;base-url&gt;</code></td>
                                 <td><code>application/json</code></td>
-                                <td>Lists capabilities of the WPS.</td>
+                                <td>Lists Capabilities of the WPS.</td>
                             </tr>
 
                         </table>
@@ -370,7 +370,7 @@ Content-Type: application/json;charset=UTF-8
                                 Response</button>
 
                             <div class="n52-callout n52-callout-info">
-                                Note that in contrast to a full capabilities response, as specified in the formal
+                                Note that in contrast to a full Capabilities response, as specified in the formal
                                 <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#52">OGC WPS Interface Standard - GetCapabilities Response Section</a>,
                                 the response of the WPS 2.0 TAMIS REST Interface is reduced dramatically. Nearly all meta-information
                                 (service identification, service provider, operations metadata, languages, list of process summaries) is omitted.
@@ -452,9 +452,9 @@ Content-Type: application/json;charset=UTF-8
                                 Response</button>
 
                                 <div class="n52-callout n52-callout-info">
-                                    Note that in contrast to a full process summary of a capabilities response, as specified in the formal
+                                    Note that in contrast to a full process summary of a Capabilities response, as specified in the formal
                                     <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#52">OGC WPS Interface Standard - GetCapabilities Response Section</a>
-                                    the processes response of the WPS 2.0 TAMIS REST Interface is reduced to
+                                    the Processes response of the WPS 2.0 TAMIS REST Interface is reduced to
                                     <code>id</code>, <code>label</code> (which is used instead of formal <code>Title</code> property) and
                                     <code>description</code> (which is used instead of formal <code>Abstract</code> property).
                                     The remaining information
@@ -712,7 +712,7 @@ Content-Type: application/json;charset=UTF-8
                         <h3>POST Payload</h3>
 
                         <p>
-                            Since the execute operation is done via HTTP POST, a proper <code>Execute Request Body</code> has to be specified!
+                            Since the execute operation is done via HTTP POST, a proper <code>Execute Request Payload</code> has to be specified!
                             Note that you should set the header <code>Content-Type: application/json</code> in the request.
                             Otherwise the WPS might reject the request with an HTTP status <code>415 - Unsupported Media Type</code>.
                         </p>
@@ -778,7 +778,8 @@ Content-Type: application/json;charset=UTF-8
                                 Note that in contrast to a full request payload, as specified in the formal
                                 <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#59">OGC WPS Interface Standard - Execute Request Section</a>
                                 the payload for the WPS 2.0 TAMIS REST Interface is reduced to the definition of <code>inputs</code> and <code>outputs</code>, each as array.
-                                The remaining information (service, version, process identifier, execution mode and response format) are included in the REST URL or implied by the WPS instance.
+                                The remaining information (service, version, process identifier, execution mode and response format) are included in the REST URL or implied by the WPS instance
+                                (as explained in the <a href="#process-execution-urls">URLs</a> section).
                             </div>
 
                             <div class="n52-callout n52-callout-info">
@@ -998,7 +999,9 @@ temporalFilter: 2013-08-05T12:00:00.000Z/2013-08-06T00:00:00.000Z
 </pre>
 
                           <p>
-                            Now that all information is collected, it can be combined to a valid SOS Get Observations request, which is used as new input for the request to the generic WPS Proxy.
+                            Now that all information is collected, it can be combined to a valid SOS Get Observations request, which replaces the
+                            <a href="http://52north.github.io/series-rest-api/"><b>52&deg;North Series REST API</b></a>
+                            input.
                           </p>
 
                         </div>
