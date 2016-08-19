@@ -234,7 +234,7 @@ public class SosRequestConstructor {
 		 * http://fluggs.wupperverband.de/sos2/api/v1/timeseries/461?expanded=
 		 * true
 		 */
-		String targetUrl_timeseriesApi = inputValue.split("?")[0];
+		String targetUrl_timeseriesApi = inputValue.split("\\?")[0];
 		// now add expanded=true to URL
 		targetUrl_timeseriesApi = targetUrl_timeseriesApi + "?expanded=true";
 		return targetUrl_timeseriesApi;
