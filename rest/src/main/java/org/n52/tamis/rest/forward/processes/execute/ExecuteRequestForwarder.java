@@ -217,7 +217,7 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 		 */
 
 		String targetURL = contextURL.split(URL_Constants_TAMIS.TAMIS_PREFIX)[0];
-		targetURL = targetURL + URL_Constants_WpsProxy.SLASH_PROCESSES + "/" + this.getProcessId();
+		targetURL = targetURL + URL_Constants_WpsProxy.SLASH_PROCESSES + "/" + this.getProcessId() + URL_Constants_WpsProxy.SLASH_JOBS;
 
 		return targetURL;
 	}
@@ -225,7 +225,7 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 	@Override
 	protected String setUpTargetUrl_WithDifferentBaseUrl(String baseURL_WpsProxy) {
 		// targetURL: "<baseURL>/processes/{process_id}"
-		return baseURL_WpsProxy + URL_Constants_WpsProxy.PROCESSES + "/" + this.getProcessId();
+		return baseURL_WpsProxy + URL_Constants_WpsProxy.PROCESSES + "/" + this.getProcessId() + URL_Constants_WpsProxy.SLASH_JOBS;
 	}
 
 }
