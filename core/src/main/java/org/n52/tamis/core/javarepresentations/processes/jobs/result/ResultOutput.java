@@ -46,6 +46,9 @@ public class ResultOutput {
 	@JsonProperty("Data")
 	private ResultData data;
 	
+	@JsonProperty("LiteralData")
+	private ResultData literalData;
+	
 	@JsonProperty("Reference")
 	private ResultReference reference;
 	
@@ -73,9 +76,17 @@ public class ResultOutput {
 		this.data = data;
 	}
 
+	public ResultData getLiteralData() {
+		return literalData;
+	}
+
+	public void setLiteralData(ResultData literalData) {
+		this.literalData = literalData;
+	}
+
 	@Override
 	public String toString() {
-		return "ResultOutput [id=" + id + ", data=" + data + ", reference=" + reference + "]";
+		return "ResultOutput [id=" + id + ", data=" + data + ", literaldata=" + literalData + ", reference=" + reference + "]";
 	}
 
 }

@@ -84,7 +84,7 @@ public class ExecuteInputSerializer_Test {
 			String sosJsonOutput = mapper.writeValueAsString(sosInput);
 
 			JsonNode parsedJsonReference = mapper.readTree(sosJsonOutput);
-			JsonNode sosNode = parsedJsonReference.get("Data");
+			JsonNode sosNode = parsedJsonReference.get("LiteralData");
 
 			/*
 			 * the expected structure of the parsed JSON node looks like:
@@ -122,7 +122,7 @@ public class ExecuteInputSerializer_Test {
 			String dataJsonOutput = mapper.writeValueAsString(dataInput);
 
 			JsonNode parsedJsonData = mapper.readTree(dataJsonOutput);
-			JsonNode dataNode = parsedJsonData.get("Data");
+			JsonNode dataNode = parsedJsonData.get("LiteralData");
 			
 			Assert.assertTrue(dataNode.has("_text"));
 			Assert.assertTrue(parsedJsonData.has("_id"));

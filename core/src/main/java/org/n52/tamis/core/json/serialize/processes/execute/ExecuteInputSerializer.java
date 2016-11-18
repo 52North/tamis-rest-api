@@ -107,9 +107,9 @@ public class ExecuteInputSerializer extends JsonSerializer<ExecuteInput> {
 
 		jsonGenerator.writeStartObject();
 
-		jsonGenerator.writeObjectFieldStart("Data");
+		jsonGenerator.writeObjectFieldStart("LiteralData");
 
-		jsonGenerator.writeStringField("_text", input.getValue());
+		jsonGenerator.writeStringField("_text", input.getValue());//TODO duplicate call to input.getValue()..
 
 		/*
 		 * TODO parameters "_mimeType" and "_schema"?
