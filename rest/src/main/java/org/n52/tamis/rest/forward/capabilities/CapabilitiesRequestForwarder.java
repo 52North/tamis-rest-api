@@ -63,6 +63,9 @@ public class CapabilitiesRequestForwarder extends AbstractRequestForwarder {
 	 */
 	public final Capabilities_Tamis forwardRequestToWpsProxy(HttpServletRequest request, Object requestBody,
 			ParameterValueStore parameterValueStore) {
+		
+		logger.info("Forward get capabilities request to WPS REST proxy.");		
+		
 		// assure that the URL variable "serviceId" is existent
 		initializeRequestSpecificParameters(parameterValueStore);
 

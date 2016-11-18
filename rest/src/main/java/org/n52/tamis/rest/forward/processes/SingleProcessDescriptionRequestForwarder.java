@@ -66,6 +66,9 @@ public class SingleProcessDescriptionRequestForwarder extends AbstractRequestFor
 	@Override
 	public ProcessDescription_singleProcess forwardRequestToWpsProxy(HttpServletRequest request, Object requestBody,
 			ParameterValueStore parameterValueStore) {
+		
+		logger.info("Forward get process request to WPS REST proxy.");		
+		
 		initializeRequestSpecificParameters(parameterValueStore);
 
 		String singleProcessDescription_url_wpsProxy = createTargetURL_WpsProxy(request);

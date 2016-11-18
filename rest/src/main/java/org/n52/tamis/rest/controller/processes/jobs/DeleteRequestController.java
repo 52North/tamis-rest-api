@@ -60,7 +60,7 @@ public class DeleteRequestController extends AbstractRestController {
 	ParameterValueStore parameterValueStore;
 
 	@RequestMapping("")
-	public ResponseEntity delete(@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId,
+	public ResponseEntity<?> delete(@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId,
 			@PathVariable(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME) String processId,
 			@PathVariable(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME) String jobId, HttpServletRequest request,
 			HttpServletResponse response) {
@@ -71,7 +71,7 @@ public class DeleteRequestController extends AbstractRestController {
 		initializeParameterValueStore(serviceId, processId, jobId);
 
 		// prepare response entity with HTTP status 404, not found
-		ResponseEntity responseEntity = new ResponseEntity(HttpStatus.NOT_FOUND);
+		ResponseEntity<?> responseEntity = new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
 
 		try {
 			logger.info("Trying to delete resource at \"{}\"", request.getRequestURL());
@@ -80,7 +80,7 @@ public class DeleteRequestController extends AbstractRestController {
 		} catch (Exception e) {
 			logger.info("DELETE request for resouce at \"{}\" failed.", request.getRequestURL());
 			response.setStatus(HttpStatus.NOT_FOUND.value());
-			return new ResponseEntity(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
 		}
 
 		return responseEntity;

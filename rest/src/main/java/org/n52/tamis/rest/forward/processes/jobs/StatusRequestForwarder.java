@@ -67,6 +67,9 @@ public class StatusRequestForwarder extends AbstractRequestForwarder {
 	@Override
 	public StatusDescription forwardRequestToWpsProxy(HttpServletRequest request, Object requestBody,
 			ParameterValueStore parameterValueStore) {
+		
+		logger.info("Forward get status request to WPS REST proxy.");
+		
 		initializeRequestSpecificParameters(parameterValueStore);
 
 		String statusDescription_url_wpsProxy = createTargetURL_WpsProxy(request);

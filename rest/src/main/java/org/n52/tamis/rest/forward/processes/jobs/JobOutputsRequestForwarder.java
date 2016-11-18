@@ -61,6 +61,9 @@ public class JobOutputsRequestForwarder extends AbstractRequestForwarder {
 	@Override
 	public <T> ResultDocument forwardRequestToWpsProxy(HttpServletRequest request, T requestBody,
 			ParameterValueStore parameterValueStore) {
+		
+		logger.info("Forward get outputs request to WPS REST proxy.");		
+		
 		initializeRequestSpecificParameters(parameterValueStore);
 
 		String outputs_url_wpsProxy = createTargetURL_WpsProxy(request);

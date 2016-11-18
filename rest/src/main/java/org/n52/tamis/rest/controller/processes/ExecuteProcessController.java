@@ -87,7 +87,7 @@ public class ExecuteProcessController extends AbstractRestController {
 	 * @return the shortened single process description
 	 */
 	@RequestMapping("")
-	public ResponseEntity executeProcess(@RequestBody Execute_HttpPostBody requestBody,
+	public ResponseEntity<ResultDocument> executeProcess(@RequestBody Execute_HttpPostBody requestBody,
 			@RequestParam(value = SYNC_EXECUTE_PARAMETER_NAME, required = false, defaultValue = "false") boolean sync_execute,
 			@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId,
 			@PathVariable(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME) String processId, HttpServletRequest request,
@@ -136,7 +136,7 @@ public class ExecuteProcessController extends AbstractRestController {
 			String locationHeaer = (String) executeResponse;
 			response.setHeader("Location", locationHeaer);
 
-			return new ResponseEntity(HttpStatus.CREATED);
+			return new ResponseEntity<ResultDocument>(HttpStatus.CREATED);
 		}
 		else if (executeResponse instanceof ResultDocument){
 			/*
@@ -151,7 +151,7 @@ public class ExecuteProcessController extends AbstractRestController {
 		else{
 			logger.error("The response of the execute request is of unexpected type. Either String (as location header from synchonous job execution) or ResultDocument (for asynchronous job execution) were expected. Response is of type {}!", executeResponse.getClass());
 			
-			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ResultDocument>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 
