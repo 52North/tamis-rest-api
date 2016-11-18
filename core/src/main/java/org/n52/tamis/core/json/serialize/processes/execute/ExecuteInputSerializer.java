@@ -156,6 +156,8 @@ public class ExecuteInputSerializer extends JsonSerializer<ExecuteInput> {
 		 * set it.
 		 */
 
+		jsonGenerator.writeStringField("_mimeType", input.geteType());
+
 		jsonGenerator.writeEndObject();
 
 		jsonGenerator.writeStringField("_id", input.getId());

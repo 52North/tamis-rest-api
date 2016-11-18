@@ -39,6 +39,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public abstract class AbstractInput {
 
 	private String id;
+	private String type;
 
 	public AbstractInput() {
 	}
@@ -49,6 +50,14 @@ public abstract class AbstractInput {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String geteType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	@Override
