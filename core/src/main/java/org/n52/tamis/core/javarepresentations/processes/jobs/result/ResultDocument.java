@@ -27,23 +27,28 @@
  */
 package org.n52.tamis.core.javarepresentations.processes.jobs.result;
 
+import java.util.List;
+
+import org.n52.tamis.core.json.deserialize.processes.jobs.result.ResultsDeserializer;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * Java representation of a WPS result document
  * @author Christian Danowski (contact: c.danowski@52north.org)
  *
  */
+@JsonDeserialize(using = ResultsDeserializer.class)
 public class ResultDocument {
-	
-	@JsonProperty("Result")
-	private Result result;
+		
+	private List<ResultOutput> result;
 
-	public Result getResult() {
+	public List<ResultOutput> getResult() {
 		return result;
 	}
 
-	public void setResult(Result result) {
+	public void setResult(List<ResultOutput> result) {
 		this.result = result;
 	}
 

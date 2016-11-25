@@ -168,7 +168,7 @@ public class ResultController extends AbstractRestController {
 		 */
 		if (outputId.contains(JSON_EXTENSION_VALUE)) {
 			/*
-			 * remove .json extnesion from outputId
+			 * remove .json extension from outputId
 			 */
 
 			outputId = outputId.split(JSON_EXTENSION_VALUE)[0];
@@ -223,7 +223,7 @@ public class ResultController extends AbstractRestController {
 		 * now extract the requested output from the complete document
 		 */
 
-		List<ResultOutput> outputs = resultDocument.getResult().getOutputs();
+		List<ResultOutput> outputs = resultDocument.getResult();
 
 		for (ResultOutput resultOutput : outputs) {
 			if (resultOutput.getId().equalsIgnoreCase(outputId))
