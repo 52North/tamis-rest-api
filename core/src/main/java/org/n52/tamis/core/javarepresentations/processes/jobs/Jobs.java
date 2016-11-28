@@ -25,45 +25,23 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.tamis.core.javarepresentations.processes.jobs.result;
+package org.n52.tamis.core.javarepresentations.processes.jobs;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Java representation of a WPS result.
- * @author Christian Danowski (contact: c.danowski@52north.org)
- *
- */
-public class Result {
+public class Jobs {
 	
-	@JsonProperty("JobID")
-	private String jobId;
+	@JsonProperty("Jobs")
+	private List<String> jobIds;
+
+	public List<String> getJobIds() {
+		return jobIds;
+	}
+
+	public void setJobIds(List<String> jobIds) {
+		this.jobIds = jobIds;
+	}
 	
-	@JsonProperty("Output")
-	private List<ResultOutput> outputs; 
-	
-	public String getJobId() {
-		return jobId;
-	}
-
-	public void setJobId(String jobId) {
-		this.jobId = jobId;
-	}
-
-	public List<ResultOutput> getOutputs() {
-		return outputs;
-	}
-
-	public void setOutputs(List<ResultOutput> outputs) {
-		this.outputs = outputs;
-	}
-
-	@Override
-	public String toString() {
-		return "Result [jobId=" + jobId + ", outputs=" + outputs + "]";
-	}
-
 }

@@ -42,12 +42,9 @@ public class ResultOutput {
 
 	@JsonProperty("ID")
 	private String id;
-	
-	@JsonProperty("Data")
-	private ResultData data;
-	
-	@JsonProperty("Reference")
-	private ResultReference reference;
+
+	@JsonProperty("value")
+	private String value;
 	
 	public String getId() {
 		return id;
@@ -57,25 +54,16 @@ public class ResultOutput {
 		this.id = id;
 	}
 
-	public ResultReference getReference() {
-		return reference;
+	public String getValue() {
+		return value;
 	}
 
-	public void setReference(ResultReference reference) {
-		this.reference = reference;
+	public void setValue(String value) {
+		this.value = value;
 	}
-
-	public ResultData getData() {
-		return data;
-	}
-
-	public void setData(ResultData data) {
-		this.data = data;
-	}
-
 	@Override
 	public String toString() {
-		return "ResultOutput [id=" + id + ", data=" + data + ", reference=" + reference + "]";
+		return "ResultOutput [id=" + id + ", value=" + value + "]";
 	}
 
 }

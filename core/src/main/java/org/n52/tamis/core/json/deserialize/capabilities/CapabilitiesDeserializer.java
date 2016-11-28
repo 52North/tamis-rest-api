@@ -30,7 +30,6 @@ package org.n52.tamis.core.json.deserialize.capabilities;
 import java.io.IOException;
 
 import org.n52.tamis.core.javarepresentations.capabilities.Capabilities_Tamis;
-import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

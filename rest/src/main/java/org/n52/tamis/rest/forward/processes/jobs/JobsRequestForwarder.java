@@ -25,11 +25,11 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.tamis.rest.forward.capabilities;
+package org.n52.tamis.rest.forward.processes.jobs;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.n52.tamis.core.javarepresentations.capabilities.Capabilities_Tamis;
+import org.n52.tamis.core.javarepresentations.processes.jobs.Jobs;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.core.urlconstants.URL_Constants_WpsProxy;
 import org.n52.tamis.rest.controller.ParameterValueStore;
@@ -39,66 +39,47 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Delegates a capabilities request to the WPS proxy.
+ * Class to delegate a status description request to the WPS proxy.
  * 
- * @author Christian Danowski (contact: c.danowski@52north.org)
+ * @author bpross-52n
  *
  */
-public class CapabilitiesRequestForwarder extends AbstractRequestForwarder {
+public class JobsRequestForwarder extends AbstractRequestForwarder {
 
-	private static final Logger logger = LoggerFactory.getLogger(CapabilitiesRequestForwarder.class);
+	private static Logger logger = LoggerFactory.getLogger(JobsRequestForwarder.class);
 
 	/**
 	 * {@inheritDoc} <br/>
 	 * <br/>
-	 * Delegates an incoming getCapabilities request to the WPS proxy, receives
-	 * the extended capabilities document and creates an instance of
-	 * {@link Capabilities_Tamis}
+	 * Delegates an incoming jobs request to the WPS proxy and
+	 * creates an instance of {@link Jobs}
 	 * 
 	 * @param parameterValueStore
 	 *            must contain the URL variable
 	 *            {@link URL_Constants_TAMIS#SERVICE_ID_VARIABLE_NAME} to
-	 *            identify the WPS instance
-	 * @return an instance of {@link Capabilities_Tamis}
-	 */
-	public final Capabilities_Tamis forwardRequestToWpsProxy(HttpServletRequest request, Object requestBody,
-			ParameterValueStore parameterValueStore) {
-		
-		logger.info("Forward get capabilities request to WPS REST proxy.");		
-		
-		// assure that the URL variable "serviceId" is existent
-		initializeRequestSpecificParameters(parameterValueStore);
-
-		String capabilities_url_wpsProxy = createTargetURL_WpsProxy(request);
-
-		RestTemplate capabilitiesTemplate = new RestTemplate();
-
-		// fetch extended capabilitiesDoc from WPS proxy and deserialize it into
-		// shortened capabilitiesDoc
-		Capabilities_Tamis capabilitiesDoc = capabilitiesTemplate.getForObject(capabilities_url_wpsProxy,
-				Capabilities_Tamis.class);
-		
-		/*
-		 * Override the URL of  capabilitiesDoc with the base URL of the tamis WPS proxy.
-		 * 
-		 * Retrieve the base URL from the HtteServletRequest object 
-		 */
-		String requestURL = request.getRequestURL().toString();
-//		String wpsBaseUrl_tamisProxy = requestURL.split(URL_Constants_TAMIS.TAMIS_PREFIX)[0];
-		capabilitiesDoc.setUrl(requestURL);
-
-		return capabilitiesDoc;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @param parameterValueStore
-	 *            must consist of exactly one parameter named "serviceId"
+	 *            identify the WPS instance and
+	 *            {@link URL_Constants_TAMIS#PROCESS_ID_VARIABLE_NAME} to
+	 *            identify the process and
+	 * @return an instance of {@link Jobs}
 	 */
 	@Override
-	protected void initializeRequestSpecificParameters(ParameterValueStore parameterValueStore) {
-		super.initializeRequestSpecificParameters(parameterValueStore);
+	public Jobs forwardRequestToWpsProxy(HttpServletRequest request, Object requestBody,
+			ParameterValueStore parameterValueStore) {
+		
+		logger.info("Formarding jobs request to WPS REST proxy.");
+		
+		initializeRequestSpecificParameters(parameterValueStore);
+
+		String jobs_url_wpsProxy = createTargetURL_WpsProxy(request);
+
+		RestTemplate jobsTemplate = new RestTemplate();
+
+		// fetch the status description from WPS proxy and
+		// deserialize it into TAMIS status decsription
+		Jobs jobs = jobsTemplate.getForObject(jobs_url_wpsProxy,
+				Jobs.class);
+
+		return jobs;
 	}
 
 	@Override
@@ -107,21 +88,24 @@ public class CapabilitiesRequestForwarder extends AbstractRequestForwarder {
 		 * The difference between contextURL of TAMIS interface and the
 		 * targetURL of the WPS proxy is a prefix + service number:
 		 * 
-		 * contexURL: "<baseURL>/constantServicePrefix/{service_id}"
+		 * contexURL:
+		 * "<baseURL>/constantServicePrefix/{service_id}/processes/{process_id}/jobs/{job_id}"
 		 * 
-		 * targetURL: "<baseURL>"
+		 * targetURL: "<baseURL>/processes/{process_id}/jobs/{job_id}"
 		 */
 
-		return contextURL.split(URL_Constants_TAMIS.TAMIS_PREFIX)[0];
+		String targetURL = contextURL.split(URL_Constants_TAMIS.TAMIS_PREFIX)[0];
+		targetURL = targetURL + URL_Constants_WpsProxy.SLASH_PROCESSES + "/" + this.getProcessId()
+				+ URL_Constants_WpsProxy.SLASH_JOBS;
+
+		return targetURL;
 	}
 
 	@Override
 	protected String setUpTargetUrl_WithDifferentBaseUrl(String baseURL_WpsProxy) {
-		// simply extend base URL with capabilities
-
-		String targetUrl = baseURL_WpsProxy + URL_Constants_WpsProxy.CAPABILITIES;
-
-		return targetUrl;
+		// targetURL: "<baseURL>/processes/{process_id}/jobs/{job_id}"
+		return baseURL_WpsProxy + URL_Constants_WpsProxy.PROCESSES + "/" + this.getProcessId()
+				+ URL_Constants_WpsProxy.SLASH_JOBS;
 	}
 
 }

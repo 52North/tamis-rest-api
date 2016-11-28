@@ -65,8 +65,11 @@ public class DeleteRequestForwarder extends AbstractRequestForwarder {
 	 * @return
 	 */
 	@Override
-	public <T> ResponseEntity forwardRequestToWpsProxy(HttpServletRequest request, T requestBody,
+	public <T> ResponseEntity<?> forwardRequestToWpsProxy(HttpServletRequest request, T requestBody,
 			ParameterValueStore parameterValueStore) {
+		
+		logger.info("Forward get delete job request to WPS REST proxy.");		
+		
 		initializeRequestSpecificParameters(parameterValueStore);
 
 		String delete_url_wpsProxy = createTargetURL_WpsProxy(request);
@@ -77,7 +80,7 @@ public class DeleteRequestForwarder extends AbstractRequestForwarder {
 		// resultTemplate.delete(delete_url_wpsProxy);
 		deleteTemplate.delete(delete_url_wpsProxy);
 
-		return new ResponseEntity(HttpStatus.OK);
+		return new ResponseEntity<Object>(HttpStatus.OK);
 	}
 
 	@Override

@@ -28,68 +28,71 @@
 package org.n52.tamis.rest.controller.processes.jobs;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
+import org.n52.tamis.core.javarepresentations.processes.jobs.Jobs;
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.rest.controller.AbstractRestController;
 import org.n52.tamis.rest.controller.ParameterValueStore;
-import org.n52.tamis.rest.forward.processes.jobs.DeleteRequestForwarder;
+import org.n52.tamis.rest.forward.processes.jobs.JobsRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * REST Controller for delete requests. (Only handles GET requests to that URL).
+ * REST controller to handle "/jobs" request.
  * 
- * @author Christian Danowski (contact: c.danowski@52north.org)
+ * @author bpross-52n
  *
  */
-@RequestMapping(value = URL_Constants_TAMIS.DELETE, method = RequestMethod.DELETE)
-public class DeleteRequestController extends AbstractRestController {
-	private static final Logger logger = LoggerFactory.getLogger(DeleteRequestController.class);
+@RequestMapping(value = URL_Constants_TAMIS.JOBS, method = RequestMethod.GET, produces = { "application/json" })
+public class JobsController extends AbstractRestController {
 
+	private static final Logger logger = LoggerFactory.getLogger(JobOutputsController.class);
+	
 	@Autowired
-	DeleteRequestForwarder deleteRequestForwarder;
+	JobsRequestForwarder jobsRequestForwarder;
 
 	@Autowired
 	ParameterValueStore parameterValueStore;
 
+	/**
+	 * Returns the result document containing outputs of a certain job.
+	 * 
+	 * @param serviceId
+	 *            inside the URL the variable
+	 *            {@link URL_Constants_TAMIS#SERVICE_ID_VARIABLE_NAME} specifies
+	 *            the id of the service.
+	 * @param processId
+	 *            inside the URL the variable
+	 *            {@link URL_Constants_TAMIS#PROCESS_ID_VARIABLE_NAME} specifies
+	 *            the id of the process.
+	 * @param jobId
+	 *            inside the URL the variable
+	 *            {@link URL_Constants_TAMIS#JOB_ID_VARIABLE_NAME} specifies the
+	 *            id of the job.
+	 * @param request
+	 * @return the status description
+	 */
 	@RequestMapping("")
-	public ResponseEntity<?> delete(@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId,
-			@PathVariable(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME) String processId,
-			@PathVariable(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME) String jobId, HttpServletRequest request,
-			HttpServletResponse response) {
+	@ResponseBody
+	public ResponseEntity<Jobs> getResultDocument(
+			@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId,
+			@PathVariable(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME) String processId, HttpServletRequest request) {
 
-		logger.info("Received delete request for service id \"{}\", process id \"{}\" and job id \"{}\" !", serviceId,
-				processId, jobId);
+		logger.info("Received get jobs request for service id \"{}\", process id \"{}\" and job id \"{}\"!",
+				serviceId, processId);
 
-		initializeParameterValueStore(serviceId, processId, jobId);
-
-		// prepare response entity with HTTP status 404, not found
-		ResponseEntity<?> responseEntity = new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
-
-		try {
-			logger.info("Trying to delete resource at \"{}\"", request.getRequestURL());
-			responseEntity = deleteRequestForwarder.forwardRequestToWpsProxy(request, null, parameterValueStore);
-
-		} catch (Exception e) {
-			logger.info("DELETE request for resouce at \"{}\" failed.", request.getRequestURL());
-			response.setStatus(HttpStatus.NOT_FOUND.value());
-			return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
-		}
-
-		return responseEntity;
-
-	}
-
-	private void initializeParameterValueStore(String serviceId, String processId, String jobId) {
 		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME, serviceId);
 		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME, processId);
-		parameterValueStore.addParameterValuePair(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME, jobId);
+
+		Jobs resultDocument = jobsRequestForwarder.forwardRequestToWpsProxy(request,
+				null, parameterValueStore);
+
+		return ResponseEntity.ok(resultDocument);
 	}
 }

@@ -104,6 +104,8 @@ public class URL_Constants_TAMIS extends URL_Constants_WpsProxy {
 
 	public static final String STATUS = PROCESS_DESCRIPTION_SINGLE + SLASH_JOBS + "/"
 			+ JOB_ID_VARIABLE_NAME_WITH_BRACES;
+	
+	public static final String JOBS = PROCESS_DESCRIPTION_SINGLE + SLASH_JOBS;
 
 	public static final String OUTPUTS = STATUS + SLASH_OUTPUTS;
 

@@ -52,6 +52,9 @@ public class StatusInfo {
 
 	@JsonProperty("Output")
 	private String output;
+	
+	@JsonProperty("Exceptions")
+	private String exceptions;
 
 	public String getJobId() {
 		return jobId;
@@ -83,6 +86,14 @@ public class StatusInfo {
 
 	public void setOutput(String outputs) {
 		this.output = outputs;
+	}
+
+	public String getExceptions() {
+		return exceptions;
+	}
+
+	public void setExceptions(String exceptions) {
+		this.exceptions = exceptions;
 	}
 
 	@Override

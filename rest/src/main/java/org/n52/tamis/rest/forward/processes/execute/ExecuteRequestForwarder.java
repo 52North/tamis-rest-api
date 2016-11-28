@@ -42,7 +42,6 @@ import org.n52.tamis.rest.controller.processes.ExecuteProcessController;
 import org.n52.tamis.rest.forward.AbstractRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -57,9 +56,6 @@ import org.springframework.web.client.RestTemplate;
 public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExecuteRequestForwarder.class);
-
-	@Autowired
-	SosRequestConstructor sosRequestConstructor;
 
 	/**
 	 * {@inheritDoc} <br/>
@@ -105,8 +101,6 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 		// body, but is needed
 		executeBody.setProcessId(this.getProcessId());
 
-		sosRequestConstructor.constructSosGetObservationRequestsForInputs(executeBody);
-
 		String execute_url_wpsProxy = createTargetURL_WpsProxy(request);
 
 		/*
@@ -146,7 +140,7 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 			 * 
 			 */		
 			
-	        HttpEntity requestEntity = new HttpEntity(executeBody, headers);
+	        HttpEntity<Execute_HttpPostBody> requestEntity = new HttpEntity<Execute_HttpPostBody>(executeBody, headers);
 	        
 			ResultDocument resultDocument = synchronousExecuteTemplate.postForObject(execute_url_wpsProxy, requestEntity, ResultDocument.class);
 
@@ -223,7 +217,7 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 		 */
 
 		String targetURL = contextURL.split(URL_Constants_TAMIS.TAMIS_PREFIX)[0];
-		targetURL = targetURL + URL_Constants_WpsProxy.SLASH_PROCESSES + "/" + this.getProcessId();
+		targetURL = targetURL + URL_Constants_WpsProxy.SLASH_PROCESSES + "/" + this.getProcessId() + URL_Constants_WpsProxy.SLASH_JOBS;
 
 		return targetURL;
 	}
@@ -231,7 +225,7 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 	@Override
 	protected String setUpTargetUrl_WithDifferentBaseUrl(String baseURL_WpsProxy) {
 		// targetURL: "<baseURL>/processes/{process_id}"
-		return baseURL_WpsProxy + URL_Constants_WpsProxy.PROCESSES + "/" + this.getProcessId();
+		return baseURL_WpsProxy + URL_Constants_WpsProxy.PROCESSES + "/" + this.getProcessId() + URL_Constants_WpsProxy.SLASH_JOBS;
 	}
 
 }

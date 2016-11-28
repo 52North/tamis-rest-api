@@ -151,7 +151,7 @@ public class ResultController extends AbstractRestController {
 	 * @return
 	 */
 	@RequestMapping("")
-	public ResponseEntity getResult(@RequestParam(value = OUTPUT_FORMAT_PARAMETER_NAME, required = false) String outputFormat,
+	public ResponseEntity<ResultOutput> getResult(@RequestParam(value = OUTPUT_FORMAT_PARAMETER_NAME, required = false) String outputFormat,
 			@PathVariable(URL_Constants_TAMIS.SERVICE_ID_VARIABLE_NAME) String serviceId,
 			@PathVariable(URL_Constants_TAMIS.PROCESS_ID_VARIABLE_NAME) String processId,
 			@PathVariable(URL_Constants_TAMIS.JOB_ID_VARIABLE_NAME) String jobId,
@@ -168,7 +168,7 @@ public class ResultController extends AbstractRestController {
 		 */
 		if (outputId.contains(JSON_EXTENSION_VALUE)) {
 			/*
-			 * remove .json extnesion from outputId
+			 * remove .json extension from outputId
 			 */
 
 			outputId = outputId.split(JSON_EXTENSION_VALUE)[0];
@@ -218,12 +218,12 @@ public class ResultController extends AbstractRestController {
 		return getOutput(outputId, resultDocument);
 	}
 
-	private ResponseEntity getOutput(String outputId, ResultDocument resultDocument) {
+	private ResponseEntity<ResultOutput> getOutput(String outputId, ResultDocument resultDocument) {
 		/*
 		 * now extract the requested output from the complete document
 		 */
 
-		List<ResultOutput> outputs = resultDocument.getResult().getOutputs();
+		List<ResultOutput> outputs = resultDocument.getResult();
 
 		for (ResultOutput resultOutput : outputs) {
 			if (resultOutput.getId().equalsIgnoreCase(outputId))
@@ -236,7 +236,7 @@ public class ResultController extends AbstractRestController {
 
 		logger.error("Could not find output with id \"{}\" in result document \"{}\"", outputId, resultDocument);
 
-		return new ResponseEntity(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<ResultOutput>(HttpStatus.NOT_FOUND);
 	}
 
 	private ResultDocument fetchResultDocumentForJob(String jobId, HttpServletRequest request) {

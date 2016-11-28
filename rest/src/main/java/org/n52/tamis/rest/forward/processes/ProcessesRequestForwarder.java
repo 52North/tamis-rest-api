@@ -67,6 +67,9 @@ public class ProcessesRequestForwarder extends AbstractRequestForwarder {
 	 */
 	public final Processes_Tamis forwardRequestToWpsProxy(HttpServletRequest request, Object requestBody,
 			ParameterValueStore parameterValueStore) {
+		
+		logger.info("Forward get processes request to WPS REST proxy.");		
+		
 		// assure that the URL variable "serviceId" is existent
 		initializeRequestSpecificParameters(parameterValueStore);
 
