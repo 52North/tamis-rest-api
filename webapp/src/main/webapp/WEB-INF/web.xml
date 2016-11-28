@@ -63,7 +63,10 @@
 
     <servlet-mapping>
         <servlet-name>eventing-dispatcher-service</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/api/v1/services/*</url-pattern>
     </servlet-mapping>
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
 
 </web-app>

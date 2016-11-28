@@ -17,6 +17,8 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
+    <mvc:default-servlet-handler/>
+
     <!-- MVC beans -->
     <!-- Controllers -->
     <bean class="org.n52.tamis.rest.controller.capabilities.CapabilitiesController" />

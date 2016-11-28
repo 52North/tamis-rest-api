@@ -49,6 +49,7 @@ public abstract class AbstractRequestForwarder implements RequestForwarder {
 
 	private static final String DEFAULT_CONFIG_FILE_WPS_PROXY = "/wpsProxy.properties";
 	private static final String WPS_PROXY_CONFIG_PARAMETER_NAME_BASE_URL = "wpsProxy_baseUrl";
+	private static final String WPS_PROXY_CONFIG_PARAMETER_NAME_FILTER_TIMESERIES_REQUESTS = "filterTimeSeriesRequests";
 
 	protected static final String DEFAULT_SERVICE_ID = "1";
 
@@ -58,6 +59,7 @@ public abstract class AbstractRequestForwarder implements RequestForwarder {
 	private String processId;
 	private String jobId;
 	private String outputId;
+	protected boolean filterTimeSeriesRequests = false;
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractRequestForwarder.class);
 
@@ -84,6 +86,8 @@ public abstract class AbstractRequestForwarder implements RequestForwarder {
 			props.load(wpsProxyConfigInput);
 
 			extractedBaseUrl_WpsProxy = props.getProperty(WPS_PROXY_CONFIG_PARAMETER_NAME_BASE_URL);
+			
+			filterTimeSeriesRequests = Boolean.parseBoolean(props.getProperty(WPS_PROXY_CONFIG_PARAMETER_NAME_FILTER_TIMESERIES_REQUESTS));
 
 			logger.info("Successfully extracted WPS proxy base URL from the configuration file. The value is \"{}\"",
 					this.baseURL_WpsProxy);

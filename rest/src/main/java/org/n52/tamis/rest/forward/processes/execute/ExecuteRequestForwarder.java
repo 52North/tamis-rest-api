@@ -42,6 +42,7 @@ import org.n52.tamis.rest.controller.processes.ExecuteProcessController;
 import org.n52.tamis.rest.forward.AbstractRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -56,7 +57,9 @@ import org.springframework.web.client.RestTemplate;
 public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExecuteRequestForwarder.class);
-
+	
+	@Autowired
+	SosRequestConstructor sosRequestConstructor;
 	/**
 	 * {@inheritDoc} <br/>
 	 * <br/>
@@ -101,6 +104,10 @@ public class ExecuteRequestForwarder extends AbstractRequestForwarder {
 		// body, but is needed
 		executeBody.setProcessId(this.getProcessId());
 
+		if(filterTimeSeriesRequests){
+		    sosRequestConstructor.constructSosGetObservationRequestsForInputs(executeBody);
+		}
+		
 		String execute_url_wpsProxy = createTargetURL_WpsProxy(request);
 
 		/*

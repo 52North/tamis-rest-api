@@ -36,6 +36,7 @@ import org.n52.tamis.core.javarepresentations.processes.jobs.result.ResultOutput
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.rest.controller.AbstractRestController;
 import org.n52.tamis.rest.controller.ParameterValueStore;
+import org.n52.tamis.rest.forward.processes.jobs.JobOutputsRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * REST Controller for result requests. (Only handles GET requests to that URL).
@@ -62,7 +62,10 @@ public class ResultController extends AbstractRestController {
 	private static final String OUTPUT_FORMAT_PARAMETER_VALUE = "json";
 
 	private static final String JSON_EXTENSION_VALUE = ".json";
-
+	
+	@Autowired
+	JobOutputsRequestForwarder jobOutputsRequestForwarder;
+	
 	@Autowired
 	ParameterValueStore parameterValueStore;
 
@@ -258,12 +261,8 @@ public class ResultController extends AbstractRestController {
 
 		logger.info("Trying to fetch the complete result document from job with jobId=\"{}\"", jobId);
 
-		String slashOutputId = "/"
-				+ parameterValueStore.getParameterValuePairs().get(URL_Constants_TAMIS.OUTPUT_ID_VARIABLE_NAME);
-		String getOutputsUrl = request.getRequestURL().toString().split(slashOutputId)[0];
-
-		RestTemplate getOutputs = new RestTemplate();
-		ResultDocument resultDocument = getOutputs.getForObject(getOutputsUrl, ResultDocument.class);
+		ResultDocument resultDocument = jobOutputsRequestForwarder.forwardRequestToWpsProxy(request,
+				null, parameterValueStore);
 
 		return resultDocument;
 	}
