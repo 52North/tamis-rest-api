@@ -89,8 +89,7 @@ public class URL_Constants_TAMIS extends URL_Constants_WpsProxy {
 	 * constant URLs for each request of the WPS
 	 */
 
-	public static final String CAPABILITIES = API_V1_BASE_PREFIX + "/" + TAMIS_PREFIX + "/"
-			+ SERVICE_ID_VARIABLE_NAME_WITH_BRACES;
+	public static final String CAPABILITIES =  "/" + SERVICE_ID_VARIABLE_NAME_WITH_BRACES;
 
 	public static final String PROCESSES = CAPABILITIES + SLASH_PROCESSES;
 
