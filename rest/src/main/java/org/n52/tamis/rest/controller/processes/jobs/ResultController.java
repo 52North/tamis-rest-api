@@ -47,7 +47,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * REST Controller for result requests. (Only handles GET requests to that URL).
@@ -262,11 +261,6 @@ public class ResultController extends AbstractRestController {
 
 		logger.info("Trying to fetch the complete result document from job with jobId=\"{}\"", jobId);
 
-		String slashOutputId = "/"
-				+ parameterValueStore.getParameterValuePairs().get(URL_Constants_TAMIS.OUTPUT_ID_VARIABLE_NAME);
-		String getOutputsUrl = request.getRequestURL().toString().split(slashOutputId)[0];
-
-		RestTemplate getOutputs = new RestTemplate();
 		ResultDocument resultDocument = jobOutputsRequestForwarder.forwardRequestToWpsProxy(request,
 				null, parameterValueStore);
 
