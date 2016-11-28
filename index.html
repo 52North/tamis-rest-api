@@ -204,7 +204,7 @@
                     <div class="n52-callout n52-callout-info">
                         Developer Note: to configure the <b>Generic WPS REST Proxy</b> endpoint URL, change the property
                         <code>wpsProxy_baseUrl</code> in the file <code>wpsProxy-properties</code> located at the project folder
-                        <code>tamis-rest-api/rest/src/main/resources/wpsProxy.properties</code>.
+                        <code>tamis-rest-api/webapp/src/main/resources/wpsProxy.properties</code>.
                     </div>
 
                     <p>
@@ -801,7 +801,7 @@ Content-Type: application/json;charset=UTF-8
                           the TAMIS WPS REST API allows the retrieval of timeseries data as input for a process execution.
                           Inspecting the <a href="#process-execution-payload">payload</a> example above,
                           the value of each input represents a valid SOAP GetObservation GET request against a SOS instance.
-                          The 52&deg;North WPS may utilize this SOAP request to fetch timeseries data and use it as process input.
+                          The 52&deg;North WPS may utilize this SOAP request to fetch timeseries data and use it as process input. This feature is deactivated by default and can be activated by setting the parameter <code>filterTimeSeriesRequests</code> to true in the <code>wpsProxy.properties</code> file.
                         </p>
 
                         <p>However, a complete SOAP SOS GetObservation GET request is represented by a lengthy URL with many key-value-pairs as query parameters.
@@ -1029,7 +1029,7 @@ Accept: application/json
     ]
 }</pre>
                             <pre id="process-execution-async" class="collapse">HTTP/1.1 201 CREATED
-Location: http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61082-688b-46f8-83d0-0c24d38573eb
+Location: http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b6108-0c24d38573eb
 </pre>
                             <button data-toggle="collapse" data-parent="#process-execution-examples"
                                 data-target="#process-execution-async" class="btn btn-primary">Show/Hide
@@ -1060,53 +1060,28 @@ Accept: application/json
 Content-Type: application/json;charset=UTF-8
 
 {
-  "Result": {
-    "JobID": "c8b61082-688b-46f8-83d0-0c24d38573eb",
-    "Output": [
-      {
-        "ID": "targetObs_plot",
-        "Reference": {
-          "_mimeType": "image/png",
-          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebtargetObs_plot.d59e34c0-8a89-4793-98cd-bf93bae6b6a4"
-        }
-      },
-      {
-        "ID": "model_diagnostics",
-        "Reference": {
-          "_mimeType": "image/png",
-          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebmodel_diagnostics.4ce97ee5-d6ba-4f18-9fef-f1eb1d184b19"
-        }
-      },
-      {
-        "ID": "relations",
-        "Reference": {
-          "_mimeType": "image/png",
-          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebrelations.c195b642-8b8b-477e-a371-5892dc94a9a4"
-        }
-      },
-      {
-        "ID": "model_prediction",
-        "Reference": {
-          "_mimeType": "text/csv",
-          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebmodel_prediction.56f1cc88-172b-4a5e-8fb9-4043476d6d0c"
-        }
-      },
-      {
-        "ID": "metaJson",
-        "Reference": {
-          "_mimeType": "application/json",
-          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebmetaJson.549068d7-823c-48be-9fcc-64f8756eeb59"
-        }
-      },
-      {
-        "ID": "dataJson",
-        "Reference": {
-          "_mimeType": "application/json",
-          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebdataJson.cf37e88a-2622-48a8-b7c9-eab89d26844a"
-        }
-      }
-    ]
-  }
+  "result": [
+    {
+      "ID": "modelDiagnostics",
+      "value": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=d9dc5248-e741-4ef0-a54fee1a0modelDiagnostics.e9e25149-2988-4da3-abe7-32897e6e7f6c"
+    },
+    {
+      "ID": "relations",
+      "value": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=d9dc5248-e741-4ef0-a54fee1a0relations.2f57bbe8-d842-4517-99bf-5afc87b4f318"
+    },
+    {
+      "ID": "modelPrediction",
+      "value": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=d9dc5248-e741-4ef0-a54fee1a0modelPrediction.06619995-83ed-4872-8a4e-86a928286c63"
+    },
+    {
+      "ID": "metaJson",
+      "value": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=d9dc5248-e741-4ef0-a54fee1a0metaJson.f367b0f8-a762-4b39-b470-e352c3a54b8a"
+    },
+    {
+      "ID": "dataJson",
+      "value": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=d9dc5248-e741-4ef0-a54fee1a0dataJson.05d92ba0-975a-4457-aa1d-cd7975933f86"
+    }
+  ]
 }
 </pre>
                         <button data-toggle="collapse" data-parent="#process-execution-examples"
@@ -1163,7 +1138,7 @@ Content-Type: application/json;charset=UTF-8
                         <div>
                             <!-- Process Accepted -->
                             <h4>Get Status Example - Process Accepted</h4>
-                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61082-688b-46f8-83d0-0c24d38573eb HTTP/1.1
+                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61082-6-83d0-0c24d38573eb HTTP/1.1
 Host: tamis.dev.52north.org
 Accept: application/json</pre>
                             <pre id="status-example-accepted" class="collapse">HTTP/1.1 200 OK
@@ -1204,7 +1179,7 @@ Content-Type: application/json;charset=UTF-8
                         <div>
                             <!-- Process finished -->
                             <h4>Get Status Example - Process Finished</h4>
-                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61082-688b-46f8-83d0-0c24d38573eb HTTP/1.1
+                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61088-83d0-0c24d38573eb HTTP/1.1
 Host: tamis.dev.52north.org
 Accept: application/json</pre>
                             <pre id="status-example-finished" class="collapse">HTTP/1.1 200 OK
@@ -1214,7 +1189,7 @@ Content-Type: application/json;charset=UTF-8
     "StatusInfo": {
         "JobID": "c8b61082-688b-46f8-83d0-0c24d38573eb",
         "Status": "Successful"
-        “Outputs”: “http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61082-688b-46f8-83d0-0c24d38573eb/outputs”
+        “Outputs”: “http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8bc24d38573eb/outputs”
     }
 }</pre>
                             <button data-toggle="collapse" data-parent="#status-examples"
@@ -1230,6 +1205,61 @@ Content-Type: application/json;charset=UTF-8
                                 that contains a link to the outputs of the finished job, encoded as a <a href="#result">Result</a> document.
                             </div>
 
+                        </div>
+						
+						                        <div>
+                            <!-- Process finished -->
+                            <h4>Get Status Example - Process Failed</h4>
+                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b610-83d0-0c24d38573eb HTTP/1.1
+Host: tamis.dev.52north.org
+Accept: application/json</pre>
+                            <pre id="status-example-failed" class="collapse">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+    "StatusInfo": {
+        "JobID": "c8b61082-688b-46f8-83d0-0c24d38573eb",
+        "Status": "Failed"
+        “Exceptions”: “http://tamis.dev.52north.org/wps-proxy/processes/org.n52.wps.server.r.tamis-rest-prediction-single/jobs/16f3d17-58362b466cb8/exceptions”
+    }
+}</pre>
+                            <button data-toggle="collapse" data-parent="#status-examples"
+                                data-target="#status-example-failed" class="btn btn-primary">Show/Hide
+                                Response</button>
+                            <div class="n52-callout n52-callout-info">
+                                Note that parameter
+                                <code>Status</code>
+                                is now set to
+                                <code>Failed</code>
+                                and that there is a new parameter
+                                <code>Exceptions</code>
+                                that contains a link to one or more exceptions that occurred during the execution of the job, encoded as a ExceptionReport document (An example can be seen below).
+                            </div>
+							
+                            <h5>ExceptionReport Example</h5>
+                            <pre>GET http://tamis.dev.52north.org/wps-proxy/processes/org.n52.wps.server.r.tamis-rest-prediction-single/jobs/16f3d1f5-58362b466cb8/exceptions HTTP/1.1
+Host: tamis.dev.52north.org
+Accept: application/json</pre>							
+                            <pre id="exceptionreport-example" class="collapse">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+							
+{
+  "ExceptionReport": {
+    "Exceptions": [
+      {
+        "Code": "InvalidParameterValue",
+        "Locator": input identifier,
+        "Text": [
+          "org.n52.wps.server.ExceptionReport: Input Identifier is not valid: xyz"
+        ]
+      }
+    ]
+  }
+}</pre>
+							<button data-toggle="collapse" data-parent="#exceptionreport-examples"
+                                data-target="#exceptionreport-example" class="btn btn-primary">Show/Hide
+                                Response</button>
+							
                             <div class="n52-callout n52-callout-info">
                                 Note that in contrast to a full StatusInfo response, as specified in the formal
                                 <a href="http://docs.opengeospatial.org/is/14-065/14-065.html#48">OGC WPS Interface Standard - StatusInfo Document Section</a>,
@@ -1315,60 +1345,35 @@ Content-Type: application/json;charset=UTF-8
                         <div>
                             <!-- Result Document -->
                             <h4>Get Result Example - Complete Result Document</h4>
-                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61082-688b-46f8-83d0-0c24d38573eb/outputs HTTP/1.1
+                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61082-6d38573eb/outputs HTTP/1.1
 Host: tamis.dev.52north.org
 Accept: application/json</pre>
                             <pre id="result-example-complete" class="collapse">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 
 {
-  "Result": {
-    "JobID": "c8b61082-688b-46f8-83d0-0c24d38573eb",
-    "Output": [
-      {
-        "ID": "targetObs_plot",
-        "Reference": {
-          "_mimeType": "image/png",
-          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebtargetObs_plot.d59e34c0-8a89-4793-98cd-bf93bae6b6a4"
-        }
-      },
-      {
-        "ID": "model_diagnostics",
-        "Reference": {
-          "_mimeType": "image/png",
-          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebmodel_diagnostics.4ce97ee5-d6ba-4f18-9fef-f1eb1d184b19"
-        }
-      },
-      {
-        "ID": "relations",
-        "Reference": {
-          "_mimeType": "image/png",
-          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebrelations.c195b642-8b8b-477e-a371-5892dc94a9a4"
-        }
-      },
-      {
-        "ID": "model_prediction",
-        "Reference": {
-          "_mimeType": "text/csv",
-          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebmodel_prediction.56f1cc88-172b-4a5e-8fb9-4043476d6d0c"
-        }
-      },
-      {
-        "ID": "metaJson",
-        "Reference": {
-          "_mimeType": "application/json",
-          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebmetaJson.549068d7-823c-48be-9fcc-64f8756eeb59"
-        }
-      },
-      {
-        "ID": "dataJson",
-        "Reference": {
-          "_mimeType": "application/json",
-          "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=c8b61082-688b-46f8-83d0-0c24d38573ebdataJson.cf37e88a-2622-48a8-b7c9-eab89d26844a"
-        }
-      }
-    ]
-  }
+  "result": [
+    {
+      "ID": "modelDiagnostics",
+      "value": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=d9dc5248-e741-4ef0-a54fee1a0modelDiagnostics.e9e25149-2988-4da3-abe7-32897e6e7f6c"
+    },
+    {
+      "ID": "relations",
+      "value": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=d9dc5248-e741-4ef0-a54fee1a0relations.2f57bbe8-d842-4517-99bf-5afc87b4f318"
+    },
+    {
+      "ID": "modelPrediction",
+      "value": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=d9dc5248-e741-4ef0-a54fee1a0modelPrediction.06619995-83ed-4872-8a4e-86a928286c63"
+    },
+    {
+      "ID": "metaJson",
+      "value": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=d9dc5248-e741-4ef0-a54fee1a0metaJson.f367b0f8-a762-4b39-b470-e352c3a54b8a"
+    },
+    {
+      "ID": "dataJson",
+      "value": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=d9dc5248-e741-4ef0-a54fee1a0dataJson.05d92ba0-975a-4457-aa1d-cd7975933f86"
+    }
+  ]
 }</pre>
                             <button data-toggle="collapse" data-parent="#result-examples"
                                 data-target="#result-example-complete" class="btn btn-primary">Show/Hide
@@ -1393,18 +1398,15 @@ Content-Type: application/json;charset=UTF-8
                         <div>
                             <!-- Single Output -->
                             <h4>Get Result Example - Single Output</h4>
-                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b61082-688b-46f8-83d0-0c24d38573eb/outputs/dataJson HTTP/1.1
+                            <pre>GET http://tamis.dev.52north.org/tamis-rest/api/v1/services/1/processes/org.n52.wps.server.r.tamis-regression/jobs/c8b6138573eb/outputs/modelDiagnostics HTTP/1.1
 Host: tamis.dev.52north.org
 Accept: application/json</pre>
                             <pre id="result-example-single-output" class="collapse">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 
 {
-  "ID": "dataJson",
-  "Reference": {
-    "_mimeType": "application/json",
-    "_href": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=69e14716-405d-4be8-8047-2c4142f2da2ddataJson.50f62ecc-38cc-43d1-9f87-15814d6bc1c0"
-  }
+  "ID": "modelDiagnostics",
+  "value": "http://tamis.dev.52north.org:80/wps/RetrieveResultServlet?id=23edc065-8882-45c4-a9af-92fmodelDiagnostics.00c30ab96-8f79b4678671"
 }</pre>
                             <button data-toggle="collapse" data-parent="#result-examples"
                                 data-target="#result-example-single-output" class="btn btn-primary">Show/Hide
