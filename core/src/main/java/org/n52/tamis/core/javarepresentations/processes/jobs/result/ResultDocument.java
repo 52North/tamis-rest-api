@@ -31,7 +31,6 @@ import java.util.List;
 
 import org.n52.tamis.core.json.deserialize.processes.jobs.result.ResultsDeserializer;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
