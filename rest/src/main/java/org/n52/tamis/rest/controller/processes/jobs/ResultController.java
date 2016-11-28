@@ -36,6 +36,7 @@ import org.n52.tamis.core.javarepresentations.processes.jobs.result.ResultOutput
 import org.n52.tamis.core.urlconstants.URL_Constants_TAMIS;
 import org.n52.tamis.rest.controller.AbstractRestController;
 import org.n52.tamis.rest.controller.ParameterValueStore;
+import org.n52.tamis.rest.forward.processes.jobs.JobOutputsRequestForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,10 @@ public class ResultController extends AbstractRestController {
 	private static final String OUTPUT_FORMAT_PARAMETER_VALUE = "json";
 
 	private static final String JSON_EXTENSION_VALUE = ".json";
-
+	
+	@Autowired
+	JobOutputsRequestForwarder jobOutputsRequestForwarder;
+	
 	@Autowired
 	ParameterValueStore parameterValueStore;
 
@@ -263,7 +267,8 @@ public class ResultController extends AbstractRestController {
 		String getOutputsUrl = request.getRequestURL().toString().split(slashOutputId)[0];
 
 		RestTemplate getOutputs = new RestTemplate();
-		ResultDocument resultDocument = getOutputs.getForObject(getOutputsUrl, ResultDocument.class);
+		ResultDocument resultDocument = jobOutputsRequestForwarder.forwardRequestToWpsProxy(request,
+				null, parameterValueStore);
 
 		return resultDocument;
 	}
